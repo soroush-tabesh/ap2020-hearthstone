@@ -16,4 +16,5 @@ dependencies {
     compile 'org.hibernate:hibernate-core:5.4.12.Final'
     compile 'com.google.guava:guava:28.2-jre'
     compile 'com.h2database:h2:1.4.200'
+    compile 'com.indvd00m.ascii.render:ascii-render:2.1.3'
 }
