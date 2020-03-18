@@ -1,5 +1,7 @@
 package ir.soroushtabesh.hearthstone.controllers;
 
+import ir.soroushtabesh.hearthstone.models.beans.Player;
+
 public class PlayerManager {
     private static PlayerManager instance;
 
@@ -25,6 +27,11 @@ public class PlayerManager {
     public Message makeAccount(String username, String password) {
         //todo
         return Message.SUCCESS;
+    }
+
+    public Player getPlayer() {
+        //todo
+        return null;
     }
 
     public enum Message {

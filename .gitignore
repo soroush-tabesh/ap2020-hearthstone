@@ -1,2 +1,4 @@
 .DS_Store
 .gradle
+gamedata.mv.db
+gamedata.trace.db

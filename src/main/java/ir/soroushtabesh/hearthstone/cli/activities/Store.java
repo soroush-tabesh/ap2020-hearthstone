@@ -5,17 +5,12 @@ import ir.soroushtabesh.hearthstone.cli.CLIActivity;
 public class Store extends CLIActivity {
     @Override
     public void onStart(String[] args) {
-
-    }
-
-    @Override
-    public void onStop() {
-
+        //todo
     }
 
     @Override
     public void onReceivedCommand(String[] args) {
-
+        //todo
     }
 
     @Override
