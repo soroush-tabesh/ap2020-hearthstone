@@ -24,7 +24,7 @@ public class StartPage extends CLIActivity {
                 System.out.println("This username is taken :(");
                 break;
             case SUCCESS:
-                System.out.println("Successfully created!");
+                System.out.println("Successfully created!\nNow you may login.");
         }
     }
 
@@ -76,9 +76,9 @@ public class StartPage extends CLIActivity {
             System.out.println("Logged out.");
         }
         System.out.println("Hey there! Welcome.");
-        System.out.println("Do you already have an account?(yes/no)");
-        processor.add("no", event -> signUp());
-        processor.add("yes", event -> logIn());
+        System.out.println("Do you already have an account?(login/sign-up)");
+        processor.add("login", event -> signUp());
+        processor.add("sign-up", event -> logIn());
     }
 
     @Override

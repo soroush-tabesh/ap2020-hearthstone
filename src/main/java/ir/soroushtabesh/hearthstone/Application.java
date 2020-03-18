@@ -15,5 +15,11 @@ public class Application {
         cliManager.addActivity(new Store());
         cliManager.startActivity(new StartPage());
         cliManager.fireUp();
+        /*
+        for deploy:
+        1- enable banner
+        2- disable sql log
+        3- write help
+         */
     }
 }

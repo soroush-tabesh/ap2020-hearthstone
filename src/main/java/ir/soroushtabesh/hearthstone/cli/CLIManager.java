@@ -1,5 +1,8 @@
 package ir.soroushtabesh.hearthstone.cli;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -34,7 +37,15 @@ public class CLIManager {
     }
 
     private void showHelp() {
-        //todo
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+        File file = new File(classLoader.getResource("help.txt").getFile());
+        String content = "null";
+        try {
+            content = new String(Files.readAllBytes(file.toPath()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println(content);
     }
 
     public void clearHistory() {
