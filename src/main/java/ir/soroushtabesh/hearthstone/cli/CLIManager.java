@@ -26,15 +26,15 @@ public class CLIManager {
         });
     }
 
-    private void showHelp() {
-        //todo
-    }
-
     public static CLIManager getInstance() {
         if (instance == null) {
             instance = new CLIManager();
         }
         return instance;
+    }
+
+    private void showHelp() {
+        //todo
     }
 
     public void clearHistory() {
