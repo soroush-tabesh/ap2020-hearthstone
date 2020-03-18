@@ -50,7 +50,11 @@ public class CLIManager {
     }
 
     public void addActivity(CLIActivity activity) {
-        processor.add(activity.getActivityCommand(), event -> startActivity(activity, event.args));
+        processor.add(activity.getActivityCommand(), event -> {
+            if (getCurrentActivity().getClass().equals(activity.getClass()))
+                currentActivity.remove(currentActivity.size() - 1);
+            startActivity(activity, event.args);
+        });
     }
 
     public void startActivity(CLIActivity activity) {
@@ -84,7 +88,8 @@ public class CLIManager {
         CLIActivity temp = currentActivity.remove(currentActivity.size() - 1);
         temp.onPause();
         temp.onStop();
-        currentActivity.get(currentActivity.size() - 1).onResume();
+        if (!currentActivity.isEmpty())
+            currentActivity.get(currentActivity.size() - 1).onResume();
         return !currentActivity.isEmpty();
     }
 }

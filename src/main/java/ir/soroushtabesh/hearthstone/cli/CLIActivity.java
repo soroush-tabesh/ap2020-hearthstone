@@ -1,6 +1,11 @@
 package ir.soroushtabesh.hearthstone.cli;
 
+import java.util.Scanner;
+
 public abstract class CLIActivity {
+    private CLIManager cliManager = CLIManager.getInstance();
+    private Scanner scanner = CLIManager.getInstance().getScanner();
+
     public void onStart(String[] args) {
 
     }
@@ -19,6 +24,14 @@ public abstract class CLIActivity {
 
     public void onPause() {
 
+    }
+
+    public CLIManager getCLIManager() {
+        return cliManager;
+    }
+
+    public Scanner getScanner() {
+        return scanner;
     }
 
     public abstract String getActivityCommand();
