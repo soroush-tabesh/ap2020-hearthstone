@@ -1,4 +1,25 @@
 package ir.soroushtabesh.hearthstone.cli.activities;
 
-public class MainMenu {
+import ir.soroushtabesh.hearthstone.cli.CLIActivity;
+
+public class MainMenu extends CLIActivity {
+    @Override
+    public void onStart(String[] args) {
+
+    }
+
+    @Override
+    public void onStop() {
+
+    }
+
+    @Override
+    public void onReceivedCommand(String[] args) {
+
+    }
+
+    @Override
+    public String getActivityCommand() {
+        return "menu";
+    }
 }

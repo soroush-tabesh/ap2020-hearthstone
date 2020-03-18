@@ -15,8 +15,19 @@ public class CLIManager {
 
     private CLIManager() {
         processor.add("back", event -> {
-            if (!stopCurrent()) System.err.println("Error:: Nowhere to go back...");
+            if (!stopCurrent()) {
+                shutdown();
+            }
         });
+        processor.add("hearthstone", event -> {
+            if (event.args.length > 0 && event.args[0].equals("--help")) {
+                showHelp();
+            }
+        });
+    }
+
+    private void showHelp() {
+        //todo
     }
 
     public static CLIManager getInstance() {
@@ -47,20 +58,22 @@ public class CLIManager {
     }
 
     public void startActivity(CLIActivity activity, String[] args) {
+        if (!currentActivity.isEmpty())
+            currentActivity.get(currentActivity.size() - 1).onPause();
         currentActivity.add(activity);
         activity.onStart(args);
-        if (!fired)
-            fire();
+        activity.onResume();
     }
 
-    public void fire() {
+    public void fireUp() {
         fired = true;
-        while (fired && scanner.hasNextLine()) {
+        while (!currentActivity.isEmpty() && fired && scanner.hasNextLine()) {
             String[] line = scanner.nextLine().split(" ");
             if (!processor.process(line)) {
                 getCurrentActivity().onReceivedCommand(line);
             }
         }
+        fired = false;
     }
 
     public void shutdown() {
@@ -68,9 +81,10 @@ public class CLIManager {
     }
 
     public boolean stopCurrent() {
-        if (currentActivity.size() <= 1)
-            return false;
-        currentActivity.remove(currentActivity.size() - 1).onStop();
-        return true;
+        CLIActivity temp = currentActivity.remove(currentActivity.size() - 1);
+        temp.onPause();
+        temp.onStop();
+        currentActivity.get(currentActivity.size() - 1).onResume();
+        return !currentActivity.isEmpty();
     }
 }

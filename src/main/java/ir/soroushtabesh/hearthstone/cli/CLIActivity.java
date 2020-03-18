@@ -1,11 +1,25 @@
 package ir.soroushtabesh.hearthstone.cli;
 
 public abstract class CLIActivity {
-    public abstract void onStart(String[] args);
+    public void onStart(String[] args) {
 
-    public abstract void onStop();
+    }
 
-    public abstract void onReceivedCommand(String[] args);
+    public void onStop() {
+
+    }
+
+    public void onReceivedCommand(String[] args) {
+
+    }
+
+    public void onResume() {
+
+    }
+
+    public void onPause() {
+
+    }
 
     public abstract String getActivityCommand();
 }
