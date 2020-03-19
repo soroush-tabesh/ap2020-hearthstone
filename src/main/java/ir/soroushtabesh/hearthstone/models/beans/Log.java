@@ -3,13 +3,11 @@ package ir.soroushtabesh.hearthstone.models.beans;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "logger")
 public class Log {
-    //todo
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private int log_id;
-    private int user_id;
+    private Integer user_id;
     private String date;
     private String event;
     private String description;
@@ -39,7 +37,7 @@ public class Log {
         return log_id;
     }
 
-    public int getUser_id() {
+    public Integer getUser_id() {
         return user_id;
     }
 

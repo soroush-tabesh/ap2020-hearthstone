@@ -15,7 +15,7 @@ public class Logger {
     public static void log(String event, String desc, Log.Severity severity) {
         Log log = new Log();
         if (PlayerManager.getInstance().getPlayer() != null)
-            log.setUser_id(PlayerManager.getInstance().getPlayer().getUser_id());
+            log.setUser_id(PlayerManager.getInstance().getPlayer().getPlayer_id());
         else
             log.setUser_id(-1);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
