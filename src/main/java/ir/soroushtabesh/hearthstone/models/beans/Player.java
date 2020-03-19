@@ -1,8 +1,11 @@
 package ir.soroushtabesh.hearthstone.models.beans;
 
+import ir.soroushtabesh.hearthstone.util.DBUtil;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Player {
@@ -23,11 +26,29 @@ public class Player {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "players_decks", joinColumns = @JoinColumn(name = "player_id"), inverseJoinColumns = @JoinColumn(name = "deck_id"))
     private List<Deck> decks;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "current_hero_id")
+    private Hero currentHero;
+
+    public Player(String username, String password) {
+        this();
+        this.username = username;
+        this.password = password;
+        //todo: card,hero,deck init
+    }
+
+    public Hero getCurrentHero() {
+        return currentHero;
+    }
 
     public Player() {
         ownedCards = new ArrayList<>();
         openHeroes = new ArrayList<>();
         decks = new ArrayList<>();
+    }
+
+    public void setCurrentHero(Hero currentHero) {
+        this.currentHero = currentHero;
     }
 
     public int getPlayer_id() {
@@ -95,14 +116,32 @@ public class Player {
     }
 
     public Deck getDeckOfHero(Hero hero) {
+        if (hero == null)
+            return null;
         for (Deck deck : decks) {
             if (deck.getHero().getHero_id() == hero.getHero_id())
                 return deck;
         }
-        return new Deck(hero, this);
+        Deck deck = new Deck(hero, this);
+        decks.add(deck);
+        DBUtil.syncSingleObject(this);
+        return deck;
     }
 
     public void addDeck(Deck deck) {
         decks.add(deck);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Player player = (Player) o;
+        return getPlayer_id() == player.getPlayer_id();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getPlayer_id());
     }
 }

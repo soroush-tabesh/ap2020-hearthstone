@@ -2,7 +2,6 @@ package ir.soroushtabesh.hearthstone.util;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
@@ -41,12 +40,11 @@ public class DBUtil {
         return getSessionFactory().openSession();
     }
 
-    public static boolean saveSingleObject(Object object) {
-        Transaction transaction = null;
+    public static boolean syncSingleObject(Object object) {
         try (Session session = openSession()) {
-            transaction = session.beginTransaction();
-            session.save(object);
-            transaction.commit();
+            session.beginTransaction();
+            session.saveOrUpdate(object);
+            session.getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
             return false;

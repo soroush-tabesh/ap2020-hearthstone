@@ -1,6 +1,7 @@
 package ir.soroushtabesh.hearthstone.models.beans;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Log {
@@ -71,5 +72,18 @@ public class Log {
 
     public enum Severity {
         INFO, WARNING, FATAL
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Log log = (Log) o;
+        return getLog_id() == log.getLog_id();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getLog_id());
     }
 }

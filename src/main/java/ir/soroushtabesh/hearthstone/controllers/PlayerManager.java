@@ -59,9 +59,7 @@ public class PlayerManager {
 
     public Message makeAccount(String username, String password) {
         password = HashUtil.hash(password);
-        Player player = new Player();
-        player.setPassword(password);
-        player.setUsername(username);
+        Player player = new Player(username, password);
         Transaction transaction = null;
         try (Session session = DBUtil.openSession()) {
             transaction = session.beginTransaction();
@@ -80,6 +78,14 @@ public class PlayerManager {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public void refreshPlayer() {
+        try (Session session = DBUtil.openSession()) {
+            session.refresh(player);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public enum Message {

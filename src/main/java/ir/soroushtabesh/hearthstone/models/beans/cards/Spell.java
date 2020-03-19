@@ -8,4 +8,8 @@ import javax.persistence.Entity;
 @Entity
 @DiscriminatorValue("Spell")
 public class Spell extends Card {
+    @Override
+    public String toString() {//todo
+        return super.toString();
+    }
 }

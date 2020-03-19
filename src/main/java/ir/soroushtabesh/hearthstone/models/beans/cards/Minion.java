@@ -15,7 +15,40 @@ public class Minion extends Card {
     @Enumerated(EnumType.STRING)
     private MinionClass minionClass;
 
+    public Integer getHp() {
+        return hp;
+    }
+
+    public void setHp(Integer hp) {
+        this.hp = hp;
+    }
+
+    public Integer getAttackPower() {
+        return attackPower;
+    }
+
+    public void setAttackPower(Integer attackPower) {
+        this.attackPower = attackPower;
+    }
+
+    public MinionClass getMinionClass() {
+        return minionClass;
+    }
+
+    public void setMinionClass(MinionClass minionClass) {
+        this.minionClass = minionClass;
+    }
+
     public enum MinionClass {
         BEAST, DEMON, DRAGON, ELEMENTAL, MECH, MURLOC, PIRATE, TOTEM, ALL, GENERAL
+    }
+
+    @Override
+    public String toString() {//todo
+        return super.toString() + "Minion{" +
+                "hp=" + hp +
+                ", attackPower=" + attackPower +
+                ", minionClass=" + minionClass +
+                '}';
     }
 }

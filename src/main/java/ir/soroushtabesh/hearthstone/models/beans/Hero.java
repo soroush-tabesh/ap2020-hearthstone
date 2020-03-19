@@ -5,6 +5,7 @@ import ir.soroushtabesh.hearthstone.models.beans.cards.HeroPower;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Hero {
@@ -86,4 +87,29 @@ public class Hero {
         MAGE, WARLOCK, ROUGE, DEMON_HUNTER, DRUID, HUNTER, PALADIN, PRIEST, SHAMAN, WARRIOR
     }
 
+    @Override
+    public String toString() {//todo
+        return "Hero{" +
+                "hero_id=" + hero_id +
+                ", heroClass=" + heroClass +
+                ", name='" + name + '\'' +
+                ", hp=" + hp +
+                ", heroPower=" + heroPower +
+                ", specialCards=" + specialCards +
+                ", specialPower=" + specialPower +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Hero hero = (Hero) o;
+        return getHero_id() == hero.getHero_id();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getHero_id());
+    }
 }

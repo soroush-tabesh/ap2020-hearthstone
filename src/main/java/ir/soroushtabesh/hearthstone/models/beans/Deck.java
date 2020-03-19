@@ -3,6 +3,7 @@ package ir.soroushtabesh.hearthstone.models.beans;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Deck {
@@ -21,6 +22,7 @@ public class Deck {
     private List<Card> cardsList;
 
     public Deck() {
+        cardsList = new ArrayList<>();
     }
 
     public Deck(Hero hero, Player player) {
@@ -55,5 +57,18 @@ public class Deck {
 
     public void addCard(Card card) {
         cardsList.add(card);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Deck deck = (Deck) o;
+        return getDeck_id() == deck.getDeck_id();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getDeck_id());
     }
 }

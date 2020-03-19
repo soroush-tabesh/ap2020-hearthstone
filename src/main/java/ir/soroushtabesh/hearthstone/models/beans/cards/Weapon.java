@@ -10,4 +10,20 @@ import javax.persistence.Entity;
 public class Weapon extends Card {
     private Integer durability;
     private Integer attackPower;
+
+    public Integer getDurability() {
+        return durability;
+    }
+
+    public void setDurability(Integer durability) {
+        this.durability = durability;
+    }
+
+    public Integer getAttackPower() {
+        return attackPower;
+    }
+
+    public void setAttackPower(Integer attackPower) {
+        this.attackPower = attackPower;
+    }
 }
