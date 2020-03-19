@@ -1,8 +1,8 @@
 package ir.soroushtabesh.hearthstone.controllers;
 
-import ir.soroushtabesh.hearthstone.db.DBUtil;
-import ir.soroushtabesh.hearthstone.db.HashUtil;
 import ir.soroushtabesh.hearthstone.models.beans.Player;
+import ir.soroushtabesh.hearthstone.util.DBUtil;
+import ir.soroushtabesh.hearthstone.util.HashUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 

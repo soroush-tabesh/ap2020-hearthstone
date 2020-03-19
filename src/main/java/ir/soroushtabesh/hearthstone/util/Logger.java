@@ -1,7 +1,6 @@
 package ir.soroushtabesh.hearthstone.util;
 
 import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
-import ir.soroushtabesh.hearthstone.db.DBUtil;
 import ir.soroushtabesh.hearthstone.models.beans.Log;
 
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package ir.soroushtabesh.hearthstone.db;
+package ir.soroushtabesh.hearthstone.util;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

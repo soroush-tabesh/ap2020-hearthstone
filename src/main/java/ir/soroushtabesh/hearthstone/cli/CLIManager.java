@@ -1,6 +1,6 @@
 package ir.soroushtabesh.hearthstone.cli;
 
-import ir.soroushtabesh.hearthstone.db.DBUtil;
+import ir.soroushtabesh.hearthstone.util.DBUtil;
 
 import java.io.File;
 import java.io.IOException;
