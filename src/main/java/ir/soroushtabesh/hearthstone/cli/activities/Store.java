@@ -7,6 +7,7 @@ import ir.soroushtabesh.hearthstone.models.beans.Card;
 import ir.soroushtabesh.hearthstone.models.beans.Deck;
 import ir.soroushtabesh.hearthstone.models.beans.Player;
 import ir.soroushtabesh.hearthstone.util.DBUtil;
+import ir.soroushtabesh.hearthstone.util.Logger;
 import org.hibernate.Session;
 
 import java.util.ArrayList;
@@ -53,6 +54,7 @@ public class Store extends CLIActivity {
             System.out.println("You have "
                     + PlayerManager.getInstance().getPlayer().getCoin()
                     + "coins in your wallet.");
+            Logger.log("store", "wallet");
         });
     }
 
@@ -60,12 +62,14 @@ public class Store extends CLIActivity {
         List<Card> allCards = getSalableCards();
         System.out.println("Salable cards:");
         printCardList(allCards);
+        Logger.log("store", "ls -s");
     }
 
     private void showPurchasable() {
         List<Card> allGameCards = getPurchasableCards();
         System.out.println("Purchasable cards:");
         printCardList(allGameCards);
+        Logger.log("store", "ls -b");
     }
 
     private void printCardList(List<Card> cardList) {
@@ -120,6 +124,8 @@ public class Store extends CLIActivity {
         player.setCoin(player.getCoin() - card.getPrice());
         DBUtil.syncSingleObject(player);
         System.out.println("Successfully Purchased!");
+        Logger.log("buy card", card.getCard_name());
+
     }
 
     private void sellCard(String cardname) {
@@ -138,6 +144,7 @@ public class Store extends CLIActivity {
         player.setCoin(player.getCoin() + card.getPrice());
         DBUtil.syncSingleObject(player);
         System.out.println("Successfully Sold!");
+        Logger.log("sell card", card.getCard_name());
     }
 
 

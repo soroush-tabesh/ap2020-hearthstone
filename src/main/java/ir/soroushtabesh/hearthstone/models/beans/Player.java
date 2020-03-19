@@ -1,6 +1,7 @@
 package ir.soroushtabesh.hearthstone.models.beans;
 
 import ir.soroushtabesh.hearthstone.util.DBUtil;
+import ir.soroushtabesh.hearthstone.util.Logger;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ public class Player {
 
     public void setCurrentHero(Hero currentHero) {
         this.currentHero = currentHero;
+        Logger.log("select hero", currentHero.getName());
     }
 
     public int getPlayer_id() {

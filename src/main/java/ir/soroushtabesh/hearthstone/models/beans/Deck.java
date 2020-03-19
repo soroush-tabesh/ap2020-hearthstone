@@ -1,5 +1,7 @@
 package ir.soroushtabesh.hearthstone.models.beans;
 
+import ir.soroushtabesh.hearthstone.util.Logger;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +59,7 @@ public class Deck {
 
     public void addCard(Card card) {
         cardsList.add(card);
+        Logger.log("deck add", card.getCard_name() + " to " + hero.getName() + "'s deck");
     }
 
     @Override
@@ -70,5 +73,12 @@ public class Deck {
     @Override
     public int hashCode() {
         return Objects.hash(getDeck_id());
+    }
+
+    public boolean removeCard(Card card) {
+        boolean res = cardsList.remove(card);
+        if (res)
+            Logger.log("deck remove", card.getCard_name() + " from " + hero.getName() + "'s deck");
+        return res;
     }
 }

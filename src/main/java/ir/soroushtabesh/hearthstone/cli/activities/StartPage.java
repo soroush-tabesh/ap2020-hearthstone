@@ -3,6 +3,7 @@ package ir.soroushtabesh.hearthstone.cli.activities;
 import ir.soroushtabesh.hearthstone.cli.CLIActivity;
 import ir.soroushtabesh.hearthstone.cli.CommandProcessor;
 import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
+import ir.soroushtabesh.hearthstone.util.Logger;
 
 public class StartPage extends CLIActivity {
 
@@ -87,6 +88,7 @@ public class StartPage extends CLIActivity {
     public void onStop() {
         System.out.println("Bye bye! Have a nice day buddy!");
         System.out.println("P.S. HearthStone is a real bullshit :)");
+        Logger.log("exit", "");
     }
 
     @Override

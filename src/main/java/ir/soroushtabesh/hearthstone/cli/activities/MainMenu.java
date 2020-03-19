@@ -4,6 +4,7 @@ import ir.soroushtabesh.hearthstone.cli.CLIActivity;
 import ir.soroushtabesh.hearthstone.cli.CLIManager;
 import ir.soroushtabesh.hearthstone.cli.CommandProcessor;
 import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
+import ir.soroushtabesh.hearthstone.util.Logger;
 
 public class MainMenu extends CLIActivity {
 
@@ -24,6 +25,7 @@ public class MainMenu extends CLIActivity {
         System.out.println("hearthstone");
         System.out.println("delete-user");
         processor.add("delete-user", event -> {
+            Logger.log("delete-user", "attempt");
             System.out.println("Enter your password:");
             String password = CLIManager.getInstance().getScanner().nextLine();
             PlayerManager.Message msg = PlayerManager.getInstance().deleteAccount(password);

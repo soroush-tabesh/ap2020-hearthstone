@@ -3,11 +3,9 @@ package ir.soroushtabesh.hearthstone.cli.activities;
 import ir.soroushtabesh.hearthstone.cli.CLIActivity;
 import ir.soroushtabesh.hearthstone.cli.CommandProcessor;
 import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
-import ir.soroushtabesh.hearthstone.models.beans.Card;
-import ir.soroushtabesh.hearthstone.models.beans.Deck;
-import ir.soroushtabesh.hearthstone.models.beans.Hero;
-import ir.soroushtabesh.hearthstone.models.beans.Player;
+import ir.soroushtabesh.hearthstone.models.beans.*;
 import ir.soroushtabesh.hearthstone.util.DBUtil;
+import ir.soroushtabesh.hearthstone.util.Logger;
 import org.hibernate.Session;
 
 import java.util.ArrayList;
@@ -76,7 +74,7 @@ public class Collections extends CLIActivity {
                     System.out.println(hero);
                     System.out.println();
                 }
-
+                Logger.log("collections", "ls -a -heroes");
                 break;
             case "-m":
                 System.out.println("Owned Heroes:\n");
@@ -85,9 +83,11 @@ public class Collections extends CLIActivity {
                     System.out.println(hero);
                     System.out.println();
                 }
+                Logger.log("collections", "ls -m -heroes");
                 break;
             default:
                 System.out.println("Warning:: Unknown switch...");
+                Logger.log("collections", "ls -heroes: unknown switch", Log.Severity.WARNING);
         }
 
     }
@@ -104,10 +104,12 @@ public class Collections extends CLIActivity {
                     System.out.println(card);
                     System.out.println();
                 }
+                Logger.log("collections", "ls -a -cards");
                 break;
             case "-m":
                 if (deck == null) {
                     System.out.println("Well, first you need to select a hero...");
+                    Logger.log("collections", "ls -m -cards: hero not selected", Log.Severity.WARNING);
                     return;
                 }
                 System.out.println("Cards in your deck:\n");
@@ -116,10 +118,13 @@ public class Collections extends CLIActivity {
                     System.out.println(card);
                     System.out.println();
                 }
+                Logger.log("collections", "ls -m -cards");
+
                 break;
             case "-n":
                 if (deck == null) {
                     System.out.println("Well, first you need to select a hero...");
+                    Logger.log("collections", "ls -n -cards: hero not selected", Log.Severity.WARNING);
                     return;
                 }
                 System.out.println("Owned cards which you can add to the deck of hero:\n");
@@ -134,9 +139,11 @@ public class Collections extends CLIActivity {
                     System.out.println(card);
                     System.out.println();
                 }
+                Logger.log("collections", "ls -n -cards");
                 break;
             default:
                 System.out.println("Warning:: Unknown switch...");
+                Logger.log("collections", "ls -cards: unknown switch", Log.Severity.WARNING);
         }
 
     }
@@ -148,10 +155,12 @@ public class Collections extends CLIActivity {
                     .setParameter("heroname", heroname).uniqueResult();
             if (hero == null) {
                 System.out.println("Warning:: Wrong hero name...");
+                Logger.log("collections", "select hero: wrong name", Log.Severity.WARNING);
                 return;
             }
             if (!player.getOpenHeroes().contains(hero)) {
                 System.out.println("You don't own this hero.");
+                Logger.log("collections", "select hero: locked", Log.Severity.WARNING);
                 return;
             }
             player.setCurrentHero(hero);
@@ -160,6 +169,7 @@ public class Collections extends CLIActivity {
             session.getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
+            Logger.log("collections", "select hero: db error", Log.Severity.FATAL);
         }
     }
 
@@ -170,10 +180,17 @@ public class Collections extends CLIActivity {
         Card card = Card.getCardByName(cardname);
         if (card == null) {
             System.out.println("No such card Exists...");
+            Logger.log("collections", "add: no such card", Log.Severity.WARNING);
             return;
         }
         if (deck == null) {
             System.out.println("Well, first you need to select a hero...");
+            Logger.log("collections", "add: hero not selected", Log.Severity.WARNING);
+            return;
+        }
+        if (!player.getOwnedCards().contains(card)) {
+            System.out.println("You don't own this hero.");
+            Logger.log("collections", "add: locked", Log.Severity.WARNING);
             return;
         }
         deck.addCard(card);
@@ -188,17 +205,20 @@ public class Collections extends CLIActivity {
         Card card = Card.getCardByName(cardname);
         if (card == null) {
             System.out.println("No such card Exists...");
+            Logger.log("collections", "remove: no such card", Log.Severity.WARNING);
             return;
         }
         if (deck == null) {
             System.out.println("Well, first you need to select a hero...");
+            Logger.log("collections", "remove: hero not selected", Log.Severity.WARNING);
             return;
         }
-        if (deck.getCardsList().remove(card)) {
+        if (deck.removeCard(card)) {
             DBUtil.syncSingleObject(deck);
             System.out.println("Successfully removed from your deck.");
         } else {
             System.out.println("This card is not in your deck!");
+            Logger.log("collections", "remove: not in deck", Log.Severity.WARNING);
         }
     }
 

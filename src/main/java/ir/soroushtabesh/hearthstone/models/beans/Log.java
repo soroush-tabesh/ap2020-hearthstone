@@ -9,6 +9,7 @@ public class Log {
     @Id
     private int log_id;
     private Integer user_id;
+    private String username;
     private String date;
     private String event;
     private String description;
@@ -24,6 +25,14 @@ public class Log {
         this.event = event;
         this.description = description;
         this.severity = severity;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Severity getSeverity() {

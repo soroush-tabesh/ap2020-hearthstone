@@ -1,6 +1,7 @@
 package ir.soroushtabesh.hearthstone.cli;
 
 import ir.soroushtabesh.hearthstone.util.DBUtil;
+import ir.soroushtabesh.hearthstone.util.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +25,7 @@ public class CLIManager {
 
     private void initializeProcessor() {
         processor.add("back", event -> {
+            Logger.log("navigate", "back");
             if (!stopCurrent()) {
                 shutdown();
             }
@@ -31,6 +33,7 @@ public class CLIManager {
         processor.add("hearthstone", event -> {
             if (event.args.length > 0 && event.args[0].equals("--help")) {
                 showHelp();
+                Logger.log("help", "");
             } else {
                 System.out.println("Did you mean 'hearthstone --help'?");
             }
@@ -98,9 +101,11 @@ public class CLIManager {
         currentActivity.add(activity);
         activity.onStart(args);
         activity.onResume();
+        Logger.log("navigate", activity.getActivityName());
     }
 
     public void fireUp() {
+        Logger.log("CLI", "fireUp");
         fired = true;
         while (!currentActivity.isEmpty() && fired && scanner.hasNextLine()) {
             String[] line = scanner.nextLine().split(" ");
@@ -114,6 +119,7 @@ public class CLIManager {
     public void shutdown() {
         fired = false;
         DBUtil.shutdown();
+        Logger.log("CLI", "shutdown");
     }
 
     public boolean stopCurrent() {

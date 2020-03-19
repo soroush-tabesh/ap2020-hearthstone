@@ -3,6 +3,7 @@ package ir.soroushtabesh.hearthstone.controllers;
 import ir.soroushtabesh.hearthstone.models.beans.Player;
 import ir.soroushtabesh.hearthstone.util.DBUtil;
 import ir.soroushtabesh.hearthstone.util.HashUtil;
+import ir.soroushtabesh.hearthstone.util.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -38,6 +39,7 @@ public class PlayerManager {
             e.printStackTrace();
             return Message.ERROR;
         }
+        Logger.log("login", player.getUsername());
         return Message.SUCCESS;
     }
 
@@ -54,6 +56,7 @@ public class PlayerManager {
             e.printStackTrace();
             return Message.ERROR;
         }
+        Logger.log("delete-user", "deleted: " + player.getUsername());
         return Message.SUCCESS;
     }
 
@@ -73,6 +76,7 @@ public class PlayerManager {
             e.printStackTrace();
             return Message.ERROR;
         }
+        Logger.log("sign-up", player.getUsername());
         return Message.SUCCESS;
     }
 
