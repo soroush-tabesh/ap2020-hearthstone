@@ -19,6 +19,10 @@ public class CLIManager {
 
 
     private CLIManager() {
+        initializeProcessor();
+    }
+
+    private void initializeProcessor() {
         processor.add("back", event -> {
             if (!stopCurrent()) {
                 shutdown();
@@ -41,6 +45,16 @@ public class CLIManager {
     }
 
     private void showHelp() {
+        System.out.println(">>help");
+        System.out.println(">>navigational and global commands");
+        for (String s : processor.getCommandList()) {
+            System.out.println(s);
+        }
+        System.out.println(">>commands in context of '" + getCurrentActivity().getActivityName() + "'");
+        for (String s : getCurrentActivity().getProcessor().getCommandList()) {
+            System.out.println(s);
+        }
+        System.out.println(">>universal help");
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
         File file = new File(classLoader.getResource("help.txt").getFile());
         String content = "null";
@@ -54,6 +68,8 @@ public class CLIManager {
 
     public void clearHistory() {
         currentActivity.subList(0, currentActivity.size() - 1).clear();
+        processor.clearCommandList();
+        initializeProcessor();
     }
 
     public CLIActivity getCurrentActivity() {

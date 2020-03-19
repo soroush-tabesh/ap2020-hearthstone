@@ -2,6 +2,7 @@ package ir.soroushtabesh.hearthstone.cli;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 public class CommandProcessor {
@@ -24,5 +25,13 @@ public class CommandProcessor {
             return false;
         processListener.run(new ProcessListenerEvent(s[0], Arrays.copyOfRange(s, 1, s.length)));
         return true;
+    }
+
+    public Set<String> getCommandList() {
+        return processListenerMap.keySet();
+    }
+
+    public void clearCommandList() {
+        processListenerMap.clear();
     }
 }

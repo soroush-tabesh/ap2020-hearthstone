@@ -15,7 +15,9 @@ public abstract class CLIActivity {
     }
 
     public void onReceivedCommand(String[] args) {
-
+        if (!getProcessor().process(args)) {
+            System.out.println("WTF? :/\nWell you may enter \'hearthstone --help\' if you are confused with the CLI");
+        }
     }
 
     public void onResume() {
@@ -35,4 +37,10 @@ public abstract class CLIActivity {
     }
 
     public abstract String getActivityCommand();
+
+    public abstract CommandProcessor getProcessor();
+
+    public String getActivityName() {
+        return getActivityCommand();
+    }
 }

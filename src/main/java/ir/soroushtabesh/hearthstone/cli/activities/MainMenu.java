@@ -7,15 +7,20 @@ import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
 
 public class MainMenu extends CLIActivity {
 
-    CommandProcessor processor = new CommandProcessor();
+    private CommandProcessor processor = new CommandProcessor();
 
     @Override
     public void onStart(String[] args) {
+        CLIManager cliManager = getCLIManager();
+        cliManager.addActivity(new StartPage());
+        cliManager.addActivity(new Collections());
+        cliManager.addActivity(new MainMenu());
+        cliManager.addActivity(new Store());
         System.out.println("::Main Menu");
         System.out.println("collections");
         System.out.println("store");
-        System.out.println("back");
         System.out.println("exit");
+        System.out.println("back");
         System.out.println("hearthstone");
         System.out.println("delete-user");
         processor.add("delete-user", event -> {
@@ -38,14 +43,12 @@ public class MainMenu extends CLIActivity {
     }
 
     @Override
-    public void onReceivedCommand(String[] args) {
-        if (!processor.process(args)) {
-            System.out.println("WTF? :/\nWell you may enter \'hearthstone --help\' if you are confused with the CLI");
-        }
+    public String getActivityCommand() {
+        return "menu";
     }
 
     @Override
-    public String getActivityCommand() {
-        return "menu";
+    public CommandProcessor getProcessor() {
+        return processor;
     }
 }

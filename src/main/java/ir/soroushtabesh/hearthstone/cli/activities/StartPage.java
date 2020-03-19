@@ -6,7 +6,7 @@ import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
 
 public class StartPage extends CLIActivity {
 
-    CommandProcessor processor = new CommandProcessor();
+    private CommandProcessor processor = new CommandProcessor();
     private boolean dummy = false;
 
     private void signUp() {
@@ -76,6 +76,7 @@ public class StartPage extends CLIActivity {
         if (manager.logout()) {
             System.out.println("Logged out.");
         }
+        System.out.println("::Start Page");
         System.out.println("Hey there! Welcome.");
         System.out.println("Do you already have an account?(login/sign-up)");
         processor.add("sign-up", event -> signUp());
@@ -89,14 +90,17 @@ public class StartPage extends CLIActivity {
     }
 
     @Override
-    public void onReceivedCommand(String[] args) {
-        if (!processor.process(args)) {
-            System.out.println("WTF? :/\nWell you may enter \'hearthstone --help\' if you are confused with the CLI");
-        }
+    public String getActivityCommand() {
+        return "exit";
     }
 
     @Override
-    public String getActivityCommand() {
-        return "exit";
+    public CommandProcessor getProcessor() {
+        return processor;
+    }
+
+    @Override
+    public String getActivityName() {
+        return "start page";
     }
 }
