@@ -11,6 +11,7 @@ public class StartPage extends CLIActivity {
 
     private void signUp() {
         System.out.println("Let's make a new account!");
+        System.out.println("Tell me about yourself :)");
         System.out.println("Username:");
         String username = getScanner().nextLine();
         System.out.println("Password:");
@@ -29,7 +30,7 @@ public class StartPage extends CLIActivity {
     }
 
     private void logIn() {
-        System.out.println("Ok now tell me about yourself:)");
+        System.out.println("Ok; So who are you? :)");
         System.out.println("Username:");
         String username = getScanner().nextLine();
         System.out.println("Password:");
@@ -38,6 +39,7 @@ public class StartPage extends CLIActivity {
         switch (msg) {
             case SUCCESS:
                 System.out.println("Logged in!");
+                getCLIManager().startActivity(new MainMenu());
                 break;
             case ERROR:
                 System.out.println("An unknown error has occurred. Check Logs.");
@@ -45,7 +47,6 @@ public class StartPage extends CLIActivity {
             case WRONG:
                 System.out.println("Invalid Username or Password...");
         }
-        getCLIManager().startActivity(new MainMenu());
     }
 
     @Override
@@ -77,8 +78,8 @@ public class StartPage extends CLIActivity {
         }
         System.out.println("Hey there! Welcome.");
         System.out.println("Do you already have an account?(login/sign-up)");
-        processor.add("login", event -> signUp());
-        processor.add("sign-up", event -> logIn());
+        processor.add("sign-up", event -> signUp());
+        processor.add("login", event -> logIn());
     }
 
     @Override

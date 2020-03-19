@@ -28,7 +28,7 @@ public class PlayerManager {
     public Message authenticate(String username, String password) {
         password = HashUtil.hash(password);
         try (Session session = DBUtil.openSession()) {
-            Player player = (Player) session.createQuery("from Player where username=:username")
+            Player player = (Player) session.createQuery("from Player where username=:username and deleted=false ")
                     .setParameter("username", username).uniqueResult();
             if (player == null || !player.getPassword().equals(password)) {
                 return Message.WRONG;
@@ -41,16 +41,31 @@ public class PlayerManager {
         return Message.SUCCESS;
     }
 
+    public Message deleteAccount(String password) {
+        password = HashUtil.hash(password);
+        if (!password.equals(player.getPassword()))
+            return Message.WRONG;
+        player.setDeleted(true);
+        try (Session session = DBUtil.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            session.merge(player);
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Message.ERROR;
+        }
+        return Message.SUCCESS;
+    }
+
     public Message makeAccount(String username, String password) {
         password = HashUtil.hash(password);
         Player player = new Player();
-        player.setCoin(50);
         player.setPassword(password);
         player.setUsername(username);
         Transaction transaction = null;
         try (Session session = DBUtil.openSession()) {
             transaction = session.beginTransaction();
-            boolean exist = session.createQuery("from Player where username=:username")
+            boolean exist = session.createQuery("from Player where username=:username and deleted=false ")
                     .setParameter("username", username).uniqueResult() != null;
             if (exist)
                 return Message.EXISTS;

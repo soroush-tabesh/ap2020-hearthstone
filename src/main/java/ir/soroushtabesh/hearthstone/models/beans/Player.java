@@ -8,15 +8,15 @@ public class Player {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private int user_id;
-    @Column(unique = true)
     private String username;
     private String password;
-    private int coin;
-    //todo: cards and heroes
-//    @ManyToMany(cascade = CascadeType.ALL)
+    private int coin = 50;
+    private boolean deleted = false;
+    //todo: cards and heroes and current hero
+//    @ManyToMany(cascade = CascadeType.MERGE)
 //    @JoinTable(name = "players_cards",joinColumns = @JoinColumn(name = "user_id"),inverseJoinColumns = @JoinColumn("card_id"))
 //    List<Card> openCards;
-//    @ManyToMany(cascade = CascadeType.ALL)
+//    @ManyToMany(cascade = CascadeType.MERGE)
 //    @JoinTable(name = "players_heroes",joinColumns = @JoinColumn(name = "user_id"),inverseJoinColumns = @JoinColumn("hero_id"))
 //    List<Hero> openHeroes;
 
@@ -46,6 +46,14 @@ public class Player {
 
     public int getCoin() {
         return coin;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     public void setCoin(int coin) {

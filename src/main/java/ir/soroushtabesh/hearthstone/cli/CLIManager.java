@@ -1,5 +1,7 @@
 package ir.soroushtabesh.hearthstone.cli;
 
+import ir.soroushtabesh.hearthstone.db.DBUtil;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,6 +27,8 @@ public class CLIManager {
         processor.add("hearthstone", event -> {
             if (event.args.length > 0 && event.args[0].equals("--help")) {
                 showHelp();
+            } else {
+                System.out.println("Did you mean 'hearthstone --help'?");
             }
         });
     }
@@ -93,6 +97,7 @@ public class CLIManager {
 
     public void shutdown() {
         fired = false;
+        DBUtil.shutdown();
     }
 
     public boolean stopCurrent() {
