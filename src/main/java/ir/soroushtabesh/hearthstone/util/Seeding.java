@@ -6,6 +6,8 @@ import ir.soroushtabesh.hearthstone.models.beans.scripts.Dummy;
 import ir.soroushtabesh.hearthstone.models.beans.scripts.HeroPower;
 import org.hibernate.Session;
 
+import java.io.File;
+
 public class Seeding {
     public static void initiate1() {
         Logger.log("test", "test", Log.Severity.WARNING);
@@ -69,7 +71,13 @@ public class Seeding {
         }
     }
 
-    public static void initiate() {
+    public static void seed() {
 
+    }
+
+    public static void initiate() {
+        File file = new File("./gamedata.mv.db");
+        if (!file.exists())
+            seed();
     }
 }

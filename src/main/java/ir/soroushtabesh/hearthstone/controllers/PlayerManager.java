@@ -63,6 +63,7 @@ public class PlayerManager {
     public Message makeAccount(String username, String password) {
         password = HashUtil.hash(password);
         Player player = new Player(username, password);
+        //todo: card,hero,deck init
         Transaction transaction = null;
         try (Session session = DBUtil.openSession()) {
             transaction = session.beginTransaction();
