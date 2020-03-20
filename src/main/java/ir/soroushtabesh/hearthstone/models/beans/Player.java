@@ -3,11 +3,13 @@ package ir.soroushtabesh.hearthstone.models.beans;
 import ir.soroushtabesh.hearthstone.util.DBUtil;
 import ir.soroushtabesh.hearthstone.util.Logger;
 import org.hibernate.Session;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 public class Player {
@@ -19,16 +21,20 @@ public class Player {
     private String password;
     private Integer coin = 50;
     private Boolean deleted = false;
-    @ManyToMany(cascade = CascadeType.MERGE)
+    @ManyToMany//(cascade = CascadeType.ALL)
+    @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "players_cards", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "card_id"))
-    private Set<Card> ownedCards;
-    @ManyToMany(cascade = CascadeType.MERGE)
+    private List<Card> ownedCards;
+    @ManyToMany//(cascade = CascadeType.ALL)
+    @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "players_heroes", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "hero_id"))
-    private Set<Hero> openHeroes;
-    @OneToMany(cascade = CascadeType.MERGE)
+    private List<Hero> openHeroes;
+    @OneToMany//(cascade = CascadeType.ALL)
+    @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "players_decks", joinColumns = @JoinColumn(name = "player_id"), inverseJoinColumns = @JoinColumn(name = "deck_id"))
-    private Set<Deck> decks;
-    @ManyToOne(cascade = CascadeType.MERGE)
+    private List<Deck> decks;
+    @ManyToOne//(cascade = CascadeType.ALL)
+    @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "current_hero_id")
     private Hero currentHero;
 
@@ -40,9 +46,9 @@ public class Player {
     }
 
     public Player() {
-        ownedCards = new HashSet<>();
-        openHeroes = new HashSet<>();
-        decks = new HashSet<>();
+        ownedCards = new ArrayList<>();
+        openHeroes = new ArrayList<>();
+        decks = new ArrayList<>();
     }
 
     public Hero getCurrentHero() {
@@ -90,7 +96,7 @@ public class Player {
         this.deleted = deleted;
     }
 
-    public Set<Card> getOwnedCards() {
+    public List<Card> getOwnedCards() {
         return ownedCards;
     }
 
@@ -102,7 +108,7 @@ public class Player {
         return ownedCards.remove(card);
     }
 
-    public Set<Hero> getOpenHeroes() {
+    public List<Hero> getOpenHeroes() {
         return openHeroes;
     }
 
@@ -114,7 +120,7 @@ public class Player {
         return openHeroes.remove(hero);
     }
 
-    public Set<Deck> getDecks() {
+    public List<Deck> getDecks() {
         return decks;
     }
 

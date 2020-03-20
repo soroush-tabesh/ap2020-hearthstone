@@ -1,11 +1,13 @@
 package ir.soroushtabesh.hearthstone.models.beans;
 
 import ir.soroushtabesh.hearthstone.models.beans.cards.HeroPower;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 public class Hero {
@@ -17,18 +19,21 @@ public class Hero {
     private HeroClass heroClass;
     private String name;
     private Integer hp;
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne//(cascade = CascadeType.ALL)
+    @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "heropower_id")
     private HeroPower heroPower;
-    @OneToMany(cascade = CascadeType.MERGE)
+    @OneToMany//(cascade = CascadeType.ALL)
+    @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "hero_speccard", joinColumns = @JoinColumn(name = "hero_id"), inverseJoinColumns = @JoinColumn(name = "speccard_id"))
-    private Set<Card> specialCards;
-    @ManyToOne(cascade = CascadeType.MERGE)
+    private List<Card> specialCards;
+    @ManyToOne//(cascade = CascadeType.ALL)
+    @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "specpower_script_id")
     private Script specialPower;
 
     public Hero() {
-        specialCards = new HashSet<>();
+        specialCards = new ArrayList<>();
     }
 
     public void addSpecialCard(Card card) {
@@ -71,7 +76,7 @@ public class Hero {
         this.heroPower = heroPower;
     }
 
-    public Set<Card> getSpecialCards() {
+    public List<Card> getSpecialCards() {
         return specialCards;
     }
 

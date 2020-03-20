@@ -190,7 +190,7 @@ public class Collections extends CLIActivity {
                 return;
             }
             if (!player.getOwnedCards().contains(card)) {
-                System.out.println("You don't own this hero.");
+                System.out.println("You don't own this card.");
                 Logger.log("collections", "add: locked", Log.Severity.WARNING);
                 return;
             }
@@ -198,6 +198,7 @@ public class Collections extends CLIActivity {
                     || deck.getCardsList().size() >= 15
                     || (card.getHeroClass() != Hero.HeroClass.ALL && card.getHeroClass() != currentHero.getHeroClass())) {
                 System.out.println("You can't add this card to your deck.");
+                Logger.log("collections", "add: unable", Log.Severity.WARNING);
                 return;
             }
             deck.addCard(card);

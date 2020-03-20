@@ -1,8 +1,7 @@
 package ir.soroushtabesh.hearthstone;
 
 import ir.soroushtabesh.hearthstone.cli.CLIManager;
-import ir.soroushtabesh.hearthstone.cli.activities.StartPage;
-import ir.soroushtabesh.hearthstone.cli.activities.Store;
+import ir.soroushtabesh.hearthstone.cli.activities.Collections;
 import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
 import ir.soroushtabesh.hearthstone.models.beans.*;
 import ir.soroushtabesh.hearthstone.models.beans.cards.HeroPower;
@@ -16,15 +15,15 @@ public class Application {
     public static void main(String[] args) {
 //        initiate();
 //        java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.OFF);
+//
+//        Logger.log("application", "start");
+//        CLIManager cliManager = CLIManager.getInstance();
+//        cliManager.initializeProcessor();
+//        cliManager.startActivity(new StartPage());
+//        cliManager.fireUp();
+//        Logger.log("application", "shutdown");
 
-        Logger.log("application", "start");
-        CLIManager cliManager = CLIManager.getInstance();
-        cliManager.initializeProcessor();
-        cliManager.startActivity(new StartPage());
-        cliManager.fireUp();
-        Logger.log("application", "shutdown");
-
-//        tester();
+        tester();
         /*
         for deploy:
         1- enable banner
@@ -38,7 +37,7 @@ public class Application {
         CLIManager cliManager = CLIManager.getInstance();
         cliManager.initializeProcessor();
         PlayerManager.getInstance().authenticate("akbar", "akbar");
-        cliManager.startActivity(new Store());
+        cliManager.startActivity(new Collections());
         cliManager.fireUp();
     }
 

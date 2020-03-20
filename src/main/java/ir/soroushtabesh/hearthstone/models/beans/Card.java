@@ -2,6 +2,8 @@ package ir.soroushtabesh.hearthstone.models.beans;
 
 import ir.soroushtabesh.hearthstone.util.DBUtil;
 import org.hibernate.Session;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -24,7 +26,8 @@ public class Card {
     private Integer price;
     @Enumerated(EnumType.STRING)
     private Rarity rarity;
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne//(cascade = CascadeType.ALL)
+    @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "script_id")
     private Script script;
 

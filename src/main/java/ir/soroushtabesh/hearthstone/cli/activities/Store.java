@@ -14,7 +14,7 @@ import org.hibernate.Session;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 
 public class Store extends CLIActivity {
 
@@ -89,7 +89,7 @@ public class Store extends CLIActivity {
     private Collection<Card> getPurchasableCards(Session session) {
         Collection<Card> allGameCards = new ArrayList<>(session.createQuery("from Card ", Card.class).list());
         Player player = PlayerManager.getInstance().getPlayer();
-        Set<Card> ownedCards = player.getOwnedCards();
+        List<Card> ownedCards = player.getOwnedCards();
         allGameCards.removeAll(ownedCards);
         return allGameCards;
     }
