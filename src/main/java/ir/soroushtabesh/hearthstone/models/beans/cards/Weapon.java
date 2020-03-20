@@ -11,6 +11,14 @@ public class Weapon extends Card {
     private Integer durability;
     private Integer attackPower;
 
+    @Override
+    public String toString() {
+        return super.toString() + "\nType: Weapon [" +
+                "Durability: " + durability +
+                ", AttackPower: " + attackPower +
+                ']';
+    }
+
     public Integer getDurability() {
         return durability;
     }

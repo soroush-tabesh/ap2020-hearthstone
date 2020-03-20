@@ -8,7 +8,9 @@ import ir.soroushtabesh.hearthstone.util.Logger;
 import ir.soroushtabesh.hearthstone.util.Seeding;
 
 public class Application {
+
     public static void main(String[] args) {
+//        tester();
         Seeding.initiate();
         Logger.log("application", "start");
         CLIManager cliManager = CLIManager.getInstance();
@@ -16,13 +18,9 @@ public class Application {
         cliManager.startActivity(new StartPage());
         cliManager.fireUp();
         Logger.log("application", "shutdown");
-        //tester();
         /*
         for deploy:
-        1- enable banner
-        2- disable sql log
         3- write help
-        4- erase debug shit
          */
     }
 

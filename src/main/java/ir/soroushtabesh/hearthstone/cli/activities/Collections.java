@@ -67,6 +67,8 @@ public class Collections extends CLIActivity {
                     List<Hero> lst = session.createQuery("from Hero ", Hero.class).list();
                     System.out.println("All Heroes:\n");
                     PrintUtil.printList(lst);
+                    System.out.println("Heroes of yours:\n");
+                    PrintUtil.printList(player.getOpenHeroes());
                     Logger.log("collections", "ls -a -heroes");
                     break;
                 case "-m":
@@ -202,10 +204,7 @@ public class Collections extends CLIActivity {
                 return;
             }
             deck.addCard(card);
-            //session.clear();
             DBUtil.pushSingleObject(player, session);
-            //session.beginTransaction();
-
             System.out.println("Successfully added to your deck.");
             Logger.log("collections", "add: " + card.getCard_name());
         } catch (Exception e) {

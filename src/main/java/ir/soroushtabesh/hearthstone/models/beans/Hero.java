@@ -15,9 +15,9 @@ public class Hero {
     @Id
     @Column(name = "hero_id")
     private int hero_id;
+    private String name;
     @Enumerated(EnumType.STRING)
     private HeroClass heroClass;
-    private String name;
     private Integer hp;
     @ManyToOne//(cascade = javax.persistence.CascadeType.ALL)
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
@@ -27,6 +27,16 @@ public class Hero {
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "hero_speccard", joinColumns = @JoinColumn(name = "hero_id"), inverseJoinColumns = @JoinColumn(name = "speccard_id"))
     private List<Card> specialCards;
+
+    public Hero(String name, HeroClass heroClass, int hp, HeroPower heroPower, List<Card> specialCards, Script specialPower) {
+        this.name = name;
+        this.heroClass = heroClass;
+        this.hp = hp;
+        this.heroPower = heroPower;
+        this.specialCards = specialCards;
+        this.specialPower = specialPower;
+    }
+
     @ManyToOne//(cascade = javax.persistence.CascadeType.ALL)
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "specpower_script_id")
@@ -35,6 +45,7 @@ public class Hero {
     public Hero() {
         specialCards = new ArrayList<>();
     }
+
 
     public void addSpecialCard(Card card) {
         specialCards.add(card);
@@ -90,14 +101,10 @@ public class Hero {
 
     @Override
     public String toString() {
-        return "Hero{" +
-                "hero_id=" + hero_id +
-                ", heroClass=" + heroClass +
-                ", name='" + name + '\'' +
-                ", hp=" + hp +
-                ", heroPower=" + heroPower +
-                ", specialPower=" + specialPower +
-                '}';
+        return "Hero" + "\n" +
+                "Name: " + name + "\n" +
+                "HP: " + hp + "\n" +
+                "Class: " + heroClass;
     }
 
     @Override

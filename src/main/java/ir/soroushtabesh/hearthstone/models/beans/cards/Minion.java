@@ -41,11 +41,11 @@ public class Minion extends Card {
 
     @Override
     public String toString() {//todo
-        return super.toString() + "Minion{" +
-                "hp=" + hp +
-                ", attackPower=" + attackPower +
-                ", minionClass=" + minionClass +
-                '}';
+        return super.toString() + "\nType: Minion [" +
+                "HP: " + hp +
+                ", AttackPower: " + attackPower +
+                ", MinionClass: " + minionClass +
+                ']';
     }
 
     public enum MinionClass {

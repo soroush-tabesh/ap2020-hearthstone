@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 @DiscriminatorValue("Spell")
 public class Spell extends Card {
     @Override
-    public String toString() {//todo
-        return super.toString();
+    public String toString() {
+        return super.toString() + "\nType: Spell";
     }
 }

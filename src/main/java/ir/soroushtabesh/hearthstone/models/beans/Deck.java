@@ -38,6 +38,12 @@ public class Deck {
         this.cardsList = new ArrayList<>();
     }
 
+    public Deck(Hero hero, Player player, List<Card> cardList) {
+        this.hero = hero;
+        this.player = player;
+        this.cardsList = cardList;
+    }
+
     public void setCardsList(List<Card> cardsList) {
         this.cardsList = cardsList;
     }

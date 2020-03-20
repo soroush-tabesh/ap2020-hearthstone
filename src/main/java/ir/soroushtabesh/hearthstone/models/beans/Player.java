@@ -42,7 +42,6 @@ public class Player {
         this();
         this.username = username;
         this.password = password;
-        //todo: card,hero,deck init
     }
 
     public Player() {

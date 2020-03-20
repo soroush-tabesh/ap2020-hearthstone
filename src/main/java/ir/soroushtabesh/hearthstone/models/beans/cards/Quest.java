@@ -8,4 +8,8 @@ import javax.persistence.Entity;
 @Entity
 @DiscriminatorValue("Quest")
 public class Quest extends Card {
+    @Override
+    public String toString() {
+        return super.toString() + "\nType: Quest";
+    }
 }

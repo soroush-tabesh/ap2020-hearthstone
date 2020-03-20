@@ -34,6 +34,15 @@ public class Card {
     public Card() {
     }
 
+    public Card(String card_name, String description, Integer mana, Hero.HeroClass heroClass, Integer price, Rarity rarity) {
+        this.card_name = card_name;
+        this.description = description;
+        this.mana = mana;
+        this.heroClass = heroClass;
+        this.price = price;
+        this.rarity = rarity;
+    }
+
     public static Card getCardByName(String cardname) {
         Card card = null;
         try (Session session = DBUtil.openSession()) {
@@ -106,17 +115,14 @@ public class Card {
     }
 
     @Override
-    public String toString() {//todo
-        return "Card{" +
-                "card_id=" + card_id +
-                ", card_name='" + card_name + '\'' +
-                ", description='" + description + '\'' +
-                ", mana=" + mana +
-                ", price=" + price +
-                ", rarity=" + rarity +
-                ", heroClass=" + heroClass +
-                ", script=" + script +
-                '}';
+    public String toString() {
+        return "Card\n" +
+                "Name: " + card_name + '\n' +
+                "Description: " + description + '\n' +
+                "Mana: " + mana + '\n' +
+                "Price: " + price + '\n' +
+                "Rarity: " + rarity + '\n' +
+                "HeroClass: " + heroClass;
     }
 
     @Override
