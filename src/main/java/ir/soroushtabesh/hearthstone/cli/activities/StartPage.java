@@ -5,6 +5,10 @@ import ir.soroushtabesh.hearthstone.cli.CommandProcessor;
 import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
 import ir.soroushtabesh.hearthstone.util.Logger;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+
 public class StartPage extends CLIActivity {
 
     private CommandProcessor processor = new CommandProcessor();
@@ -57,15 +61,15 @@ public class StartPage extends CLIActivity {
             getCLIManager().stopCurrent();
             dummy = true;
         } else {
-//            IRender render = new Render();
-//            IContextBuilder builder = render.newBuilder();
-//            builder.width(120).height(16);
-//            builder.element(new Rectangle());
-//            builder.element(new PseudoText("Hearth Stone",10,-1,16, new Font("Monospaced",Font.PLAIN,12),true));
-//            builder.element(new Text("Soroush Tabesh, AP2020, Main Project Phase 1.",36,14,80,1));
-//            ICanvas canvas = render.render(builder.build());
-//            String s = canvas.getText();
-//            System.out.println(s);
+            ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+            File file = new File(classLoader.getResource("banner.txt").getFile());
+            String content = "null";
+            try {
+                content = new String(Files.readAllBytes(file.toPath()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            System.out.println(content);
         }
     }
 
