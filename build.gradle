@@ -18,4 +18,5 @@ dependencies {
     compile 'com.h2database:h2:1.4.200'
     compile 'com.indvd00m.ascii.render:ascii-render:2.1.3'
     compile 'commons-codec:commons-codec:1.11'
+    compile 'log4j:log4j:1.2.17'
 }
