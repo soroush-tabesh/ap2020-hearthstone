@@ -10,7 +10,7 @@ import java.util.Objects;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 @DiscriminatorValue(value = "Card")
-public abstract class Card {
+public class Card {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "card_id")
@@ -21,30 +21,33 @@ public abstract class Card {
 
     @Enumerated(EnumType.STRING)
     private Hero.HeroClass heroClass;
+    private Integer price;
+    @Enumerated(EnumType.STRING)
+    private Rarity rarity;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "script_id")
+    private Script script;
 
-    public static Card getCardByName(String name) {
+    public Card() {
+    }
+
+    public static Card getCardByName(String cardname) {
         Card card = null;
         try (Session session = DBUtil.openSession()) {
-            card = session.createQuery("from Card where card_name=:cardname", Card.class).uniqueResult();
+            card = session.createQuery("from Card where card_name=:cardname", Card.class)
+                    .setParameter("cardname", cardname).uniqueResult();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return card;
     }
 
-    private Integer price;
-    @Enumerated(EnumType.STRING)
-    private Rarity rarity;
-
     public Integer getPrice() {
         return price;
     }
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "script_id")
-    private Script script;
-
-    public Card() {
+    public void setPrice(Integer price) {
+        this.price = price;
     }
 
     public int getCard_id() {
@@ -83,12 +86,12 @@ public abstract class Card {
         this.rarity = rarity;
     }
 
-    public void setPrice(Integer price) {
-        this.price = price;
-    }
-
     public Hero.HeroClass getHeroClass() {
         return heroClass;
+    }
+
+    public void setHeroClass(Hero.HeroClass heroClass) {
+        this.heroClass = heroClass;
     }
 
     public Script getScript() {
@@ -97,14 +100,6 @@ public abstract class Card {
 
     public void setScript(Script script) {
         this.script = script;
-    }
-
-    public enum Rarity {
-        COMMON, RARE, EPIC, LEGENDARY
-    }
-
-    public void setHeroClass(Hero.HeroClass heroClass) {
-        this.heroClass = heroClass;
     }
 
     @Override
@@ -126,11 +121,16 @@ public abstract class Card {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Card card = (Card) o;
-        return getCard_id() == card.getCard_id();
+        return getCard_id() == card.getCard_id() &&
+                Objects.equals(getCard_name(), card.getCard_name());
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(getCard_id());
+    }
+
+    public enum Rarity {
+        COMMON, RARE, EPIC, LEGENDARY
     }
 }

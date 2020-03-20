@@ -27,6 +27,6 @@ public class Logger {
         log.setEvent(event);
         log.setDescription(desc);
         log.setSeverity(severity);
-        DBUtil.syncSingleObject(log);
+        DBUtil.pushSingleObject(log);
     }
 }

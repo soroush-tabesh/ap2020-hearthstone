@@ -1,5 +1,6 @@
 package ir.soroushtabesh.hearthstone.cli;
 
+import ir.soroushtabesh.hearthstone.cli.activities.StartPage;
 import ir.soroushtabesh.hearthstone.util.DBUtil;
 import ir.soroushtabesh.hearthstone.util.Logger;
 
@@ -20,10 +21,16 @@ public class CLIManager {
 
 
     private CLIManager() {
-        initializeProcessor();
     }
 
-    private void initializeProcessor() {
+    public static CLIManager getInstance() {
+        if (instance == null) {
+            instance = new CLIManager();
+        }
+        return instance;
+    }
+
+    public void initializeProcessor() {
         processor.add("back", event -> {
             Logger.log("navigate", "back");
             if (!stopCurrent()) {
@@ -38,13 +45,7 @@ public class CLIManager {
                 System.out.println("Did you mean 'hearthstone --help'?");
             }
         });
-    }
-
-    public static CLIManager getInstance() {
-        if (instance == null) {
-            instance = new CLIManager();
-        }
-        return instance;
+        addActivity(new StartPage());
     }
 
     private void showHelp() {

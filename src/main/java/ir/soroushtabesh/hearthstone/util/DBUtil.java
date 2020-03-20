@@ -40,7 +40,7 @@ public class DBUtil {
         return getSessionFactory().openSession();
     }
 
-    public static boolean syncSingleObject(Object object) {
+    public static boolean pushSingleObject(Object object) {
         try (Session session = openSession()) {
             session.beginTransaction();
             session.saveOrUpdate(object);
@@ -51,4 +51,11 @@ public class DBUtil {
         }
         return true;
     }
+
+    public static void pushSingleObject(Object object, Session session) {
+        session.beginTransaction();
+        session.saveOrUpdate(object);
+        session.getTransaction().commit();
+    }
+
 }

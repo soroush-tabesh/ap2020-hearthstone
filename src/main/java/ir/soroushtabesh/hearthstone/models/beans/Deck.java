@@ -13,13 +13,13 @@ public class Deck {
     @Id
     @Column(name = "deck_id")
     private int deck_id;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "hero_id")
     private Hero hero;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "player_id")
     private Player player;
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = "deck_card", joinColumns = @JoinColumn(name = "deck_id"), inverseJoinColumns = @JoinColumn(name = "card_id"))
     private List<Card> cardsList;
 
@@ -31,6 +31,10 @@ public class Deck {
         this.hero = hero;
         this.player = player;
         this.cardsList = new ArrayList<>();
+    }
+
+    public void setCardsList(List<Card> cardsList) {
+        this.cardsList = cardsList;
     }
 
     public int getDeck_id() {
@@ -57,9 +61,19 @@ public class Deck {
         return cardsList;
     }
 
-    public void addCard(Card card) {
-        cardsList.add(card);
+    public boolean addCard(Card card) {
+        boolean res = cardsList.add(card);
         Logger.log("deck add", card.getCard_name() + " to " + hero.getName() + "'s deck");
+        return res;
+    }
+
+    @Override
+    public String toString() {
+        return "Deck{" +
+                "deck_id=" + deck_id +
+                ", hero=" + hero +
+                ", player=" + player +
+                '}';
     }
 
     @Override

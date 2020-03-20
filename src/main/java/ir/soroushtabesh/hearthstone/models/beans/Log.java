@@ -79,10 +79,6 @@ public class Log {
         this.description = description;
     }
 
-    public enum Severity {
-        INFO, WARNING, FATAL
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -94,5 +90,22 @@ public class Log {
     @Override
     public int hashCode() {
         return Objects.hash(getLog_id());
+    }
+
+    @Override
+    public String toString() {
+        return "Log{" +
+                "log_id=" + log_id +
+                ", user_id=" + user_id +
+                ", username='" + username + '\'' +
+                ", date='" + date + '\'' +
+                ", event='" + event + '\'' +
+                ", description='" + description + '\'' +
+                ", severity=" + severity +
+                '}';
+    }
+
+    public enum Severity {
+        INFO, WARNING, FATAL
     }
 }

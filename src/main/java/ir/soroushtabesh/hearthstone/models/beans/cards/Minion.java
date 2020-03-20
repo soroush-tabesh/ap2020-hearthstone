@@ -39,10 +39,6 @@ public class Minion extends Card {
         this.minionClass = minionClass;
     }
 
-    public enum MinionClass {
-        BEAST, DEMON, DRAGON, ELEMENTAL, MECH, MURLOC, PIRATE, TOTEM, ALL, GENERAL
-    }
-
     @Override
     public String toString() {//todo
         return super.toString() + "Minion{" +
@@ -50,5 +46,9 @@ public class Minion extends Card {
                 ", attackPower=" + attackPower +
                 ", minionClass=" + minionClass +
                 '}';
+    }
+
+    public enum MinionClass {
+        BEAST, DEMON, DRAGON, ELEMENTAL, MECH, MURLOC, PIRATE, TOTEM, ALL, GENERAL
     }
 }

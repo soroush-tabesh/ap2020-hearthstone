@@ -2,11 +2,12 @@ package ir.soroushtabesh.hearthstone.models.beans;
 
 import ir.soroushtabesh.hearthstone.util.DBUtil;
 import ir.soroushtabesh.hearthstone.util.Logger;
+import org.hibernate.Session;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Player {
@@ -18,16 +19,16 @@ public class Player {
     private String password;
     private Integer coin = 50;
     private Boolean deleted = false;
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = "players_cards", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "card_id"))
-    private List<Card> ownedCards;
-    @ManyToMany(cascade = CascadeType.ALL)
+    private Set<Card> ownedCards;
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = "players_heroes", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "hero_id"))
-    private List<Hero> openHeroes;
-    @OneToMany(cascade = CascadeType.ALL)
+    private Set<Hero> openHeroes;
+    @OneToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = "players_decks", joinColumns = @JoinColumn(name = "player_id"), inverseJoinColumns = @JoinColumn(name = "deck_id"))
-    private List<Deck> decks;
-    @ManyToOne(cascade = CascadeType.ALL)
+    private Set<Deck> decks;
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "current_hero_id")
     private Hero currentHero;
 
@@ -38,14 +39,14 @@ public class Player {
         //todo: card,hero,deck init
     }
 
-    public Hero getCurrentHero() {
-        return currentHero;
+    public Player() {
+        ownedCards = new HashSet<>();
+        openHeroes = new HashSet<>();
+        decks = new HashSet<>();
     }
 
-    public Player() {
-        ownedCards = new ArrayList<>();
-        openHeroes = new ArrayList<>();
-        decks = new ArrayList<>();
+    public Hero getCurrentHero() {
+        return currentHero;
     }
 
     public void setCurrentHero(Hero currentHero) {
@@ -89,7 +90,7 @@ public class Player {
         this.deleted = deleted;
     }
 
-    public List<Card> getOwnedCards() {
+    public Set<Card> getOwnedCards() {
         return ownedCards;
     }
 
@@ -101,7 +102,7 @@ public class Player {
         return ownedCards.remove(card);
     }
 
-    public List<Hero> getOpenHeroes() {
+    public Set<Hero> getOpenHeroes() {
         return openHeroes;
     }
 
@@ -113,11 +114,11 @@ public class Player {
         return openHeroes.remove(hero);
     }
 
-    public List<Deck> getDecks() {
+    public Set<Deck> getDecks() {
         return decks;
     }
 
-    public Deck getDeckOfHero(Hero hero) {
+    public Deck getDeckOfHero(Hero hero, Session session) {
         if (hero == null)
             return null;
         for (Deck deck : decks) {
@@ -126,7 +127,7 @@ public class Player {
         }
         Deck deck = new Deck(hero, this);
         decks.add(deck);
-        DBUtil.syncSingleObject(this);
+        DBUtil.pushSingleObject(this, session);
         return deck;
     }
 

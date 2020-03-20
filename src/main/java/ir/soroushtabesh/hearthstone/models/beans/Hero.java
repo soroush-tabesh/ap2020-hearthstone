@@ -3,9 +3,9 @@ package ir.soroushtabesh.hearthstone.models.beans;
 import ir.soroushtabesh.hearthstone.models.beans.cards.HeroPower;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Hero {
@@ -17,18 +17,18 @@ public class Hero {
     private HeroClass heroClass;
     private String name;
     private Integer hp;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "heropower_id")
     private HeroPower heroPower;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = "hero_speccard", joinColumns = @JoinColumn(name = "hero_id"), inverseJoinColumns = @JoinColumn(name = "speccard_id"))
-    private List<Card> specialCards;
-    @ManyToOne(cascade = CascadeType.ALL)
+    private Set<Card> specialCards;
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "specpower_script_id")
     private Script specialPower;
 
     public Hero() {
-        specialCards = new ArrayList<>();
+        specialCards = new HashSet<>();
     }
 
     public void addSpecialCard(Card card) {
@@ -71,7 +71,7 @@ public class Hero {
         this.heroPower = heroPower;
     }
 
-    public List<Card> getSpecialCards() {
+    public Set<Card> getSpecialCards() {
         return specialCards;
     }
 
@@ -83,19 +83,14 @@ public class Hero {
         this.specialPower = specialPower;
     }
 
-    public enum HeroClass {
-        MAGE, WARLOCK, ROUGE, DEMON_HUNTER, DRUID, HUNTER, PALADIN, PRIEST, SHAMAN, WARRIOR
-    }
-
     @Override
-    public String toString() {//todo
+    public String toString() {
         return "Hero{" +
                 "hero_id=" + hero_id +
                 ", heroClass=" + heroClass +
                 ", name='" + name + '\'' +
                 ", hp=" + hp +
                 ", heroPower=" + heroPower +
-                ", specialCards=" + specialCards +
                 ", specialPower=" + specialPower +
                 '}';
     }
@@ -111,5 +106,9 @@ public class Hero {
     @Override
     public int hashCode() {
         return Objects.hash(getHero_id());
+    }
+
+    public enum HeroClass {
+        MAGE, WARLOCK, ROUGE, DEMON_HUNTER, DRUID, HUNTER, PALADIN, PRIEST, SHAMAN, WARRIOR, ALL
     }
 }
