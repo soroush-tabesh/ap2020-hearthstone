@@ -21,19 +21,19 @@ public class Player {
     private String password;
     private Integer coin = 50;
     private Boolean deleted = false;
-    @ManyToMany//(cascade = CascadeType.ALL)
+    @ManyToMany//(cascade = javax.persistence.CascadeType.ALL)
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "players_cards", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "card_id"))
     private List<Card> ownedCards;
-    @ManyToMany//(cascade = CascadeType.ALL)
+    @ManyToMany//(cascade = javax.persistence.CascadeType.ALL)
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "players_heroes", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "hero_id"))
     private List<Hero> openHeroes;
-    @OneToMany//(cascade = CascadeType.ALL)
+    @OneToMany//(cascade = javax.persistence.CascadeType.ALL)
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "players_decks", joinColumns = @JoinColumn(name = "player_id"), inverseJoinColumns = @JoinColumn(name = "deck_id"))
     private List<Deck> decks;
-    @ManyToOne//(cascade = CascadeType.ALL)
+    @ManyToOne//(cascade = javax.persistence.CascadeType.ALL)
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "current_hero_id")
     private Hero currentHero;

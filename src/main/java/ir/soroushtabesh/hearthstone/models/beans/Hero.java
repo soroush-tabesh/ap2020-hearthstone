@@ -19,15 +19,15 @@ public class Hero {
     private HeroClass heroClass;
     private String name;
     private Integer hp;
-    @ManyToOne//(cascade = CascadeType.ALL)
+    @ManyToOne//(cascade = javax.persistence.CascadeType.ALL)
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "heropower_id")
     private HeroPower heroPower;
-    @OneToMany//(cascade = CascadeType.ALL)
+    @OneToMany//(cascade = javax.persistence.CascadeType.ALL)
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "hero_speccard", joinColumns = @JoinColumn(name = "hero_id"), inverseJoinColumns = @JoinColumn(name = "speccard_id"))
     private List<Card> specialCards;
-    @ManyToOne//(cascade = CascadeType.ALL)
+    @ManyToOne//(cascade = javax.persistence.CascadeType.ALL)
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "specpower_script_id")
     private Script specialPower;

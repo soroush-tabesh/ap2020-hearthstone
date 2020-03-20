@@ -15,15 +15,15 @@ public class Deck {
     @Id
     @Column(name = "deck_id")
     private int deck_id;
-    @ManyToOne//(cascade = CascadeType.ALL)
+    @ManyToOne//(cascade = javax.persistence.CascadeType.ALL)
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "hero_id")
     private Hero hero;
-    @ManyToOne//(cascade = CascadeType.ALL)
+    @ManyToOne//(cascade = javax.persistence.CascadeType.ALL)
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "player_id")
     private Player player;
-    @ManyToMany//(cascade = CascadeType.ALL)
+    @ManyToMany//(cascade = javax.persistence.CascadeType.ALL)
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "deck_card", joinColumns = @JoinColumn(name = "deck_id"), inverseJoinColumns = @JoinColumn(name = "card_id"))
     private List<Card> cardsList;

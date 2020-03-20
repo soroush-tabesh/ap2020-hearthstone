@@ -26,7 +26,7 @@ public class Card {
     private Integer price;
     @Enumerated(EnumType.STRING)
     private Rarity rarity;
-    @ManyToOne//(cascade = CascadeType.ALL)
+    @ManyToOne//(cascade = javax.persistence.CascadeType.ALL)
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "script_id")
     private Script script;

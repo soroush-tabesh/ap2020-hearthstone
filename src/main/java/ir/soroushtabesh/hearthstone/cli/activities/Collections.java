@@ -202,7 +202,10 @@ public class Collections extends CLIActivity {
                 return;
             }
             deck.addCard(card);
+            //session.clear();
             DBUtil.pushSingleObject(player, session);
+            //session.beginTransaction();
+
             System.out.println("Successfully added to your deck.");
             Logger.log("collections", "add: " + card.getCard_name());
         } catch (Exception e) {
