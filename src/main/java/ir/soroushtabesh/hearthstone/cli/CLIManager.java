@@ -2,6 +2,7 @@ package ir.soroushtabesh.hearthstone.cli;
 
 import ir.soroushtabesh.hearthstone.cli.activities.StartPage;
 import ir.soroushtabesh.hearthstone.util.DBUtil;
+import ir.soroushtabesh.hearthstone.util.InputUtil;
 import ir.soroushtabesh.hearthstone.util.Logger;
 
 import java.io.File;
@@ -109,7 +110,7 @@ public class CLIManager {
         Logger.log("CLI", "fireUp");
         fired = true;
         while (!currentActivity.isEmpty() && fired && scanner.hasNextLine()) {
-            String[] line = scanner.nextLine().split(" ");
+            String[] line = InputUtil.tokenize(scanner.nextLine());
             if (!processor.process(line)) {
                 getCurrentActivity().onReceivedCommand(line);
             }
