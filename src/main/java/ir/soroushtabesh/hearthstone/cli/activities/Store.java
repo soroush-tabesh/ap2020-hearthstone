@@ -56,7 +56,7 @@ public class Store extends CLIActivity {
         processor.add("wallet", event -> {
             System.out.println("You have "
                     + PlayerManager.getInstance().getPlayer().getCoin()
-                    + "coins in your wallet.");
+                    + " coins in your wallet.");
             Logger.log("store", "wallet");
         });
     }
