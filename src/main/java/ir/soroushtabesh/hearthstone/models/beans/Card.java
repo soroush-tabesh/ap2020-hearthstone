@@ -1,6 +1,5 @@
 package ir.soroushtabesh.hearthstone.models.beans;
 
-import ir.soroushtabesh.hearthstone.util.DBUtil;
 import org.hibernate.Session;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -43,15 +42,9 @@ public class Card {
         this.rarity = rarity;
     }
 
-    public static Card getCardByName(String cardname) {
-        Card card = null;
-        try (Session session = DBUtil.openSession()) {
-            card = session.createQuery("from Card where card_name=:cardname", Card.class)
-                    .setParameter("cardname", cardname).uniqueResult();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return card;
+    public static Card getCardByName(String cardname, Session session) {
+        return session.createQuery("from Card where card_name=:cardname", Card.class)
+                .setParameter("cardname", cardname).uniqueResult();
     }
 
     public Integer getPrice() {

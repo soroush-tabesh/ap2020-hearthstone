@@ -29,7 +29,7 @@ public class PlayerManager {
 
     public Message authenticate(String username, String password) {
         password = HashUtil.hash(password);
-        try (Session session = DBUtil.openSession()) {
+        try (Session session = DBUtil.getOpenSession()) {
             Player player = (Player) session.createQuery("from Player where username=:username and deleted=false ")
                     .setParameter("username", username).uniqueResult();
             if (player == null || !player.getPassword().equals(password)) {
@@ -49,7 +49,7 @@ public class PlayerManager {
         if (!password.equals(player.getPassword()))
             return Message.WRONG;
         player.setDeleted(true);
-        try (Session session = DBUtil.openSession()) {
+        try (Session session = DBUtil.getOpenSession()) {
             Transaction transaction = session.beginTransaction();
             session.merge(player);
             transaction.commit();
@@ -65,7 +65,7 @@ public class PlayerManager {
         password = HashUtil.hash(password);
         Player player = new Player(username, password);
         Transaction transaction = null;
-        try (Session session = DBUtil.openSession()) {
+        try (Session session = DBUtil.getOpenSession()) {
             transaction = session.beginTransaction();
             boolean exist = session.createQuery("from Player where username=:username and deleted=false ")
                     .setParameter("username", username).uniqueResult() != null;
@@ -87,7 +87,7 @@ public class PlayerManager {
     }
 
     public void refreshPlayer() {
-        try (Session session = DBUtil.openSession()) {
+        try (Session session = DBUtil.getOpenSession()) {
             session.refresh(player);
         } catch (Exception e) {
             e.printStackTrace();

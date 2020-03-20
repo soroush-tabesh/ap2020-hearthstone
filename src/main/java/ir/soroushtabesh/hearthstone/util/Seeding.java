@@ -15,7 +15,7 @@ import java.util.List;
 public class Seeding {
     public static void initiate1() {
         Logger.log("test", "test", Log.Severity.WARNING);
-        try (Session session = DBUtil.openSession()) {
+        try (Session session = DBUtil.getOpenSession()) {
             Player player = new Player("akbar", HashUtil.hash("akbar"));
             Script script = new Dummy();
             HeroPower heroPower = new HeroPower();
@@ -91,7 +91,7 @@ public class Seeding {
         deck
         minion
         */
-        try (Session session = DBUtil.openSession()) {
+        try (Session session = DBUtil.getOpenSession()) {
 
             Hero mage = new Hero();
             Hero warlock = new Hero();
@@ -353,7 +353,7 @@ public class Seeding {
     }
 
     public static void seedPlayer(Player player) {
-        try (Session session = DBUtil.openSession()) {
+        try (Session session = DBUtil.getOpenSession()) {
             session.refresh(player);
             List<Hero> heroes = session.createQuery("from Hero ", Hero.class).list();
             Hero mage = heroes.get(0);

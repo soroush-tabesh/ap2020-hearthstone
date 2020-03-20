@@ -10,6 +10,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 public class DBUtil {
     private static StandardServiceRegistry registry;
     private static SessionFactory sessionFactory;
+    private static Session session;
 
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
@@ -32,27 +33,32 @@ public class DBUtil {
     }
 
     public static void shutdown() {
+        if (session != null)
+            session.close();
         if (registry != null)
             StandardServiceRegistryBuilder.destroy(registry);
     }
 
-    public static Session openSession() {
-        return getSessionFactory().openSession();
+    public static Session getOpenSession() {
+        if (session == null || !session.isOpen())
+            session = getSessionFactory().openSession();
+        return session;
     }
 
-    public static boolean pushSingleObject(Object object) {
-        try (Session session = openSession()) {
-            pushSingleObject(object, session);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+    public static void pushSingleObject(Object object) {
+        Session session = getOpenSession();
+        pushSingleObject(object, session);
     }
 
     public static void pushSingleObject(Object object, Session session) {
         session.beginTransaction();
         session.saveOrUpdate(object);
+        session.getTransaction().commit();
+    }
+
+    public static void mergeSingleObject(Object object, Session session) {
+        session.beginTransaction();
+        session.merge(object);
         session.getTransaction().commit();
     }
 
