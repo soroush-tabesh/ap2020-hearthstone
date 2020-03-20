@@ -1,6 +1,6 @@
 package ir.soroushtabesh.hearthstone.models.beans;
 
-import ir.soroushtabesh.hearthstone.models.beans.cards.HeroPower;
+import ir.soroushtabesh.hearthstone.models.beans.scripts.HeroPower;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 

@@ -22,11 +22,12 @@
         <mapping class="ir.soroushtabesh.hearthstone.models.beans.Log"/>
         <mapping class="ir.soroushtabesh.hearthstone.models.beans.Hero"/>
         <mapping class="ir.soroushtabesh.hearthstone.models.beans.Deck"/>
+
         <mapping class="ir.soroushtabesh.hearthstone.models.beans.Script"/>
         <mapping class="ir.soroushtabesh.hearthstone.models.beans.scripts.Dummy"/>
+        <mapping class="ir.soroushtabesh.hearthstone.models.beans.scripts.HeroPower"/>
 
         <mapping class="ir.soroushtabesh.hearthstone.models.beans.Card"/>
-        <mapping class="ir.soroushtabesh.hearthstone.models.beans.cards.HeroPower"/>
         <mapping class="ir.soroushtabesh.hearthstone.models.beans.cards.Minion"/>
         <mapping class="ir.soroushtabesh.hearthstone.models.beans.cards.Quest"/>
         <mapping class="ir.soroushtabesh.hearthstone.models.beans.cards.Spell"/>
