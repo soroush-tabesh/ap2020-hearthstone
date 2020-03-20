@@ -4,6 +4,7 @@ import ir.soroushtabesh.hearthstone.models.beans.Player;
 import ir.soroushtabesh.hearthstone.util.DBUtil;
 import ir.soroushtabesh.hearthstone.util.HashUtil;
 import ir.soroushtabesh.hearthstone.util.Logger;
+import ir.soroushtabesh.hearthstone.util.Seeding;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -63,7 +64,6 @@ public class PlayerManager {
     public Message makeAccount(String username, String password) {
         password = HashUtil.hash(password);
         Player player = new Player(username, password);
-        //todo: card,hero,deck init
         Transaction transaction = null;
         try (Session session = DBUtil.openSession()) {
             transaction = session.beginTransaction();
@@ -77,6 +77,7 @@ public class PlayerManager {
             e.printStackTrace();
             return Message.ERROR;
         }
+        Seeding.seedPlayer(player);
         Logger.log("sign-up", player.getUsername());
         return Message.SUCCESS;
     }

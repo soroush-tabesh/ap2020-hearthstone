@@ -10,10 +10,10 @@ import javax.persistence.Enumerated;
 @Entity
 @DiscriminatorValue("Minion")
 public class Minion extends Card {
-    private Integer hp;
-    private Integer attackPower;
+    private Integer hp = 1;
+    private Integer attackPower = 1;
     @Enumerated(EnumType.STRING)
-    private MinionClass minionClass;
+    private MinionClass minionClass = MinionClass.GENERAL;
 
     public Integer getHp() {
         return hp;

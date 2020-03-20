@@ -17,15 +17,15 @@ public class Card {
     @Id
     @Column(name = "card_id")
     private int card_id;
-    private String card_name;
-    private String description;
-    private Integer mana;
+    private String card_name = "";
+    private String description = "";
+    private Integer mana = 0;
 
     @Enumerated(EnumType.STRING)
-    private Hero.HeroClass heroClass;
-    private Integer price;
+    private Hero.HeroClass heroClass = Hero.HeroClass.ALL;
+    private Integer price = 0;
     @Enumerated(EnumType.STRING)
-    private Rarity rarity;
+    private Rarity rarity = Rarity.COMMON;
     @ManyToOne//(cascade = javax.persistence.CascadeType.ALL)
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "script_id")

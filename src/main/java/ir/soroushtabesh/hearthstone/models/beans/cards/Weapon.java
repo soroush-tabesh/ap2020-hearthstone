@@ -8,8 +8,8 @@ import javax.persistence.Entity;
 @Entity
 @DiscriminatorValue("Weapon")
 public class Weapon extends Card {
-    private Integer durability;
-    private Integer attackPower;
+    private Integer durability = 1;
+    private Integer attackPower = 1;
 
     @Override
     public String toString() {

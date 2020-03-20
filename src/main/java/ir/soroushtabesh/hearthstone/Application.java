@@ -18,10 +18,6 @@ public class Application {
         cliManager.startActivity(new StartPage());
         cliManager.fireUp();
         Logger.log("application", "shutdown");
-        /*
-        for deploy:
-        3- write help
-         */
     }
 
     public static void tester() {
