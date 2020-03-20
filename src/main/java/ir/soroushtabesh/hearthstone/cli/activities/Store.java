@@ -62,7 +62,8 @@ public class Store extends CLIActivity {
     }
 
     private void showSalable() {
-        try (Session session = DBUtil.getOpenSession()) {
+        try {
+            Session session = DBUtil.getOpenSession();
             session.refresh(PlayerManager.getInstance().getPlayer());
             Collection<Card> allCards = getSalableCards();
             System.out.println("Salable cards:");
@@ -75,7 +76,8 @@ public class Store extends CLIActivity {
     }
 
     private void showPurchasable() {
-        try (Session session = DBUtil.getOpenSession()) {
+        try {
+            Session session = DBUtil.getOpenSession();
             session.refresh(PlayerManager.getInstance().getPlayer());
             System.out.println("Purchasable cards:");
             PrintUtil.printList(getPurchasableCards(session));
@@ -104,7 +106,8 @@ public class Store extends CLIActivity {
     }
 
     private void buyCard(String cardname) {
-        try (Session session = DBUtil.getOpenSession()) {
+        try {
+            Session session = DBUtil.getOpenSession();
             Player player = PlayerManager.getInstance().getPlayer();
             session.refresh(player);
             Collection<Card> purchasableCards = getPurchasableCards(session);
@@ -133,7 +136,8 @@ public class Store extends CLIActivity {
     }
 
     private void sellCard(String cardname) {
-        try (Session session = DBUtil.getOpenSession()) {
+        try {
+            Session session = DBUtil.getOpenSession();
             Player player = PlayerManager.getInstance().getPlayer();
             session.refresh(player);
             Collection<Card> salableCards = getSalableCards();

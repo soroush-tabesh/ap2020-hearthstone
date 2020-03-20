@@ -61,7 +61,8 @@ public class Collections extends CLIActivity {
 
     private void showHeroes(String option) {
         Player player = PlayerManager.getInstance().getPlayer();
-        try (Session session = DBUtil.getOpenSession()) {
+        try {
+            Session session = DBUtil.getOpenSession();
             session.refresh(player);
             switch (option) {
                 case "-a":
@@ -94,7 +95,8 @@ public class Collections extends CLIActivity {
 
     private void showCards(String option) {
         Player player = PlayerManager.getInstance().getPlayer();
-        try (Session session = DBUtil.getOpenSession()) {
+        try {
+            Session session = DBUtil.getOpenSession();
             session.refresh(player);
             Deck deck = player.getDeckOfHero(player.getCurrentHero(), session);
             switch (option) {
@@ -151,7 +153,8 @@ public class Collections extends CLIActivity {
 
     private void selectHero(String heroName) {
         Player player = PlayerManager.getInstance().getPlayer();
-        try (Session session = DBUtil.getOpenSession()) {
+        try {
+            Session session = DBUtil.getOpenSession();
             session.refresh(player);
             Hero hero = session.createQuery("from Hero where name=:heroName", Hero.class)
                     .setParameter("heroName", heroName).uniqueResult();
@@ -178,7 +181,8 @@ public class Collections extends CLIActivity {
     @Transactional
     private void addCardToDeck(String cardname) {
         Player player = PlayerManager.getInstance().getPlayer();
-        try (Session session = DBUtil.getOpenSession()) {
+        try {
+            Session session = DBUtil.getOpenSession();
             session.refresh(player);
             Hero currentHero = player.getCurrentHero();
             Deck deck = player.getDeckOfHero(currentHero, session);
@@ -218,7 +222,8 @@ public class Collections extends CLIActivity {
 
     private void removeCardFromDeck(String cardname) {
         Player player = PlayerManager.getInstance().getPlayer();
-        try (Session session = DBUtil.getOpenSession()) {
+        try {
+            Session session = DBUtil.getOpenSession();
             session.refresh(player);
             Deck deck = player.getDeckOfHero(player.getCurrentHero(), session);
             Card card = Card.getCardByName(cardname, session);
