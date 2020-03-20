@@ -359,9 +359,10 @@ public class Seeding {
             Hero mage = heroes.get(0);
             for (Hero hero : heroes) {
                 Deck deck = new Deck(hero, player);
+                player.addDeck(deck);
                 DBUtil.pushSingleObject(deck, session);
             }
-            List<Card> cards = session.createQuery("from Card where card_id<13", Card.class).list();
+            List<Card> cards = session.createQuery("from Card where card_id < 13", Card.class).list();
             player.getOpenHeroes().add(mage);
             player.getOwnedCards().addAll(cards);
             DBUtil.pushSingleObject(player, session);
