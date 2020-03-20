@@ -42,9 +42,7 @@ public class DBUtil {
 
     public static boolean pushSingleObject(Object object) {
         try (Session session = openSession()) {
-            session.beginTransaction();
-            session.saveOrUpdate(object);
-            session.getTransaction().commit();
+            pushSingleObject(object, session);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
