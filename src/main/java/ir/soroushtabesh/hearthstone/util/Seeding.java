@@ -10,6 +10,7 @@ import ir.soroushtabesh.hearthstone.models.beans.scripts.HeroPower;
 import org.hibernate.Session;
 
 import java.io.File;
+import java.util.List;
 
 public class Seeding {
     public static void initiate1() {
@@ -352,8 +353,21 @@ public class Seeding {
     }
 
     public static void seedPlayer(Player player) {
-        //todo: setup deck,owned cards,open heroes
-//        Deck deck_mage = new Deck()
+        try (Session session = DBUtil.openSession()) {
+            session.refresh(player);
+            List<Hero> heroes = session.createQuery("from Hero ", Hero.class).list();
+            Hero mage = heroes.get(0);
+            for (Hero hero : heroes) {
+                Deck deck = new Deck(hero, player);
+                DBUtil.pushSingleObject(deck, session);
+            }
+            List<Card> cards = session.createQuery("from Card where card_id<13", Card.class).list();
+            player.getOpenHeroes().add(mage);
+            player.getOwnedCards().addAll(cards);
+            DBUtil.pushSingleObject(player, session);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void initiate() {
