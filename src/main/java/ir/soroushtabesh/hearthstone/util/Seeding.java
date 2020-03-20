@@ -77,21 +77,6 @@ public class Seeding {
     }
 
     public static void seed() {
-        /*
-        what do we need?
-        3x Hero: mage, warlock, rouge
-        3x Card special
-        6x Card spell
-        6x Card minion
-        3x Card quest
-        3x Card weapon special
-
-        script
-        heropower
-        hero
-        deck
-        minion
-        */
         try {
             Session session = DBUtil.getOpenSession();
 

@@ -1,1 +1,1 @@
-hi!
+The CLI uses space delimiter. In order to pass arguments with spaces in between, you may put quotation marks like: "My Hero".
