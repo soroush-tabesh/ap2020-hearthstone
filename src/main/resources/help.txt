@@ -1,1 +1,10 @@
 The CLI uses space delimiter. In order to pass arguments with spaces in between, you may put quotation marks like: "My Hero".
+>universal commands:
+$ exit ---------------------------- exit to start page
+$ exit -a ------------------------- exit the application
+$ back ---------------------------- previous page or exit
+$ hearthstone --help : show help
+>Start Page:
+$ login --------------------------- opens login page
+$ sign-up ------------------------- opens a sign-up page
+>The rest of the commands are the same as defined in project doc.
