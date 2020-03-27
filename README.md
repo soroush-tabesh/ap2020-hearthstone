@@ -1,7 +1,7 @@
 # Emulation of Hearthstone game
 _Currently under development._ 
 
-##How to run the application
+## How to run the application
 In the source package(ir.soroushtabesh.hearthstone) there's an Application class which you only need to run
 main method. Database system will initialize itself and there's no need for extra work.
 
