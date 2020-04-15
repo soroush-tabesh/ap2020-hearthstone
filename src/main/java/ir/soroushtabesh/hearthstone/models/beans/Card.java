@@ -9,9 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
-@DiscriminatorValue(value = "Card")
-public class Card {
+public abstract class Card {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "card_id")
