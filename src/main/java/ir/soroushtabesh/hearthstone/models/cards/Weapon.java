@@ -1,6 +1,6 @@
-package ir.soroushtabesh.hearthstone.models.beans.cards;
+package ir.soroushtabesh.hearthstone.models.cards;
 
-import ir.soroushtabesh.hearthstone.models.beans.Card;
+import ir.soroushtabesh.hearthstone.models.Card;
 
 import javax.persistence.Entity;
 

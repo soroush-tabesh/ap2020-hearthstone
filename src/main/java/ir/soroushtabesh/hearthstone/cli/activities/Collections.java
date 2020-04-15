@@ -3,7 +3,7 @@ package ir.soroushtabesh.hearthstone.cli.activities;
 import ir.soroushtabesh.hearthstone.cli.CLIActivity;
 import ir.soroushtabesh.hearthstone.cli.CommandProcessor;
 import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
-import ir.soroushtabesh.hearthstone.models.beans.*;
+import ir.soroushtabesh.hearthstone.models.*;
 import ir.soroushtabesh.hearthstone.util.DBUtil;
 import ir.soroushtabesh.hearthstone.util.Logger;
 import ir.soroushtabesh.hearthstone.util.PrintUtil;

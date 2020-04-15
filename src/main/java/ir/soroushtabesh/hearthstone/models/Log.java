@@ -1,4 +1,4 @@
-package ir.soroushtabesh.hearthstone.models.beans;
+package ir.soroushtabesh.hearthstone.models;
 
 import javax.persistence.*;
 import java.util.Objects;

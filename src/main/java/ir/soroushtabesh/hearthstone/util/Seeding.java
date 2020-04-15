@@ -1,12 +1,12 @@
 package ir.soroushtabesh.hearthstone.util;
 
-import ir.soroushtabesh.hearthstone.models.beans.*;
-import ir.soroushtabesh.hearthstone.models.beans.cards.Minion;
-import ir.soroushtabesh.hearthstone.models.beans.cards.Quest;
-import ir.soroushtabesh.hearthstone.models.beans.cards.Spell;
-import ir.soroushtabesh.hearthstone.models.beans.cards.Weapon;
-import ir.soroushtabesh.hearthstone.models.beans.scripts.Dummy;
-import ir.soroushtabesh.hearthstone.models.beans.scripts.HeroPower;
+import ir.soroushtabesh.hearthstone.models.*;
+import ir.soroushtabesh.hearthstone.models.cards.Minion;
+import ir.soroushtabesh.hearthstone.models.cards.Quest;
+import ir.soroushtabesh.hearthstone.models.cards.Spell;
+import ir.soroushtabesh.hearthstone.models.cards.Weapon;
+import ir.soroushtabesh.hearthstone.models.scripts.Dummy;
+import ir.soroushtabesh.hearthstone.models.scripts.HeroPower;
 import org.hibernate.Session;
 
 import java.io.File;

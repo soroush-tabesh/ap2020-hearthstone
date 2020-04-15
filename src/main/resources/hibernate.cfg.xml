@@ -18,20 +18,20 @@
         <property name="hibernate.dbcp.minIdle">5</property>
         <property name="hibernate.dbcp.maxWaitMillis">-1</property>
 
-        <mapping class="ir.soroushtabesh.hearthstone.models.beans.Player"/>
-        <mapping class="ir.soroushtabesh.hearthstone.models.beans.Log"/>
-        <mapping class="ir.soroushtabesh.hearthstone.models.beans.Hero"/>
-        <mapping class="ir.soroushtabesh.hearthstone.models.beans.Deck"/>
+        <mapping class="ir.soroushtabesh.hearthstone.models.Player"/>
+        <mapping class="ir.soroushtabesh.hearthstone.models.Log"/>
+        <mapping class="ir.soroushtabesh.hearthstone.models.Hero"/>
+        <mapping class="ir.soroushtabesh.hearthstone.models.Deck"/>
 
-        <mapping class="ir.soroushtabesh.hearthstone.models.beans.Script"/>
-        <mapping class="ir.soroushtabesh.hearthstone.models.beans.scripts.Dummy"/>
-        <mapping class="ir.soroushtabesh.hearthstone.models.beans.scripts.HeroPower"/>
+        <mapping class="ir.soroushtabesh.hearthstone.models.Script"/>
+        <mapping class="ir.soroushtabesh.hearthstone.models.scripts.Dummy"/>
+        <mapping class="ir.soroushtabesh.hearthstone.models.scripts.HeroPower"/>
 
-        <mapping class="ir.soroushtabesh.hearthstone.models.beans.Card"/>
-        <mapping class="ir.soroushtabesh.hearthstone.models.beans.cards.Minion"/>
-        <mapping class="ir.soroushtabesh.hearthstone.models.beans.cards.Quest"/>
-        <mapping class="ir.soroushtabesh.hearthstone.models.beans.cards.Spell"/>
-        <mapping class="ir.soroushtabesh.hearthstone.models.beans.cards.Weapon"/>
+        <mapping class="ir.soroushtabesh.hearthstone.models.Card"/>
+        <mapping class="ir.soroushtabesh.hearthstone.models.cards.Minion"/>
+        <mapping class="ir.soroushtabesh.hearthstone.models.cards.Quest"/>
+        <mapping class="ir.soroushtabesh.hearthstone.models.cards.Spell"/>
+        <mapping class="ir.soroushtabesh.hearthstone.models.cards.Weapon"/>
 
 
     </session-factory>

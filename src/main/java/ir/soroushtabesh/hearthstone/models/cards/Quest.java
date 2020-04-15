@@ -1,7 +1,7 @@
-package ir.soroushtabesh.hearthstone.models.beans.cards;
+package ir.soroushtabesh.hearthstone.models.cards;
 
-import ir.soroushtabesh.hearthstone.models.beans.Card;
-import ir.soroushtabesh.hearthstone.models.beans.Script;
+import ir.soroushtabesh.hearthstone.models.Card;
+import ir.soroushtabesh.hearthstone.models.Script;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 

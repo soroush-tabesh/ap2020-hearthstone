@@ -1,4 +1,4 @@
-package ir.soroushtabesh.hearthstone.models.beans;
+package ir.soroushtabesh.hearthstone.models;
 
 import ir.soroushtabesh.hearthstone.util.DBUtil;
 import ir.soroushtabesh.hearthstone.util.Logger;
@@ -13,6 +13,7 @@ import java.util.Objects;
 
 @Entity
 public class Player {
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "player_id")
@@ -21,18 +22,22 @@ public class Player {
     private String password;
     private Integer coin = 50;
     private Boolean deleted = false;
+
     @ManyToMany//(cascade = javax.persistence.CascadeType.ALL)
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "players_cards", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "card_id"))
     private List<Card> ownedCards;
+
     @ManyToMany//(cascade = javax.persistence.CascadeType.ALL)
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "players_heroes", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "hero_id"))
     private List<Hero> openHeroes;
+
     @OneToMany//(cascade = javax.persistence.CascadeType.ALL)
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "players_decks", joinColumns = @JoinColumn(name = "player_id"), inverseJoinColumns = @JoinColumn(name = "deck_id"))
     private List<Deck> decks;
+
     @ManyToOne//(cascade = javax.persistence.CascadeType.ALL)
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "current_hero_id")

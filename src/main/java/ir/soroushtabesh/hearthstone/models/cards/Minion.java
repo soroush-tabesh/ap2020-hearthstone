@@ -1,6 +1,6 @@
-package ir.soroushtabesh.hearthstone.models.beans.cards;
+package ir.soroushtabesh.hearthstone.models.cards;
 
-import ir.soroushtabesh.hearthstone.models.beans.Card;
+import ir.soroushtabesh.hearthstone.models.Card;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -38,7 +38,7 @@ public class Minion extends Card {
     }
 
     @Override
-    public String toString() {//todo
+    public String toString() {
         return super.toString() + "\nType: Minion [" +
                 "HP: " + hp +
                 ", AttackPower: " + attackPower +

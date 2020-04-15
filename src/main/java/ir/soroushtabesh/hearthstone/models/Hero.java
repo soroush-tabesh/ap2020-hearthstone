@@ -1,6 +1,6 @@
-package ir.soroushtabesh.hearthstone.models.beans;
+package ir.soroushtabesh.hearthstone.models;
 
-import ir.soroushtabesh.hearthstone.models.beans.scripts.HeroPower;
+import ir.soroushtabesh.hearthstone.models.scripts.HeroPower;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
@@ -11,22 +11,33 @@ import java.util.Objects;
 
 @Entity
 public class Hero {
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "hero_id")
     private int hero_id;
+
     private String name;
+
     @Enumerated(EnumType.STRING)
     private HeroClass heroClass;
+
     private Integer hp;
-    @ManyToOne//(cascade = javax.persistence.CascadeType.ALL)
+
+    @ManyToOne
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "heropower_id")
     private HeroPower heroPower;
-    @OneToMany//(cascade = javax.persistence.CascadeType.ALL)
+
+    @OneToMany
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "hero_speccard", joinColumns = @JoinColumn(name = "hero_id"), inverseJoinColumns = @JoinColumn(name = "speccard_id"))
     private List<Card> specialCards;
+
+    @ManyToOne
+    @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name = "specpower_script_id")
+    private Script specialPower;
 
     public Hero(String name, HeroClass heroClass, int hp, HeroPower heroPower, List<Card> specialCards, Script specialPower) {
         this.name = name;
@@ -36,11 +47,6 @@ public class Hero {
         this.specialCards = specialCards;
         this.specialPower = specialPower;
     }
-
-    @ManyToOne//(cascade = javax.persistence.CascadeType.ALL)
-    @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinColumn(name = "specpower_script_id")
-    private Script specialPower;
 
     public Hero() {
         specialCards = new ArrayList<>();

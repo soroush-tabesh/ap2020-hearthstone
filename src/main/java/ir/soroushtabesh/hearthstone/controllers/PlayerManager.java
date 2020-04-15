@@ -1,6 +1,6 @@
 package ir.soroushtabesh.hearthstone.controllers;
 
-import ir.soroushtabesh.hearthstone.models.beans.Player;
+import ir.soroushtabesh.hearthstone.models.Player;
 import ir.soroushtabesh.hearthstone.util.DBUtil;
 import ir.soroushtabesh.hearthstone.util.HashUtil;
 import ir.soroushtabesh.hearthstone.util.Logger;

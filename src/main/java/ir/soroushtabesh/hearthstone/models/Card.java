@@ -1,4 +1,4 @@
-package ir.soroushtabesh.hearthstone.models.beans;
+package ir.soroushtabesh.hearthstone.models;
 
 import org.hibernate.Session;
 import org.hibernate.annotations.Cascade;
@@ -10,19 +10,26 @@ import java.util.Objects;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class Card {
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "card_id")
     private int card_id;
+
     private String card_name = "";
+
     private String description = "";
+
     private Integer mana = 0;
 
     @Enumerated(EnumType.STRING)
     private Hero.HeroClass heroClass = Hero.HeroClass.ALL;
+
     private Integer price = 0;
+
     @Enumerated(EnumType.STRING)
     private Rarity rarity = Rarity.COMMON;
+
     @ManyToOne//(cascade = javax.persistence.CascadeType.ALL)
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "script_id")
