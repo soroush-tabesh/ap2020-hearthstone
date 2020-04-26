@@ -2,7 +2,6 @@ package ir.soroushtabesh.hearthstone.util;
 
 import ir.soroushtabesh.hearthstone.models.*;
 import ir.soroushtabesh.hearthstone.models.cards.Minion;
-import ir.soroushtabesh.hearthstone.models.cards.Quest;
 import ir.soroushtabesh.hearthstone.models.cards.Spell;
 import ir.soroushtabesh.hearthstone.models.cards.Weapon;
 import ir.soroushtabesh.hearthstone.models.scripts.Dummy;
@@ -18,7 +17,7 @@ public class Seeding {
         try {
             Session session = DBUtil.getOpenSession();
             Player player = new Player("akbar", HashUtil.hash("akbar"));
-            Script script = new Dummy();
+            ScriptModel scriptModel = new Dummy();
             HeroPower heroPower = new HeroPower();
             Hero hero = new Hero();
             Deck deck = new Deck(hero, player);
@@ -26,7 +25,7 @@ public class Seeding {
             Minion minion1 = new Minion();
 
             DBUtil.pushSingleObject(player, session);
-            DBUtil.pushSingleObject(script, session);
+            DBUtil.pushSingleObject(scriptModel, session);
             DBUtil.pushSingleObject(heroPower, session);
             DBUtil.pushSingleObject(hero, session);
             DBUtil.pushSingleObject(deck, session);
@@ -43,7 +42,7 @@ public class Seeding {
             hero.setHeroPower(heroPower);
             hero.setHp(40);
             hero.setName("Akbar");
-            hero.setSpecialPower(script);
+            hero.setSpecialPower(scriptModel);
 
             deck.addCard(minion);
             deck.addCard(minion1);
@@ -57,7 +56,7 @@ public class Seeding {
             minion.setMana(3);
             minion.setPrice(12);
             minion.setRarity(Card.Rarity.RARE);
-            minion.setScript(script);
+            minion.setScriptModel(scriptModel);
 
             minion1.setCard_name("Peshgel");
             minion1.setAttackPower(3);
@@ -68,7 +67,7 @@ public class Seeding {
             minion1.setMana(1);
             minion1.setPrice(3);
             minion1.setRarity(Card.Rarity.EPIC);
-            minion1.setScript(script);
+            minion1.setScriptModel(scriptModel);
 
             DBUtil.pushSingleObject(player, session);
         } catch (Exception e) {
@@ -350,9 +349,9 @@ public class Seeding {
                 player.addDeck(deck);
                 DBUtil.pushSingleObject(deck, session);
             }
-            List<Card> cards = session.createQuery("from Card where card_id < 13", Card.class).list();
+            List<Card> cards = session.createQuery("from Card where id < 13", Card.class).list();
             player.getOpenHeroes().add(mage);
-            player.getOwnedCards().addAll(cards);
+            player.getOwnedCardsList().addAll(cards);
             DBUtil.pushSingleObject(player, session);
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,21 +1,21 @@
 package ir.soroushtabesh.hearthstone.models;
 
 import ir.soroushtabesh.hearthstone.models.scripts.HeroPower;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Hero {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "hero_id")
-    private int hero_id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     private String name;
 
@@ -26,20 +26,18 @@ public class Hero {
 
     @ManyToOne
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinColumn(name = "heropower_id")
     private HeroPower heroPower;
 
     @OneToMany
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinTable(name = "hero_speccard", joinColumns = @JoinColumn(name = "hero_id"), inverseJoinColumns = @JoinColumn(name = "speccard_id"))
-    private List<Card> specialCards;
+    @JoinColumn(name = "spec_card_id")
+    private List<Card> specialCards = new ArrayList<>();
 
     @ManyToOne
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinColumn(name = "specpower_script_id")
-    private Script specialPower;
+    private ScriptModel specialPower;
 
-    public Hero(String name, HeroClass heroClass, int hp, HeroPower heroPower, List<Card> specialCards, Script specialPower) {
+    public Hero(String name, HeroClass heroClass, int hp, HeroPower heroPower, List<Card> specialCards, ScriptModel specialPower) {
         this.name = name;
         this.heroClass = heroClass;
         this.hp = hp;
@@ -49,7 +47,6 @@ public class Hero {
     }
 
     public Hero() {
-        specialCards = new ArrayList<>();
     }
 
 
@@ -57,8 +54,8 @@ public class Hero {
         specialCards.add(card);
     }
 
-    public int getHero_id() {
-        return hero_id;
+    public Integer getId() {
+        return id;
     }
 
     public HeroClass getHeroClass() {
@@ -97,11 +94,11 @@ public class Hero {
         return specialCards;
     }
 
-    public Script getSpecialPower() {
+    public ScriptModel getSpecialPower() {
         return specialPower;
     }
 
-    public void setSpecialPower(Script specialPower) {
+    public void setSpecialPower(ScriptModel specialPower) {
         this.specialPower = specialPower;
     }
 
@@ -118,12 +115,12 @@ public class Hero {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Hero hero = (Hero) o;
-        return getHero_id() == hero.getHero_id();
+        return getId().equals(hero.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getHero_id());
+        return getId();
     }
 
     public enum HeroClass {

@@ -1,12 +1,14 @@
 package ir.soroushtabesh.hearthstone.models.cards;
 
 import ir.soroushtabesh.hearthstone.models.Card;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
 @Entity
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Minion extends Card {
     private Integer hp = 1;
     private Integer attackPower = 1;

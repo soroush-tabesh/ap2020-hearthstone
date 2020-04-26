@@ -1,6 +1,7 @@
 package ir.soroushtabesh.hearthstone.models;
 
 import org.hibernate.Session;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
@@ -8,13 +9,12 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public abstract class Card {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "card_id")
-    private int card_id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     private String card_name = "";
 
@@ -30,10 +30,9 @@ public abstract class Card {
     @Enumerated(EnumType.STRING)
     private Rarity rarity = Rarity.COMMON;
 
-    @ManyToOne//(cascade = javax.persistence.CascadeType.ALL)
+    @ManyToOne
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinColumn(name = "script_id")
-    private Script script;
+    private ScriptModel scriptModel;
 
     public Card() {
     }
@@ -60,8 +59,8 @@ public abstract class Card {
         this.price = price;
     }
 
-    public int getCard_id() {
-        return card_id;
+    public Integer getId() {
+        return id;
     }
 
     public String getCard_name() {
@@ -104,12 +103,12 @@ public abstract class Card {
         this.heroClass = heroClass;
     }
 
-    public Script getScript() {
-        return script;
+    public ScriptModel getScriptModel() {
+        return scriptModel;
     }
 
-    public void setScript(Script script) {
-        this.script = script;
+    public void setScriptModel(ScriptModel scriptModel) {
+        this.scriptModel = scriptModel;
     }
 
     @Override
@@ -128,13 +127,13 @@ public abstract class Card {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Card card = (Card) o;
-        return getCard_id() == card.getCard_id() &&
+        return getId().equals(card.getId()) &&
                 Objects.equals(getCard_name(), card.getCard_name());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getCard_id());
+        return getId();
     }
 
     public enum Rarity {

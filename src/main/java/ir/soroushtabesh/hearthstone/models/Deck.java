@@ -1,35 +1,32 @@
 package ir.soroushtabesh.hearthstone.models;
 
 import ir.soroushtabesh.hearthstone.util.Logger;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Deck {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "deck_id")
-    private int deck_id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @ManyToOne
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinColumn(name = "hero_id")
     private Hero hero;
 
     @ManyToOne
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinColumn(name = "player_id")
     private Player player;
 
     @ManyToMany
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinTable(name = "deck_card", joinColumns = @JoinColumn(name = "deck_id"), inverseJoinColumns = @JoinColumn(name = "card_id"))
     private List<Card> cardsList;
 
     public Deck() {
@@ -48,8 +45,8 @@ public class Deck {
         this.cardsList = cardList;
     }
 
-    public int getDeck_id() {
-        return deck_id;
+    public Integer getId() {
+        return id;
     }
 
     public Hero getHero() {
@@ -76,10 +73,9 @@ public class Deck {
         this.cardsList = cardsList;
     }
 
-    public boolean addCard(Card card) {
+    public void addCard(Card card) {
         boolean res = cardsList.add(card);
         Logger.log("deck add", card.getCard_name() + " to " + hero.getName() + "'s deck");
-        return res;
     }
 
     public boolean removeCard(Card card) {
@@ -92,7 +88,7 @@ public class Deck {
     @Override
     public String toString() {
         return "Deck{" +
-                "deck_id=" + deck_id +
+                "deck_id=" + id +
                 ", hero=" + hero +
                 ", player=" + player +
                 '}';
@@ -103,12 +99,12 @@ public class Deck {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Deck deck = (Deck) o;
-        return getDeck_id() == deck.getDeck_id();
+        return getId().equals(deck.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getDeck_id());
+        return getId();
     }
 
 }

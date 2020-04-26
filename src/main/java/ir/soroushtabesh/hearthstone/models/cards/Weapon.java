@@ -1,10 +1,12 @@
 package ir.soroushtabesh.hearthstone.models.cards;
 
 import ir.soroushtabesh.hearthstone.models.Card;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.Entity;
 
 @Entity
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Weapon extends Card {
     private Integer durability = 1;
     private Integer attackPower = 1;

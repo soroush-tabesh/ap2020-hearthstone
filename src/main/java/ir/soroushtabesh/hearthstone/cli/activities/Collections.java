@@ -103,7 +103,7 @@ public class Collections extends CLIActivity {
                 case "-a":
                     Logger.log("collections", "ls -a -cards");
                     System.out.println("All cards of yours:\n");
-                    PrintUtil.printList(player.getOwnedCards());
+                    PrintUtil.printList(player.getOwnedCardsList());
                     break;
                 case "-m":
                     Logger.log("collections", "ls -m -cards");
@@ -139,7 +139,7 @@ public class Collections extends CLIActivity {
         List<Card> list = new ArrayList<>();
         Player player = PlayerManager.getInstance().getPlayer();
         Deck deck = player.getDeckOfHero(player.getCurrentHero(), session);
-        for (Card card : player.getOwnedCards()) {
+        for (Card card : player.getOwnedCardsList()) {
             int cnt = 0;
             for (Card inDeck : deck.getCardsList()) {
                 cnt += card.equals(inDeck) ? 1 : 0;
@@ -197,7 +197,7 @@ public class Collections extends CLIActivity {
                 Logger.log("collections", "add: hero not selected", Log.Severity.WARNING);
                 return;
             }
-            if (!player.getOwnedCards().contains(card)) {
+            if (!player.getOwnedCardsList().contains(card)) {
                 System.out.println("You don't own this card.");
                 Logger.log("collections", "add: locked", Log.Severity.WARNING);
                 return;

@@ -26,13 +26,13 @@
         <mapping class="ir.soroushtabesh.hearthstone.models.Hero"/>
         <mapping class="ir.soroushtabesh.hearthstone.models.Deck"/>
 
-        <mapping class="ir.soroushtabesh.hearthstone.models.Script"/>
+        <mapping class="ir.soroushtabesh.hearthstone.models.ScriptModel"/>
         <mapping class="ir.soroushtabesh.hearthstone.models.scripts.Dummy"/>
         <mapping class="ir.soroushtabesh.hearthstone.models.scripts.HeroPower"/>
 
         <mapping class="ir.soroushtabesh.hearthstone.models.Card"/>
         <mapping class="ir.soroushtabesh.hearthstone.models.cards.Minion"/>
-        <mapping class="ir.soroushtabesh.hearthstone.models.cards.Quest"/>
+        <mapping class="ir.soroushtabesh.hearthstone.models.Quest"/>
         <mapping class="ir.soroushtabesh.hearthstone.models.cards.Spell"/>
         <mapping class="ir.soroushtabesh.hearthstone.models.cards.Weapon"/>
     </session-factory>

@@ -1,16 +1,21 @@
 package ir.soroushtabesh.hearthstone.models;
 
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.*;
-import java.util.Objects;
+import java.util.Date;
 
 @Entity
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Log {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     @Id
-    private int log_id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     private Integer user_id;
     private String username;
-    private String date;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date date;
     private String event;
     private String description;
     @Enumerated(EnumType.STRING)
@@ -19,7 +24,7 @@ public class Log {
     public Log() {
     }
 
-    public Log(int user_id, String date, String event, String description, Severity severity) {
+    public Log(int user_id, Date date, String event, String description, Severity severity) {
         this.user_id = user_id;
         this.date = date;
         this.event = event;
@@ -43,8 +48,8 @@ public class Log {
         this.severity = severity;
     }
 
-    public int getLog_id() {
-        return log_id;
+    public Integer getId() {
+        return id;
     }
 
     public Integer getUser_id() {
@@ -55,11 +60,11 @@ public class Log {
         this.user_id = user_id;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -84,18 +89,18 @@ public class Log {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Log log = (Log) o;
-        return getLog_id() == log.getLog_id();
+        return getId().equals(log.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getLog_id());
+        return getId();
     }
 
     @Override
     public String toString() {
         return "Log{" +
-                "log_id=" + log_id +
+                "log_id=" + id +
                 ", user_id=" + user_id +
                 ", username='" + username + '\'' +
                 ", date='" + date + '\'' +

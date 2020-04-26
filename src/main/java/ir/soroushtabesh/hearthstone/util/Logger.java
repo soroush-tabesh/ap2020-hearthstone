@@ -4,8 +4,7 @@ import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
 import ir.soroushtabesh.hearthstone.models.Log;
 import ir.soroushtabesh.hearthstone.models.Player;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 public class Logger {
     public static void log(String event, String desc) {
@@ -16,14 +15,14 @@ public class Logger {
         Log log = new Log();
         if (PlayerManager.getInstance().getPlayer() != null) {
             Player player = PlayerManager.getInstance().getPlayer();
-            log.setUser_id(player.getPlayer_id());
+            log.setUser_id(player.getId());
             log.setUsername(player.getUsername());
         } else {
             log.setUser_id(-1);
         }
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        LocalDateTime now = LocalDateTime.now();
-        log.setDate(dtf.format(now));
+//        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+//        LocalDateTime now = LocalDateTime.now();
+        log.setDate(new Date());
         log.setEvent(event);
         log.setDescription(desc);
         log.setSeverity(severity);

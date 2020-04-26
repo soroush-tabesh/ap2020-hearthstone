@@ -91,14 +91,14 @@ public class Store extends CLIActivity {
     private Collection<Card> getPurchasableCards(Session session) {
         Collection<Card> allGameCards = new ArrayList<>(session.createQuery("from Card ", Card.class).list());
         Player player = PlayerManager.getInstance().getPlayer();
-        List<Card> ownedCards = player.getOwnedCards();
+        List<Card> ownedCards = player.getOwnedCardsList();
         allGameCards.removeAll(ownedCards);
         return allGameCards;
     }
 
     private Collection<Card> getSalableCards() {
         Player player = PlayerManager.getInstance().getPlayer();
-        Collection<Card> allCards = new ArrayList<>(player.getOwnedCards());
+        Collection<Card> allCards = new ArrayList<>(player.getOwnedCardsList());
         for (Deck deck : player.getDecks()) {
             allCards.removeAll(deck.getCardsList());
         }
@@ -124,7 +124,7 @@ public class Store extends CLIActivity {
                 System.out.println("You don't have enough coin to buy this card");
                 return;
             }
-            player.getOwnedCards().add(card);
+            player.getOwnedCardsList().add(card);
             player.setCoin(player.getCoin() - card.getPrice());
             DBUtil.pushSingleObject(player, session);
             System.out.println("Successfully Purchased!");
@@ -150,7 +150,7 @@ public class Store extends CLIActivity {
                 System.out.println("Sorry you can't sell this card. Either you don't own this card or it's still in your decks.");
                 return;
             }
-            player.getOwnedCards().remove(card);
+            player.getOwnedCardsList().remove(card);
             player.setCoin(player.getCoin() + card.getPrice());
             DBUtil.pushSingleObject(player, session);
             System.out.println("Successfully Sold!");

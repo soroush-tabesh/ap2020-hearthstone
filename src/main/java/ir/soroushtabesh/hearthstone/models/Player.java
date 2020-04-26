@@ -3,56 +3,51 @@ package ir.soroushtabesh.hearthstone.models;
 import ir.soroushtabesh.hearthstone.util.DBUtil;
 import ir.soroushtabesh.hearthstone.util.Logger;
 import org.hibernate.Session;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 
 @Entity
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Player {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
-    @Column(name = "player_id")
-    private int player_id;
+    //todo: change it to Map collection
+    @ManyToMany
+    @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
+    private final List<Card> ownedCards2 = new ArrayList<>();
     private String username;
     private String password;
     private Integer coin = 50;
     private Boolean deleted = false;
-
-    @ManyToMany//(cascade = javax.persistence.CascadeType.ALL)
-    @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinTable(name = "players_cards", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "card_id"))
-    private List<Card> ownedCards;
-
-    @ManyToMany//(cascade = javax.persistence.CascadeType.ALL)
-    @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinTable(name = "players_heroes", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "hero_id"))
-    private List<Hero> openHeroes;
-
-    @OneToMany//(cascade = javax.persistence.CascadeType.ALL)
-    @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinTable(name = "players_decks", joinColumns = @JoinColumn(name = "player_id"), inverseJoinColumns = @JoinColumn(name = "deck_id"))
-    private List<Deck> decks;
-
-    @ManyToOne//(cascade = javax.persistence.CascadeType.ALL)
-    @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinColumn(name = "current_hero_id")
+    @ManyToMany
+    @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
+    private final List<Hero> openHeroes = new ArrayList<>();
+    @OneToMany(mappedBy = "player")
+    @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+    private final List<Deck> decks = new ArrayList<>();
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    private Integer id;
+    @ElementCollection
+    @Column(name = "count")
+    @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
+    private Map<Card, Integer> ownedCards = new HashMap<>();
+    @ManyToOne
+    @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
     private Hero currentHero;
 
     public Player(String username, String password) {
-        this();
         this.username = username;
         this.password = password;
     }
 
     public Player() {
-        ownedCards = new ArrayList<>();
-        openHeroes = new ArrayList<>();
-        decks = new ArrayList<>();
     }
 
     public Hero getCurrentHero() {
@@ -64,8 +59,8 @@ public class Player {
         Logger.log("select hero", currentHero.getName());
     }
 
-    public int getPlayer_id() {
-        return player_id;
+    public Integer getId() {
+        return id;
     }
 
     public String getUsername() {
@@ -100,16 +95,20 @@ public class Player {
         this.deleted = deleted;
     }
 
-    public List<Card> getOwnedCards() {
-        return ownedCards;
+    public List<Card> getOwnedCardsList() {
+        return new ArrayList<Card>(ownedCards.keySet());
     }
 
     public void addOwnedCard(Card card) {
-        ownedCards.add(card);
+        ownedCards.put(card, ownedCards.getOrDefault(card, 0) + 1);
     }
 
-    public boolean removeOwnedCard(Card card) {
-        return ownedCards.remove(card);
+    public void removeOwnedCard(Card card) {
+        if (ownedCards.getOrDefault(card, 0) < 2) {
+            ownedCards.remove(card);
+        } else {
+            ownedCards.put(card, ownedCards.getOrDefault(card, 0) - 1);
+        }
     }
 
     public List<Hero> getOpenHeroes() {
@@ -132,7 +131,7 @@ public class Player {
         if (hero == null)
             return null;
         for (Deck deck : decks) {
-            if (deck.getHero().getHero_id() == hero.getHero_id())
+            if (deck.getHero().getId().equals(hero.getId()))
                 return deck;
         }
         Deck deck = new Deck(hero, this);
@@ -150,11 +149,11 @@ public class Player {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Player player = (Player) o;
-        return getPlayer_id() == player.getPlayer_id();
+        return getId().equals(player.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getPlayer_id());
+        return getId();
     }
 }

@@ -1,13 +1,13 @@
 package ir.soroushtabesh.hearthstone.models.scripts;
 
-import ir.soroushtabesh.hearthstone.models.Script;
+import ir.soroushtabesh.hearthstone.models.ScriptModel;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 @Entity
-@DiscriminatorValue("Dummy")
-public class Dummy extends Script {
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+public class Dummy extends ScriptModel {
     public Dummy() {
     }
 
