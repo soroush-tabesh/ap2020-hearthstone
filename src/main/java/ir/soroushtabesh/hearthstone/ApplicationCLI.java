@@ -5,6 +5,13 @@ import ir.soroushtabesh.hearthstone.cli.activities.Collections;
 import ir.soroushtabesh.hearthstone.cli.activities.StartPage;
 import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
 
+/**
+ * <b>**Deprecated**</b><br>
+ * Data models have been drastically changed in phase 2 and
+ * {@link ApplicationCLI} haven't been updated since.<br>
+ * Hence using it will definitely result in crash.
+ */
+@Deprecated
 public class ApplicationCLI {
 
     public static void start(String[] args) {
