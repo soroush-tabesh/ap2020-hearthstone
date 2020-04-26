@@ -31,7 +31,7 @@ public abstract class Card {
     private Rarity rarity = Rarity.COMMON;
 
     @ManyToOne
-    @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
+    @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
     private ScriptModel scriptModel;
 
     public Card() {

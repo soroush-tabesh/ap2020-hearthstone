@@ -17,27 +17,28 @@ import java.util.Map;
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Player {
 
-    //todo: change it to Map collection
-    @ManyToMany
-    @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
-    private final List<Card> ownedCards2 = new ArrayList<>();
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    private Integer id;
+
     private String username;
     private String password;
     private Integer coin = 50;
     private Boolean deleted = false;
+
     @ManyToMany
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
-    private final List<Hero> openHeroes = new ArrayList<>();
+    private List<Hero> openHeroes = new ArrayList<>();
+
     @OneToMany(mappedBy = "player")
-    @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE, CascadeType.DELETE})
-    private final List<Deck> decks = new ArrayList<>();
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
-    private Integer id;
+    @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
+    private List<Deck> decks = new ArrayList<>();
+
     @ElementCollection
     @Column(name = "count")
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
     private Map<Card, Integer> ownedCards = new HashMap<>();
+
     @ManyToOne
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
     private Hero currentHero;
@@ -103,12 +104,16 @@ public class Player {
         ownedCards.put(card, ownedCards.getOrDefault(card, 0) + 1);
     }
 
-    public void removeOwnedCard(Card card) {
+    public boolean removeOwnedCard(Card card) {
+        boolean res = false;
         if (ownedCards.getOrDefault(card, 0) < 2) {
-            ownedCards.remove(card);
+            res = ownedCards.remove(card) != null;
         } else {
             ownedCards.put(card, ownedCards.getOrDefault(card, 0) - 1);
         }
+        Logger.log("ownedCards remove" + res,
+                card.getCard_name() + " from " + getUsername() + "'s collection");
+        return res;
     }
 
     public List<Hero> getOpenHeroes() {
@@ -141,6 +146,7 @@ public class Player {
     }
 
     public void addDeck(Deck deck) {
+        deck.setPlayer(this);
         decks.add(deck);
     }
 

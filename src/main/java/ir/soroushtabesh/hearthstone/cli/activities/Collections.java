@@ -113,7 +113,7 @@ public class Collections extends CLIActivity {
                         return;
                     }
                     System.out.println("Cards in your deck:\n");
-                    PrintUtil.printList(deck.getCardsList());
+                    PrintUtil.printList(deck.getCardsInDeck());
                     break;
                 case "-n":
                     Logger.log("collections", "ls -n -cards");
@@ -141,7 +141,7 @@ public class Collections extends CLIActivity {
         Deck deck = player.getDeckOfHero(player.getCurrentHero(), session);
         for (Card card : player.getOwnedCardsList()) {
             int cnt = 0;
-            for (Card inDeck : deck.getCardsList()) {
+            for (Card inDeck : deck.getCardsInDeck()) {
                 cnt += card.equals(inDeck) ? 1 : 0;
             }
             if (cnt >= 2)
@@ -203,7 +203,7 @@ public class Collections extends CLIActivity {
                 return;
             }
             if (!getAddableCards(session).contains(card)
-                    || deck.getCardsList().size() >= 15
+                    || deck.getCardsInDeck().size() >= 15
                     || (card.getHeroClass() != Hero.HeroClass.ALL && card.getHeroClass() != currentHero.getHeroClass())) {
                 System.out.println("You can't add this card to your deck.");
                 Logger.log("collections", "add: unable", Log.Severity.WARNING);
@@ -240,7 +240,7 @@ public class Collections extends CLIActivity {
             if (deck.removeCard(card)) {
                 DBUtil.pushSingleObject(deck, session);
                 System.out.println("Successfully removed from your deck.");
-                if (deck.getCardsList().size() < 10)
+                if (deck.getCardsInDeck().size() < 10)
                     System.out.println("Alert! You have less than 10 cards in your deck!");
             } else {
                 System.out.println("This card is not in your deck!");

@@ -7,7 +7,9 @@ import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -18,31 +20,30 @@ public class Deck {
     private Integer id;
 
     @ManyToOne
-    @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
+    @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
     private Hero hero;
 
     @ManyToOne
-    @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
+    @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
     private Player player;
 
-    @ManyToMany
-    @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
-    private List<Card> cardsList;
+    @ElementCollection
+    @Column(name = "count")
+    @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
+    private Map<Card, Integer> cardsInDeck = new HashMap<>();
 
     public Deck() {
-        cardsList = new ArrayList<>();
     }
 
     public Deck(Hero hero, Player player) {
         this.hero = hero;
         this.player = player;
-        this.cardsList = new ArrayList<>();
     }
 
-    public Deck(Hero hero, Player player, List<Card> cardList) {
+    public Deck(Hero hero, Player player, Map<Card, Integer> cardsInDeck) {
         this.hero = hero;
         this.player = player;
-        this.cardsList = cardList;
+        this.cardsInDeck = cardsInDeck;
     }
 
     public Integer getId() {
@@ -65,23 +66,23 @@ public class Deck {
         this.player = player;
     }
 
-    public List<Card> getCardsList() {
-        return cardsList;
-    }
-
-    public void setCardsList(List<Card> cardsList) {
-        this.cardsList = cardsList;
+    public List<Card> getCardsInDeck() {
+        return new ArrayList<>(cardsInDeck.keySet());
     }
 
     public void addCard(Card card) {
-        boolean res = cardsList.add(card);
+        cardsInDeck.put(card, cardsInDeck.getOrDefault(card, 0) + 1);
         Logger.log("deck add", card.getCard_name() + " to " + hero.getName() + "'s deck");
     }
 
     public boolean removeCard(Card card) {
-        boolean res = cardsList.remove(card);
-        if (res)
-            Logger.log("deck remove", card.getCard_name() + " from " + hero.getName() + "'s deck");
+        boolean res = false;
+        if (cardsInDeck.getOrDefault(card, 0) < 2) {
+            res = cardsInDeck.remove(card) != null;
+        } else {
+            cardsInDeck.put(card, cardsInDeck.getOrDefault(card, 0) - 1);
+        }
+        Logger.log("deck remove" + res, card.getCard_name() + " from " + hero.getName() + "'s deck");
         return res;
     }
 

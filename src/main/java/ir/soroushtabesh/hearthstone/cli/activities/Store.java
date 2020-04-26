@@ -100,7 +100,7 @@ public class Store extends CLIActivity {
         Player player = PlayerManager.getInstance().getPlayer();
         Collection<Card> allCards = new ArrayList<>(player.getOwnedCardsList());
         for (Deck deck : player.getDecks()) {
-            allCards.removeAll(deck.getCardsList());
+            allCards.removeAll(deck.getCardsInDeck());
         }
         return allCards;
     }

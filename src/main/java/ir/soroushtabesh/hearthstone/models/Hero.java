@@ -25,16 +25,16 @@ public class Hero {
     private Integer hp;
 
     @ManyToOne
-    @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
+    @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
     private HeroPower heroPower;
 
     @OneToMany
-    @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinColumn(name = "spec_card_id")
+    @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
+    @JoinColumn(name = "hero_id")
     private List<Card> specialCards = new ArrayList<>();
 
     @ManyToOne
-    @Cascade({CascadeType.MERGE, CascadeType.REFRESH})
+    @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
     private ScriptModel specialPower;
 
     public Hero(String name, HeroClass heroClass, int hp, HeroPower heroPower, List<Card> specialCards, ScriptModel specialPower) {

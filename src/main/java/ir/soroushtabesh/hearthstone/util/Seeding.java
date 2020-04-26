@@ -11,7 +11,14 @@ import org.hibernate.Session;
 import java.io.File;
 import java.util.List;
 
+/**
+ * Seeding note:<br>
+ * <b>Call <code>save</code> on objects before linking.</b> <br><br>You need their id for
+ * association which will be available after <code>save</code>
+ */
 public class Seeding {
+
+
     public static void initiate1() {
         Logger.log("test", "test", Log.Severity.WARNING);
         try {
@@ -359,7 +366,7 @@ public class Seeding {
     }
 
     public static void initiate() {
-        File file = new File("./gamedata.mv.db");
+        File file = new File("./gameData.mv.db");
         if (!file.exists())
             seed();
     }
