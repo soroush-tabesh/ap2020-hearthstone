@@ -1,10 +1,10 @@
 package ir.soroushtabesh.hearthstone.controllers;
 
 import ir.soroushtabesh.hearthstone.models.Player;
-import ir.soroushtabesh.hearthstone.util.DBUtil;
 import ir.soroushtabesh.hearthstone.util.HashUtil;
 import ir.soroushtabesh.hearthstone.util.Logger;
-import ir.soroushtabesh.hearthstone.util.Seeding;
+import ir.soroushtabesh.hearthstone.util.db.DBUtil;
+import ir.soroushtabesh.hearthstone.util.db.Seeding;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 

@@ -3,6 +3,7 @@ package ir.soroushtabesh.hearthstone.util;
 import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
 import ir.soroushtabesh.hearthstone.models.Log;
 import ir.soroushtabesh.hearthstone.models.Player;
+import ir.soroushtabesh.hearthstone.util.db.DBUtil;
 
 import java.util.Date;
 

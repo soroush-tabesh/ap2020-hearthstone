@@ -1,7 +1,7 @@
 package ir.soroushtabesh.hearthstone.models;
 
-import ir.soroushtabesh.hearthstone.util.DBUtil;
 import ir.soroushtabesh.hearthstone.util.Logger;
+import ir.soroushtabesh.hearthstone.util.db.DBUtil;
 import org.hibernate.Session;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;

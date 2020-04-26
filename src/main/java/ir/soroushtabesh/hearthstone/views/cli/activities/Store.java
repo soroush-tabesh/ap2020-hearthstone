@@ -5,10 +5,10 @@ import ir.soroushtabesh.hearthstone.models.Card;
 import ir.soroushtabesh.hearthstone.models.Deck;
 import ir.soroushtabesh.hearthstone.models.Log;
 import ir.soroushtabesh.hearthstone.models.Player;
-import ir.soroushtabesh.hearthstone.util.DBUtil;
 import ir.soroushtabesh.hearthstone.util.Logger;
 import ir.soroushtabesh.hearthstone.util.cli.CommandProcessor;
 import ir.soroushtabesh.hearthstone.util.cli.PrintUtil;
+import ir.soroushtabesh.hearthstone.util.db.DBUtil;
 import ir.soroushtabesh.hearthstone.views.cli.CLIActivity;
 import org.hibernate.Session;
 

@@ -1,9 +1,9 @@
 package ir.soroushtabesh.hearthstone.views.cli;
 
-import ir.soroushtabesh.hearthstone.util.DBUtil;
 import ir.soroushtabesh.hearthstone.util.Logger;
 import ir.soroushtabesh.hearthstone.util.cli.CommandProcessor;
 import ir.soroushtabesh.hearthstone.util.cli.InputUtil;
+import ir.soroushtabesh.hearthstone.util.db.DBUtil;
 import ir.soroushtabesh.hearthstone.views.cli.activities.StartPage;
 
 import java.io.File;

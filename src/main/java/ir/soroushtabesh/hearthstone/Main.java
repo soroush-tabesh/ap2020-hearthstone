@@ -1,7 +1,7 @@
 package ir.soroushtabesh.hearthstone;
 
 import ir.soroushtabesh.hearthstone.util.Logger;
-import ir.soroushtabesh.hearthstone.util.Seeding;
+import ir.soroushtabesh.hearthstone.util.db.Seeding;
 
 public class Main {
     public static void main(String[] args) {

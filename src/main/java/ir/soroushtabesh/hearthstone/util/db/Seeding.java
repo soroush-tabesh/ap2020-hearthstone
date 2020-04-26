@@ -1,4 +1,4 @@
-package ir.soroushtabesh.hearthstone.util;
+package ir.soroushtabesh.hearthstone.util.db;
 
 import ir.soroushtabesh.hearthstone.models.*;
 import ir.soroushtabesh.hearthstone.models.cards.Minion;
@@ -6,6 +6,8 @@ import ir.soroushtabesh.hearthstone.models.cards.Spell;
 import ir.soroushtabesh.hearthstone.models.cards.Weapon;
 import ir.soroushtabesh.hearthstone.models.scripts.Dummy;
 import ir.soroushtabesh.hearthstone.models.scripts.HeroPower;
+import ir.soroushtabesh.hearthstone.util.HashUtil;
+import ir.soroushtabesh.hearthstone.util.Logger;
 import org.hibernate.Session;
 
 import java.io.File;
@@ -84,8 +86,6 @@ public class Seeding {
 
     public static void seed() {
         try {
-            Session session = DBUtil.getOpenSession();
-
             Hero mage = new Hero();
             Hero warlock = new Hero();
             Hero rogue = new Hero();
@@ -120,39 +120,11 @@ public class Seeding {
             Weapon weapon2 = new Weapon();
             Weapon weapon3 = new Weapon();
 
-            DBUtil.pushSingleObject(mage, session);
-            DBUtil.pushSingleObject(warlock, session);
-            DBUtil.pushSingleObject(rogue, session);
+            DBUtil.pushObjects(mage, warlock, rogue, heroPower_mage, heroPower_rogue, heroPower_warlock
+                    , mage_spec_morph, warlock_spec_dread, rogue_spec_smith, spell1, spell2, spell3, spell4,
+                    minion1, minion2, minion3, minion4, minion5, minion6, minion7, minion8, quest1
+                    , quest2, quest3, weapon1, weapon2, weapon3);
 
-            DBUtil.pushSingleObject(heroPower_mage, session);
-            DBUtil.pushSingleObject(heroPower_rogue, session);
-            DBUtil.pushSingleObject(heroPower_warlock, session);
-
-            DBUtil.pushSingleObject(mage_spec_morph, session);
-            DBUtil.pushSingleObject(warlock_spec_dread, session);
-            DBUtil.pushSingleObject(rogue_spec_smith, session);
-
-            DBUtil.pushSingleObject(spell1, session);
-            DBUtil.pushSingleObject(spell2, session);
-            DBUtil.pushSingleObject(spell3, session);
-            DBUtil.pushSingleObject(spell4, session);
-
-            DBUtil.pushSingleObject(minion1, session);
-            DBUtil.pushSingleObject(minion2, session);
-            DBUtil.pushSingleObject(minion3, session);
-            DBUtil.pushSingleObject(minion4, session);
-            DBUtil.pushSingleObject(minion5, session);
-            DBUtil.pushSingleObject(minion6, session);
-            DBUtil.pushSingleObject(minion7, session);
-            DBUtil.pushSingleObject(minion8, session);
-
-            DBUtil.pushSingleObject(quest1, session);
-            DBUtil.pushSingleObject(quest2, session);
-            DBUtil.pushSingleObject(quest3, session);
-
-            DBUtil.pushSingleObject(weapon1, session);
-            DBUtil.pushSingleObject(weapon2, session);
-            DBUtil.pushSingleObject(weapon3, session);
 
             mage.setName("Chaghal");
             mage.setHp(30);
@@ -311,35 +283,10 @@ public class Seeding {
             weapon3.setPrice(1);
             weapon3.setMana(1);
 
-            DBUtil.pushSingleObject(mage, session);
-            DBUtil.pushSingleObject(warlock, session);
-            DBUtil.pushSingleObject(rogue, session);
-
-            DBUtil.pushSingleObject(mage_spec_morph, session);
-            DBUtil.pushSingleObject(warlock_spec_dread, session);
-            DBUtil.pushSingleObject(rogue_spec_smith, session);
-
-            DBUtil.pushSingleObject(spell1, session);
-            DBUtil.pushSingleObject(spell2, session);
-            DBUtil.pushSingleObject(spell3, session);
-            DBUtil.pushSingleObject(spell4, session);
-
-            DBUtil.pushSingleObject(minion1, session);
-            DBUtil.pushSingleObject(minion2, session);
-            DBUtil.pushSingleObject(minion3, session);
-            DBUtil.pushSingleObject(minion4, session);
-            DBUtil.pushSingleObject(minion5, session);
-            DBUtil.pushSingleObject(minion6, session);
-            DBUtil.pushSingleObject(minion7, session);
-            DBUtil.pushSingleObject(minion8, session);
-
-            DBUtil.pushSingleObject(quest1, session);
-            DBUtil.pushSingleObject(quest2, session);
-            DBUtil.pushSingleObject(quest3, session);
-
-            DBUtil.pushSingleObject(weapon1, session);
-            DBUtil.pushSingleObject(weapon2, session);
-            DBUtil.pushSingleObject(weapon3, session);
+            DBUtil.pushObjects(mage, warlock, rogue, heroPower_mage, heroPower_rogue, heroPower_warlock
+                    , mage_spec_morph, warlock_spec_dread, rogue_spec_smith, spell1, spell2, spell3, spell4,
+                    minion1, minion2, minion3, minion4, minion5, minion6, minion7, minion8, quest1
+                    , quest2, quest3, weapon1, weapon2, weapon3);
         } catch (Exception e) {
             e.printStackTrace();
         }
