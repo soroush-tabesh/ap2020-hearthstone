@@ -60,8 +60,7 @@ public class CLIManager {
             System.out.println(s);
         }
         System.out.println(">>universal help");
-        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-        File file = new File(classLoader.getResource("help.txt").getFile());
+        File file = new File(getClass().getResource("help.txt").getFile());
         String content = "null";
         try {
             content = new String(Files.readAllBytes(file.toPath()));

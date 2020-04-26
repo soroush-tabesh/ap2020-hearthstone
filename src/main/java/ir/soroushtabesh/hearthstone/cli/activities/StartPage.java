@@ -61,8 +61,7 @@ public class StartPage extends CLIActivity {
             getCLIManager().stopCurrent();
             dummy = true;
         } else {
-            ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-            File file = new File(classLoader.getResource("banner.txt").getFile());
+            File file = new File(getClass().getResource("banner.txt").getFile());
             String content = "null";
             try {
                 content = new String(Files.readAllBytes(file.toPath()));
