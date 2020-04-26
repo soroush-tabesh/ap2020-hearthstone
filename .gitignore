@@ -3,3 +3,4 @@
 gamedata.mv.db
 gamedata.trace.db
 build
+*.log

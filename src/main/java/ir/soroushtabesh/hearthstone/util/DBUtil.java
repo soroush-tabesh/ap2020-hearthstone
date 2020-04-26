@@ -17,7 +17,6 @@ public class DBUtil {
             try {
                 registry = new StandardServiceRegistryBuilder()
                         .configure()
-                        //.applySetting("",)
                         .build();
                 MetadataSources sources = new MetadataSources(registry);
                 Metadata metadata = sources.getMetadataBuilder().build();
@@ -26,7 +25,6 @@ public class DBUtil {
                 e.printStackTrace();
                 if (registry != null)
                     StandardServiceRegistryBuilder.destroy(registry);
-
             }
         }
         return sessionFactory;
@@ -61,5 +59,6 @@ public class DBUtil {
         session.merge(object);
         session.getTransaction().commit();
     }
+
 
 }
