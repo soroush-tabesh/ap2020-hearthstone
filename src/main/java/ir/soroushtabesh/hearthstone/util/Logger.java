@@ -20,8 +20,6 @@ public class Logger {
         } else {
             log.setUser_id(-1);
         }
-//        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-//        LocalDateTime now = LocalDateTime.now();
         log.setDate(new Date());
         log.setEvent(event);
         log.setDescription(desc);

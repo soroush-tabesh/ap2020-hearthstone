@@ -1,4 +1,4 @@
-package ir.soroushtabesh.hearthstone.cli;
+package ir.soroushtabesh.hearthstone.util.cli;
 
 import java.util.Arrays;
 import java.util.Map;

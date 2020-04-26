@@ -1,4 +1,6 @@
-package ir.soroushtabesh.hearthstone.cli;
+package ir.soroushtabesh.hearthstone.views.cli;
+
+import ir.soroushtabesh.hearthstone.util.cli.CommandProcessor;
 
 import java.util.Scanner;
 

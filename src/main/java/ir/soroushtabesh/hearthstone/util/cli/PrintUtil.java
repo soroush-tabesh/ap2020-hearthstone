@@ -1,4 +1,4 @@
-package ir.soroushtabesh.hearthstone.util;
+package ir.soroushtabesh.hearthstone.util.cli;
 
 import java.util.Collection;
 

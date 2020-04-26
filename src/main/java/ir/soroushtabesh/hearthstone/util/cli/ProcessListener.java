@@ -1,4 +1,4 @@
-package ir.soroushtabesh.hearthstone.cli;
+package ir.soroushtabesh.hearthstone.util.cli;
 
 public interface ProcessListener {
     void run(ProcessListenerEvent event);

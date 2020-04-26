@@ -9,7 +9,7 @@
 
 /Users/soroushtabesh/IdeaProjects/ap2020-hearthstone/src/main/resources/hibernate.cfg.xml</remarks>
       <jdbc-driver>org.h2.Driver</jdbc-driver>
-      <jdbc-url>jdbc:h2:$PROJECT_DIR$/gamedata</jdbc-url>
+      <jdbc-url>jdbc:h2:$PROJECT_DIR$/gameData</jdbc-url>
     </data-source>
   </component>
 </project>

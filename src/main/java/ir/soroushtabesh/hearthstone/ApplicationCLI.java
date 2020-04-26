@@ -1,9 +1,9 @@
 package ir.soroushtabesh.hearthstone;
 
-import ir.soroushtabesh.hearthstone.cli.CLIManager;
-import ir.soroushtabesh.hearthstone.cli.activities.Collections;
-import ir.soroushtabesh.hearthstone.cli.activities.StartPage;
 import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
+import ir.soroushtabesh.hearthstone.views.cli.CLIManager;
+import ir.soroushtabesh.hearthstone.views.cli.activities.Collections;
+import ir.soroushtabesh.hearthstone.views.cli.activities.StartPage;
 
 /**
  * <b>**Deprecated**</b><br>

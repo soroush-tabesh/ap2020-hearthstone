@@ -1,5 +1,6 @@
 package ir.soroushtabesh.hearthstone.util;
 
+import ir.soroushtabesh.hearthstone.util.cli.InputUtil;
 import org.junit.Test;
 
 import java.util.Arrays;

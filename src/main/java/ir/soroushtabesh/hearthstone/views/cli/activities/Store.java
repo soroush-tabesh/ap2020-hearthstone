@@ -1,7 +1,5 @@
-package ir.soroushtabesh.hearthstone.cli.activities;
+package ir.soroushtabesh.hearthstone.views.cli.activities;
 
-import ir.soroushtabesh.hearthstone.cli.CLIActivity;
-import ir.soroushtabesh.hearthstone.cli.CommandProcessor;
 import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
 import ir.soroushtabesh.hearthstone.models.Card;
 import ir.soroushtabesh.hearthstone.models.Deck;
@@ -9,7 +7,9 @@ import ir.soroushtabesh.hearthstone.models.Log;
 import ir.soroushtabesh.hearthstone.models.Player;
 import ir.soroushtabesh.hearthstone.util.DBUtil;
 import ir.soroushtabesh.hearthstone.util.Logger;
-import ir.soroushtabesh.hearthstone.util.PrintUtil;
+import ir.soroushtabesh.hearthstone.util.cli.CommandProcessor;
+import ir.soroushtabesh.hearthstone.util.cli.PrintUtil;
+import ir.soroushtabesh.hearthstone.views.cli.CLIActivity;
 import org.hibernate.Session;
 
 import java.util.ArrayList;

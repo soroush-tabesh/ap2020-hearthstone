@@ -66,10 +66,9 @@ public class PlayerManager {
     public Message makeAccount(String username, String password) {
         password = HashUtil.hash(password);
         Player player = new Player(username, password);
-        Transaction transaction = null;
         try {
             Session session = DBUtil.getOpenSession();
-            transaction = session.beginTransaction();
+            Transaction transaction = session.beginTransaction();
             boolean exist = session.createQuery("from Player where username=:username and deleted=false ")
                     .setParameter("username", username).uniqueResult() != null;
             if (exist)
