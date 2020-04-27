@@ -315,4 +315,7 @@ public class Seeding {
         if (!file.exists())
             seed();
     }
+
+    private Seeding() {
+    }
 }

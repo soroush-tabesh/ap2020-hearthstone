@@ -8,6 +8,9 @@ import ir.soroushtabesh.hearthstone.util.db.DBUtil;
 import java.util.Date;
 
 public class Logger {
+    private Logger() {
+    }
+
     public static void log(String event, String desc) {
         log(event, desc, Log.Severity.INFO);
     }

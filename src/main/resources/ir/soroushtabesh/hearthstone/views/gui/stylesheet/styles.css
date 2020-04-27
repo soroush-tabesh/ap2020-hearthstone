@@ -1,0 +1,18 @@
+#menuPane {
+    -fx-background-image: url("../image/game-page-mq.jpg");
+    -fx-background-size: stretch;
+    -fx-background-position: center;
+}
+
+#windowPane {
+    -fx-background-image: url("../image/start-page-mq.jpg");
+    -fx-background-size: stretch;
+    -fx-background-position: center;
+}
+
+#collectionPane {
+    /*-fx-background-image: url("../image/test.png");*/
+    -fx-background-size: stretch;
+    -fx-background-position: center;
+}
+

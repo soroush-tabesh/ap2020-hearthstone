@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.StackPane?>
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           xmlns="http://javafx.com/javafx"
+           fx:controller="ir.soroushtabesh.hearthstone.views.gui.controllers.GameWindowController"
+           prefHeight="800.0" prefWidth="1200.0"
+           stylesheets="@../stylesheet/styles.css"
+           fx:id="windowPane">
+
+
+</StackPane>

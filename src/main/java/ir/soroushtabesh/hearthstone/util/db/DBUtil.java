@@ -99,4 +99,7 @@ public class DBUtil {
         return res;
     }
 
+    private DBUtil() {
+    }
+
 }
