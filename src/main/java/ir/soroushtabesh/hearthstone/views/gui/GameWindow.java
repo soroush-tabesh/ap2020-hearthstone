@@ -80,6 +80,7 @@ public class GameWindow extends Application {
         sceneManager.addScene(new MenuScene());
         sceneManager.addScene(new ShopScene());
         sceneManager.addScene(new StatusScene());
+        sceneManager.addScene(new SettingScene());
     }
 
     public Stage getStage() {

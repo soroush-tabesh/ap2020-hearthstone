@@ -1,5 +1,6 @@
 package ir.soroushtabesh.hearthstone.views.gui.controllers;
 
+import ir.soroushtabesh.hearthstone.util.FXUtil;
 import ir.soroushtabesh.hearthstone.views.gui.AbstractScene;
 import ir.soroushtabesh.hearthstone.views.gui.GameWindow;
 import javafx.scene.layout.StackPane;
@@ -51,9 +52,11 @@ public class SceneManager {
 
     private void changeScene(AbstractScene target, Object message) {
         applyTransit(target);
-        target.onStart(message);
-        if (currentScene != null)
-            currentScene.onStop();
+        FXUtil.runLater(() -> target.onStart(message), 0);
+        if (currentScene != null) {
+            AbstractScene temp = currentScene;
+            FXUtil.runLater(temp::onStop, 0);
+        }
         currentScene = target;
     }
 
