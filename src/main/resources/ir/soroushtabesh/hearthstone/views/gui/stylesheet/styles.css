@@ -1,3 +1,11 @@
+@font-face {
+    src: url("../font/Belweb.ttf");
+}
+
+.root {
+    -fx-font-family: "Belwe Bd BT";
+}
+
 #menuPane {
     -fx-background-image: url("../image/game-page-mq.jpg");
     -fx-background-size: stretch;
@@ -11,8 +19,60 @@
 }
 
 #collectionPane {
-    /*-fx-background-image: url("../image/test.png");*/
     -fx-background-size: stretch;
     -fx-background-position: center;
 }
 
+.menu_button {
+    -fx-background-color: transparent;
+    -fx-font-size: 22;
+    -fx-label-padding: 0;
+    -fx-padding: 0;
+}
+
+.menu_button:hover {
+    -fx-text-fill: gainsboro;
+    -fx-effect: dropshadow(three-pass-box, #363636, 15, 0.7, 0, 0);
+}
+
+.menu_button:pressed {
+    -fx-text-fill: gold;
+    -fx-effect: dropshadow(three-pass-box, #363636, 25, 0.7, 0, 0);
+}
+
+#collectionButton {
+    -fx-text-fill: gainsboro;
+    -fx-effect: dropshadow(three-pass-box, #363636, 4, 0.5, 0, 0);
+}
+
+#collectionButton:hover {
+    -fx-text-fill: #363636;
+    -fx-effect: dropshadow(three-pass-box, gainsboro, 15, 0.5, 0, 0);
+}
+
+#collectionButton:pressed {
+    -fx-text-fill: gold;
+    -fx-effect: dropshadow(three-pass-box, gainsboro, 25, 0.5, 0, 0);
+}
+
+#shopButton {
+    -fx-shape: "M 100 300 A 50 50 0 1 1 700 300 A 50 50 0 1 1 100 300";
+}
+
+#shopButton:hover {
+    -fx-border-color: gold;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(three-pass-box, gold, 15, 0.8, 0, 0);
+}
+
+#shopButton:hover {
+    -fx-border-color: gold;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(three-pass-box, gold, 15, 0.8, 0, 0);
+}
+
+#shopButton:pressed {
+    -fx-border-color: gold;
+    -fx-border-width: 3;
+    -fx-effect: dropshadow(three-pass-box, gold, 25, 0.8, 0, 0);
+}

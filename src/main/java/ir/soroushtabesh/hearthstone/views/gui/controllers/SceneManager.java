@@ -31,21 +31,33 @@ public class SceneManager {
         windowPane.getChildren().add(scene.getPane());
     }
 
-
     public <T extends AbstractScene> void showScene(Class<T> tClass) {
+        showScene(tClass, null);
+    }
+
+    public <T extends AbstractScene> void showScene(Class<T> tClass, Object message) {
         System.out.println("SceneManager.showScene");
         if (currentScene != null && currentScene.getClass().equals(tClass)) {
             return;
         }
         for (AbstractScene scene : scenes) {
             if (scene.getClass().equals(tClass)) {
-                transit(scene);
-                currentScene = scene;
+                changeScene(scene, message);
+                return;
             }
         }
+        throw new NoSuchSceneException();
     }
 
-    private void transit(AbstractScene target) {
+    private void changeScene(AbstractScene target, Object message) {
+        applyTransit(target);
+        target.onStart(message);
+        if (currentScene != null)
+            currentScene.onStop();
+        currentScene = target;
+    }
+
+    private void applyTransit(AbstractScene target) {
         target.getPane().toFront();
         target.fadeIn();
         if (currentScene != null) {

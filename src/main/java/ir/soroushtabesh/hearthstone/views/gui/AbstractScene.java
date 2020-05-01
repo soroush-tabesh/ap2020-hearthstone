@@ -25,7 +25,7 @@ public abstract class AbstractScene {
             System.err.println(format);
             return;
         }
-        controller = fxmlLoader.getController();
+        setController(fxmlLoader.getController());
         setPane(root);
     }
 
@@ -41,13 +41,15 @@ public abstract class AbstractScene {
         return controller;
     }
 
+    private void setController(AbstractSceneController controller) {
+        this.controller = controller;
+    }
+
     public void fadeIn() {
         getController().setDisable(false);
     }
 
     public void fadeOut() {
-        //todo: use fade and scale
-        //todo: disable after fade
         Timeline timeline = new Timeline(
                 new KeyFrame(Duration.millis(0)
                         , new KeyValue(getPane().opacityProperty(), 1, AnimateFXInterpolator.EASE)
@@ -71,5 +73,12 @@ public abstract class AbstractScene {
         });
         timeline.play();
     }
+
+    public void onStart(Object message) {
+    }
+
+    public void onStop() {
+    }
+
 
 }

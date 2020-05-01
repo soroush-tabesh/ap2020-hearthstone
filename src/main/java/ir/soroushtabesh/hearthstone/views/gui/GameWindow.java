@@ -1,6 +1,5 @@
 package ir.soroushtabesh.hearthstone.views.gui;
 
-import ir.soroushtabesh.hearthstone.controllers.AudioManager;
 import ir.soroushtabesh.hearthstone.util.FXUtil;
 import ir.soroushtabesh.hearthstone.views.gui.controllers.GameWindowController;
 import ir.soroushtabesh.hearthstone.views.gui.controllers.SceneManager;
@@ -23,13 +22,14 @@ public class GameWindow extends Application {
     @Override
     public void start(Stage stage) {
         setStage(stage);
-        if (!setUpStage(stage)) return;
+        if (!setUpStage(stage)) throw new RuntimeException("could not load fxml");
         gameInit();
         FXUtil.runLater(() -> {
             SceneManager.getInstance().showScene(MenuScene.class);
-            AudioManager.getInstance().startBackgroundMusic();
-//            FXUtil.runLater(() -> SceneManager.getInstance().showScene(CollectionScene.class), 2000);
-        }, 2000);
+//            FXUtil.runLater(()->SceneManager.getInstance().showScene(CollectionScene.class),2000);
+//            AudioManager.getInstance().startBackgroundMusic();
+//        }, 2000);
+        }, 0);
     }
 
     private boolean setUpStage(Stage stage) {
@@ -59,6 +59,7 @@ public class GameWindow extends Application {
         sceneManager.addScene(new CollectionScene());
         sceneManager.addScene(new MenuScene());
         sceneManager.addScene(new ShopScene());
+        sceneManager.addScene(new StatusScene());
     }
 
     public Stage getStage() {

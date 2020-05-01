@@ -48,7 +48,7 @@ public class DBUtil {
     }
 
     public static void pushSingleObject(Object object, Session session) {
-        performTransaction(session, (session1 -> {
+        doInJPA(session, (session1 -> {
             rawPush(object, session1);
             return null;
         }));
@@ -59,7 +59,7 @@ public class DBUtil {
     }
 
     public static void pushObjects(Object... args) {
-        performTransaction((session) -> {
+        doInJPA((session) -> {
             for (Object arg : args) {
                 rawPush(arg, session);
             }
@@ -68,7 +68,7 @@ public class DBUtil {
     }
 
     public static void pushObjects(Session session, Object... args) {
-        performTransaction(session, (session1) -> {
+        doInJPA(session, (session1) -> {
             for (Object arg : args) {
                 rawPush(arg, session1);
             }
@@ -81,18 +81,18 @@ public class DBUtil {
     }
 
     public static <T> T mergeSingleObject(T object, Session session) {
-        return performTransaction(session, session1 -> rawMerge(object, session1));
+        return doInJPA(session, session1 -> rawMerge(object, session1));
     }
 
     public static <T> T mergeSingleObject(T object) {
         return mergeSingleObject(object, getOpenSession());
     }
 
-    public static <T> T performTransaction(Transact<T> transact) {
-        return performTransaction(getOpenSession(), transact);
+    public static <T> T doInJPA(Transact<T> transact) {
+        return doInJPA(getOpenSession(), transact);
     }
 
-    public static <T> T performTransaction(Session session, Transact<T> transact) {
+    public static <T> T doInJPA(Session session, Transact<T> transact) {
         session.beginTransaction();
         T res = transact.transact(session);
         session.getTransaction().commit();

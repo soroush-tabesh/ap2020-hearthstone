@@ -125,7 +125,7 @@ public class Seeding {
                     minion1, minion2, minion3, minion4, minion5, minion6, minion7, minion8, quest1
                     , quest2, quest3, weapon1, weapon2, weapon3);
 
-            DBUtil.performTransaction(session -> {
+            DBUtil.doInJPA(session -> {
                 mage.setName("Chaghal");
                 mage.setHp(30);
                 mage.setHeroPower(heroPower_mage);
