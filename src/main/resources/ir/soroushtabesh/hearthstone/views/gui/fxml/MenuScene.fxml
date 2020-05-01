@@ -7,15 +7,16 @@
             fx:controller="ir.soroushtabesh.hearthstone.views.gui.controllers.MenuSceneController">
     <children>
         <Button fx:id="playButton" alignment="CENTER" layoutX="576.0" layoutY="229.0" mnemonicParsing="false"
-                styleClass="menu_button" text="Play" onAction="#playButtonAction"/>
+                onAction="#playButtonAction" styleClass="menu_button" text="Play"/>
         <Button fx:id="shopButton" alignment="CENTER" layoutX="113.0" layoutY="658.0" mnemonicParsing="false"
-                prefHeight="98.0" prefWidth="99.0" styleClass="menu_button" onAction="#shopButtonAction"/>
+                onAction="#shopButtonAction" prefHeight="98.0" prefWidth="99.0" styleClass="menu_button"/>
         <Button fx:id="statusButton" alignment="CENTER" layoutX="566.0" layoutY="285.0" mnemonicParsing="false"
-                styleClass="menu_button" text="Status" onAction="#statusButtonAction"/>
+                onAction="#statusButtonAction" styleClass="menu_button" text="Status"/>
         <Button fx:id="settingButton" alignment="CENTER" layoutX="561.0" layoutY="342.0" mnemonicParsing="false"
-                styleClass="menu_button" text="Setting" onAction="#settingButtonAction"/>
+                onAction="#settingButtonAction" styleClass="menu_button" text="Setting"/>
         <Button fx:id="collectionButton" alignment="CENTER" layoutX="609.0" layoutY="653.0" mnemonicParsing="false"
-                styleClass="menu_button" text="Collection" onAction="#collectionButtonAction"/>
+                onAction="#collectionButtonAction" styleClass="menu_button" text="Collection"/>
+        <Label fx:id="coins" layoutX="1038.0" layoutY="762.0" text="0"/>
     </children>
 
 </AnchorPane>

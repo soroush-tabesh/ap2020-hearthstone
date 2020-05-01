@@ -3,9 +3,12 @@ package ir.soroushtabesh.hearthstone.views.gui.controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 
 public class MenuSceneController extends AbstractSceneController {
 
+    @FXML
+    private Label coins;
     @FXML
     private Button playButton;
     @FXML

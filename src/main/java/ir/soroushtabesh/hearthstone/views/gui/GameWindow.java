@@ -5,8 +5,11 @@ import ir.soroushtabesh.hearthstone.views.gui.controllers.GameWindowController;
 import ir.soroushtabesh.hearthstone.views.gui.controllers.SceneManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.ImageCursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -14,6 +17,12 @@ import java.io.IOException;
 public class GameWindow extends Application {
     private Stage stage;
     private GameWindowController controller;
+    private Parent root = null;
+    private Scene scene = null;
+    private Image image;
+    private Image image2;
+    private ImageCursor cursorNormal;
+    private ImageCursor cursorDown;
 
     public static void main(String[] args) {
         launch(args);
@@ -34,7 +43,6 @@ public class GameWindow extends Application {
 
     private boolean setUpStage(Stage stage) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fxml/GameWindow.fxml"));
-        Parent root = null;
         try {
             root = fxmlLoader.load();
         } catch (IOException e) {
@@ -42,7 +50,8 @@ public class GameWindow extends Application {
             return false;
         }
         setController(fxmlLoader.getController());
-        stage.setScene(new Scene(root));
+        scene = new Scene(root);
+        stage.setScene(scene);
         stage.setTitle("Hearthstone - Soroush Tabesh");
         stage.setResizable(false);
         stage.show();
@@ -50,10 +59,21 @@ public class GameWindow extends Application {
     }
 
     private void gameInit() {
-        initializeSceneManager();
+        initSceneManager();
+        initCursor();
     }
 
-    private void initializeSceneManager() {
+    private void initCursor() {
+        image = new Image(getClass().getResourceAsStream("image/hearthstone-hand.png"));
+        image2 = new Image(getClass().getResourceAsStream("image/hearthstone-hand-down.png"));
+        cursorNormal = new ImageCursor(image);
+        cursorDown = new ImageCursor(image2);
+        scene.setCursor(cursorNormal);
+        scene.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> scene.setCursor(cursorDown));
+        scene.addEventFilter(MouseEvent.MOUSE_RELEASED, event -> scene.setCursor(cursorNormal));
+    }
+
+    private void initSceneManager() {
         SceneManager sceneManager = SceneManager.init(this);
         sceneManager.addScene(new BoardScene());
         sceneManager.addScene(new CollectionScene());
