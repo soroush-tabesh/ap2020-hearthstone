@@ -8,7 +8,6 @@ import ir.soroushtabesh.hearthstone.models.scripts.Dummy;
 import ir.soroushtabesh.hearthstone.models.scripts.HeroPower;
 import ir.soroushtabesh.hearthstone.util.HashUtil;
 import ir.soroushtabesh.hearthstone.util.Logger;
-import org.hibernate.Session;
 
 import java.io.File;
 import java.util.List;
@@ -23,65 +22,67 @@ public class Seeding {
 
     public static void initiate1() {
         Logger.log("test", "test", Log.Severity.WARNING);
-        try {
-            Session session = DBUtil.getOpenSession();
-            Player player = new Player("akbar", HashUtil.hash("akbar"));
-            ScriptModel scriptModel = new Dummy();
-            HeroPower heroPower = new HeroPower();
-            Hero hero = new Hero();
-            Deck deck = new Deck(hero, player);
-            Minion minion = new Minion();
-            Minion minion1 = new Minion();
+        DBUtil.doInJPA(session -> {
+            try {
+                Player player = new Player("akbar", HashUtil.hash("akbar"));
+                ScriptModel scriptModel = new Dummy();
+                HeroPower heroPower = new HeroPower();
+                Hero hero = new Hero();
+                Deck deck = new Deck(hero, player);
+                Minion minion = new Minion();
+                Minion minion1 = new Minion();
 
-            DBUtil.pushSingleObject(player, session);
-            DBUtil.pushSingleObject(scriptModel, session);
-            DBUtil.pushSingleObject(heroPower, session);
-            DBUtil.pushSingleObject(hero, session);
-            DBUtil.pushSingleObject(deck, session);
-            DBUtil.pushSingleObject(minion, session);
-            DBUtil.pushSingleObject(minion1, session);
+                session.saveOrUpdate(player);
+                session.saveOrUpdate(scriptModel);
+                session.saveOrUpdate(heroPower);
+                session.saveOrUpdate(hero);
+                session.saveOrUpdate(deck);
+                session.saveOrUpdate(minion);
+                session.saveOrUpdate(minion1);
 
-            player.addDeck(deck);
-            player.addOpenHero(hero);
-            player.addOwnedCard(minion);
-            player.addOwnedCard(minion1);
+                player.addDeck(deck);
+                player.addOpenHero(hero);
+                player.addOwnedCard(minion);
+                player.addOwnedCard(minion1);
 
-            hero.addSpecialCard(minion);
-            hero.setHeroClass(Hero.HeroClass.DRUID);
-            hero.setHeroPower(heroPower);
-            hero.setHp(40);
-            hero.setName("Akbar");
-            hero.setSpecialPower(scriptModel);
+                hero.addSpecialCard(minion);
+                hero.setHeroClass(Hero.HeroClass.DRUID);
+                hero.setHeroPower(heroPower);
+                hero.setHp(40);
+                hero.setName("Akbar");
+                hero.setSpecialPower(scriptModel);
 
-            deck.addCard(minion);
-            deck.addCard(minion1);
+                deck.addCard(minion);
+                deck.addCard(minion1);
 
-            minion.setCard_name("Ghozmit");
-            minion.setAttackPower(2);
-            minion.setHp(5);
-            minion.setMinionClass(Minion.MinionClass.BEAST);
-            minion.setDescription("Khafan");
-            minion.setHeroClass(hero.getHeroClass());
-            minion.setMana(3);
-            minion.setPrice(12);
-            minion.setRarity(Card.Rarity.RARE);
-            minion.setScriptModel(scriptModel);
+                minion.setCard_name("Ghozmit");
+                minion.setAttackPower(2);
+                minion.setHp(5);
+                minion.setMinionClass(Minion.MinionClass.BEAST);
+                minion.setDescription("Khafan");
+                minion.setHeroClass(hero.getHeroClass());
+                minion.setMana(3);
+                minion.setPrice(12);
+                minion.setRarity(Card.Rarity.RARE);
+                minion.setScriptModel(scriptModel);
 
-            minion1.setCard_name("Peshgel");
-            minion1.setAttackPower(3);
-            minion1.setHp(1);
-            minion1.setMinionClass(Minion.MinionClass.BEAST);
-            minion1.setDescription("Oskol");
-            minion1.setHeroClass(hero.getHeroClass());
-            minion1.setMana(1);
-            minion1.setPrice(3);
-            minion1.setRarity(Card.Rarity.EPIC);
-            minion1.setScriptModel(scriptModel);
+                minion1.setCard_name("Peshgel");
+                minion1.setAttackPower(3);
+                minion1.setHp(1);
+                minion1.setMinionClass(Minion.MinionClass.BEAST);
+                minion1.setDescription("Oskol");
+                minion1.setHeroClass(hero.getHeroClass());
+                minion1.setMana(1);
+                minion1.setPrice(3);
+                minion1.setRarity(Card.Rarity.EPIC);
+                minion1.setScriptModel(scriptModel);
 
-            DBUtil.pushSingleObject(player, session);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+                session.saveOrUpdate(player);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        });
     }
 
     public static void seed() {
@@ -291,23 +292,23 @@ public class Seeding {
     }
 
     public static void seedPlayer(Player player) {
-        try {
-            Session session = DBUtil.getOpenSession();
-            session.refresh(player);
-            List<Hero> heroes = session.createQuery("from Hero ", Hero.class).list();
-            Hero mage = heroes.get(0);
-            for (Hero hero : heroes) {
-                Deck deck = new Deck(hero, player);
-                player.addDeck(deck);
-                DBUtil.pushSingleObject(deck, session);
+        DBUtil.doInJPA(session -> {
+            try {
+                List<Hero> heroes = session.createQuery("from Hero ", Hero.class).list();
+                Hero mage = heroes.get(0);
+                for (Hero hero : heroes) {
+                    Deck deck = new Deck(hero, player);
+                    session.saveOrUpdate(deck);
+                    player.addDeck(deck);
+                }
+                List<Card> cards = session.createQuery("from Card where id < 13", Card.class).list();
+                player.getOpenHeroes().add(mage);
+                player.getOwnedCardsList().addAll(cards);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            List<Card> cards = session.createQuery("from Card where id < 13", Card.class).list();
-            player.getOpenHeroes().add(mage);
-            player.getOwnedCardsList().addAll(cards);
-            DBUtil.pushSingleObject(player, session);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            return null;
+        });
     }
 
     public static void initiate() {

@@ -5,7 +5,9 @@
             xmlns="http://javafx.com/javafx"
             fx:controller="ir.soroushtabesh.hearthstone.views.gui.controllers.BoardSceneController"
             fx:id="pane"
-            prefHeight="800.0" prefWidth="1200.0"
+            id="boardPane"
+            maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+            minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0"
             stylesheets="@../stylesheet/styles.css">
 
 

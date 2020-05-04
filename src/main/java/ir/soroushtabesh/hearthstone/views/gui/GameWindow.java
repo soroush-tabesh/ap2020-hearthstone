@@ -31,11 +31,11 @@ public class GameWindow extends Application {
     @Override
     public void start(Stage stage) {
         setStage(stage);
-        if (!setUpStage(stage)) throw new RuntimeException("could not load fxml");
+        if (!setUpStage(stage)) throw new RuntimeException("Could not load fxml");
         gameInit();
         FXUtil.runLater(() -> {
-            SceneManager.getInstance().showScene(MenuScene.class);
-//            FXUtil.runLater(()->SceneManager.getInstance().showScene(CollectionScene.class),2000);
+            SceneManager.getInstance().showScene(LoginScene.class);
+//            FXUtil.runLater(()->SceneManager.getInstance().showScene(MenuScene.class),2000);
 //            AudioManager.getInstance().startBackgroundMusic();
 //        }, 2000);
         }, 0);
@@ -81,6 +81,7 @@ public class GameWindow extends Application {
         sceneManager.addScene(new ShopScene());
         sceneManager.addScene(new StatusScene());
         sceneManager.addScene(new SettingScene());
+        sceneManager.addScene(new LoginScene());
     }
 
     public Stage getStage() {

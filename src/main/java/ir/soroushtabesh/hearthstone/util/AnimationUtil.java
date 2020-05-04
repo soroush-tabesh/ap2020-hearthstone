@@ -28,4 +28,16 @@ public class AnimationUtil {
                 )
         );
     }
+
+    public static Timeline getSceneFadeIn(Node node) {
+        return new Timeline(
+                new KeyFrame(Duration.millis(0),
+                        new KeyValue(node.opacityProperty(), 0, AnimateFXInterpolator.EASE)
+                ),
+                new KeyFrame(Duration.millis(500),
+                        new KeyValue(node.opacityProperty(), 1, AnimateFXInterpolator.EASE)
+                )
+
+        );
+    }
 }

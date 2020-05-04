@@ -5,8 +5,6 @@ import ir.soroushtabesh.hearthstone.util.HashUtil;
 import ir.soroushtabesh.hearthstone.util.Logger;
 import ir.soroushtabesh.hearthstone.util.db.DBUtil;
 import ir.soroushtabesh.hearthstone.util.db.Seeding;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 public class PlayerManager {
     private static PlayerManager instance;
@@ -29,20 +27,23 @@ public class PlayerManager {
 
     public Message authenticate(String username, String password) {
         password = HashUtil.hash(password);
-        try {
-            Session session = DBUtil.getOpenSession();
-            Player player = (Player) session.createQuery("from Player where username=:username and deleted=false ")
-                    .setParameter("username", username).uniqueResult();
-            if (player == null || !player.getPassword().equals(password)) {
-                return Message.WRONG;
+        String finalPassword = password;
+        return DBUtil.doInJPA((session) -> {
+            try {
+                Player player1 = (Player) session
+                        .createQuery("from Player where username=:username and deleted=false ")
+                        .setParameter("username", username).uniqueResult();
+                if (player1 == null || !player1.getPassword().equals(finalPassword)) {
+                    return Message.WRONG;
+                }
+                this.player = player1;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return Message.ERROR;
             }
-            this.player = player;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Message.ERROR;
-        }
-        Logger.log("login", player.getUsername());
-        return Message.SUCCESS;
+            Logger.log("login", player.getUsername());
+            return Message.SUCCESS;
+        });
     }
 
     public Message deleteAccount(String password) {
@@ -51,10 +52,7 @@ public class PlayerManager {
             return Message.WRONG;
         player.setDeleted(true);
         try {
-            Session session = DBUtil.getOpenSession();
-            Transaction transaction = session.beginTransaction();
-            session.merge(player);
-            transaction.commit();
+            DBUtil.pushSingleObject(player);
         } catch (Exception e) {
             e.printStackTrace();
             return Message.ERROR;
@@ -66,22 +64,24 @@ public class PlayerManager {
     public Message makeAccount(String username, String password) {
         password = HashUtil.hash(password);
         Player player = new Player(username, password);
-        try {
-            Session session = DBUtil.getOpenSession();
-            Transaction transaction = session.beginTransaction();
-            boolean exist = session.createQuery("from Player where username=:username and deleted=false ")
-                    .setParameter("username", username).uniqueResult() != null;
-            if (exist)
-                return Message.EXISTS;
-            session.save(player);
-            transaction.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Message.ERROR;
+        Message message = DBUtil.doInJPA(session -> {
+            try {
+                boolean exist = session.createQuery("from Player where username=:username and deleted=false ")
+                        .setParameter("username", username).uniqueResult() != null;
+                if (exist)
+                    return Message.EXISTS;
+                session.save(player);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return Message.ERROR;
+            }
+            Logger.log("sign-up", player.getUsername());
+            return Message.SUCCESS;
+        });
+        if (message == Message.SUCCESS) {
+            Seeding.seedPlayer(player);
         }
-        Seeding.seedPlayer(player);
-        Logger.log("sign-up", player.getUsername());
-        return Message.SUCCESS;
+        return message;
     }
 
     public Player getPlayer() {
@@ -90,8 +90,7 @@ public class PlayerManager {
 
     public void refreshPlayer() {
         try {
-            Session session = DBUtil.getOpenSession();
-            session.refresh(player);
+            player = DBUtil.doInJPA(session -> session.get(player.getClass(), player.getId()));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -11,6 +11,7 @@ public class DBUtil {
     private static StandardServiceRegistry registry;
     private static SessionFactory sessionFactory;
     private static Session session;
+    private static final Object lock = new Object();
 
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
@@ -37,7 +38,7 @@ public class DBUtil {
             StandardServiceRegistryBuilder.destroy(registry);
     }
 
-    public static Session getOpenSession() {
+    private static Session getOpenSession() {
         if (session == null || !session.isOpen())
             session = getSessionFactory().openSession();
         return session;
@@ -93,9 +94,25 @@ public class DBUtil {
     }
 
     public static <T> T doInJPA(Session session, Transact<T> transact) {
-        session.beginTransaction();
-        T res = transact.transact(session);
-        session.getTransaction().commit();
+        T res;
+        synchronized (lock) {
+            boolean isActive = session.getTransaction().isActive();
+            if (!isActive)
+                session.beginTransaction();
+            res = transact.transact(session);
+            if (!isActive)
+                session.getTransaction().commit();
+        }
+        return res;
+    }
+
+    public static <T> T doInJPATemp(Transact<T> transact) {
+        T res;
+        try (Session session = getSessionFactory().openSession()) {
+            session.beginTransaction();
+            res = transact.transact(session);
+            session.getTransaction().commit();
+        }
         return res;
     }
 

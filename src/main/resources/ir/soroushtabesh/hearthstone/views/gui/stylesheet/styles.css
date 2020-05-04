@@ -1,26 +1,63 @@
+/*Global*/
 @font-face {
     src: url("../font/Belweb.ttf");
 }
 
 .root {
     -fx-font-family: "Belwe Bd BT";
+    -fx-background-size: stretch;
+    -fx-background-position: center;
 }
 
-#menuPane {
-    -fx-background-image: url("../image/game-page-mq.jpg");
+.label_med {
+    -fx-font-size: 22;
+    -fx-text-fill: gainsboro;
+    -fx-effect: dropshadow(gaussian, #363636, 2, 0.8, 0, 0);
+}
+
+.label_small {
+    -fx-font-size: 16;
+    -fx-text-fill: gainsboro;
+    -fx-effect: dropshadow(gaussian, #363636, 2, 0.8, 0, 0);
+}
+
+.label_xsmall {
+    -fx-font-size: 10;
+    -fx-text-fill: gainsboro;
+    -fx-effect: dropshadow(gaussian, #363636, 2, 0.7, 0, 0);
+}
+
+.button-native {
+    -fx-background-color: transparent;
+    -fx-background-image: url("../image/btnfront.png");
+    -fx-background-size: stretch;
+    -fx-background-position: center;
+}
+
+.coin-area {
+    -fx-background-image: url("../image/golddi.png");
     -fx-background-size: stretch;
     -fx-background-position: center;
 }
 
 #windowPane {
     -fx-background-image: url("../image/start-page-mq.jpg");
+}
+
+/*****************************************************************************************/
+
+/*Login,Setting*/
+#loginPane, #settingPane {
+    -fx-background-image: url("../image/empty-bg.png");
     -fx-background-size: stretch;
     -fx-background-position: center;
 }
 
-#collectionPane {
-    -fx-background-size: stretch;
-    -fx-background-position: center;
+/*****************************************************************************************/
+
+/*Main Menu*/
+#menuPane {
+    -fx-background-image: url("../image/game-page-mq.jpg");
 }
 
 .menu_button {
@@ -81,3 +118,45 @@
     -fx-text-fill: gainsboro;
     -fx-font-size: 16;
 }
+
+/*****************************************************************************************/
+
+/*Collection*/
+#collectionPane {
+    -fx-background-image: url("../image/collection-page.jpg");
+}
+
+/*****************************************************************************************/
+
+/*Shop*/
+#shopPane {
+    -fx-background-image: url("../image/empty-bg.png");
+}
+
+.tab-pane {
+    -fx-border-color: black;
+    -fx-border-radius: 2;
+    -fx-border-width: 2;
+}
+
+.card-image {
+    -fx-border-color: black;
+    -fx-border-radius: 2;
+    -fx-border-width: 2;
+    -fx-background-color: rgba(154, 154, 154, 0.29);
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+/*****************************************************************************************/

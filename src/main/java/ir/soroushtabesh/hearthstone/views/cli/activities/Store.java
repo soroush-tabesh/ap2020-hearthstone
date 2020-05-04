@@ -62,30 +62,34 @@ public class Store extends CLIActivity {
     }
 
     private void showSalable() {
-        try {
-            Session session = DBUtil.getOpenSession();
-            session.refresh(PlayerManager.getInstance().getPlayer());
-            Collection<Card> allCards = getSalableCards();
-            System.out.println("Salable cards:");
-            PrintUtil.printList(allCards);
-            Logger.log("store", "ls -s");
-        } catch (Exception e) {
-            e.printStackTrace();
-            Logger.log("store", "ls -s: db error", Log.Severity.FATAL);
-        }
+        DBUtil.doInJPA(session -> {
+            try {
+                session.refresh(PlayerManager.getInstance().getPlayer());
+                Collection<Card> allCards = getSalableCards();
+                System.out.println("Salable cards:");
+                PrintUtil.printList(allCards);
+                Logger.log("store", "ls -s");
+            } catch (Exception e) {
+                e.printStackTrace();
+                Logger.log("store", "ls -s: db error", Log.Severity.FATAL);
+            }
+            return null;
+        });
     }
 
     private void showPurchasable() {
-        try {
-            Session session = DBUtil.getOpenSession();
-            session.refresh(PlayerManager.getInstance().getPlayer());
-            System.out.println("Purchasable cards:");
-            PrintUtil.printList(getPurchasableCards(session));
-            Logger.log("store", "ls -b");
-        } catch (Exception e) {
-            e.printStackTrace();
-            Logger.log("store", "ls -s: db error", Log.Severity.FATAL);
-        }
+        DBUtil.doInJPA(session -> {
+            try {
+                session.refresh(PlayerManager.getInstance().getPlayer());
+                System.out.println("Purchasable cards:");
+                PrintUtil.printList(getPurchasableCards(session));
+                Logger.log("store", "ls -b");
+            } catch (Exception e) {
+                e.printStackTrace();
+                Logger.log("store", "ls -s: db error", Log.Severity.FATAL);
+            }
+            return null;
+        });
     }
 
     private Collection<Card> getPurchasableCards(Session session) {
@@ -106,59 +110,64 @@ public class Store extends CLIActivity {
     }
 
     private void buyCard(String cardname) {
-        try {
-            Session session = DBUtil.getOpenSession();
-            Player player = PlayerManager.getInstance().getPlayer();
-            session.refresh(player);
-            Collection<Card> purchasableCards = getPurchasableCards(session);
-            Card card = Card.getCardByName(cardname, session);
-            if (card == null) {
-                System.out.println("No such card Exists...");
-                return;
+        DBUtil.doInJPA(session -> {
+            try {
+                Player player = PlayerManager.getInstance().getPlayer();
+                session.refresh(player);
+                Collection<Card> purchasableCards = getPurchasableCards(session);
+                Card card = Card.getCardByName(cardname, session);
+                if (card == null) {
+                    System.out.println("No such card Exists...");
+                    return null;
+                }
+                if (!purchasableCards.contains(card)) {
+                    System.out.println("Sorry you can't purchase this card. You already own this card.");
+                    return null;
+                }
+                if (card.getPrice() > player.getCoin()) {
+                    System.out.println("You don't have enough coin to buy this card");
+                    return null;
+                }
+                player.getOwnedCardsList().add(card);
+                player.setCoin(player.getCoin() - card.getPrice());
+                DBUtil.pushSingleObject(player, session);
+                System.out.println("Successfully Purchased!");
+                Logger.log("store", "buy: " + card.getCard_name());
+            } catch (Exception e) {
+                e.printStackTrace();
+                Logger.log("store", "buy: db error", Log.Severity.FATAL);
             }
-            if (!purchasableCards.contains(card)) {
-                System.out.println("Sorry you can't purchase this card. You already own this card.");
-                return;
-            }
-            if (card.getPrice() > player.getCoin()) {
-                System.out.println("You don't have enough coin to buy this card");
-                return;
-            }
-            player.getOwnedCardsList().add(card);
-            player.setCoin(player.getCoin() - card.getPrice());
-            DBUtil.pushSingleObject(player, session);
-            System.out.println("Successfully Purchased!");
-            Logger.log("store", "buy: " + card.getCard_name());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Logger.log("store", "buy: db error", Log.Severity.FATAL);
-        }
+            return null;
+        });
     }
 
     private void sellCard(String cardname) {
-        try {
-            Session session = DBUtil.getOpenSession();
-            Player player = PlayerManager.getInstance().getPlayer();
-            session.refresh(player);
-            Collection<Card> salableCards = getSalableCards();
-            Card card = Card.getCardByName(cardname, session);
-            if (card == null) {
-                System.out.println("No such card Exists...");
-                return;
+        DBUtil.doInJPA(session -> {
+            try {
+                Player player = PlayerManager.getInstance().getPlayer();
+                session.refresh(player);
+                Collection<Card> salableCards = getSalableCards();
+                Card card = Card.getCardByName(cardname, session);
+                if (card == null) {
+                    System.out.println("No such card Exists...");
+                    return null;
+                }
+                if (!salableCards.contains(card)) {
+                    System.out.println("Sorry you can't sell this card. Either you don't own this card or it's still in your decks.");
+                    return null;
+                }
+                player.getOwnedCardsList().remove(card);
+                player.setCoin(player.getCoin() + card.getPrice());
+                DBUtil.pushSingleObject(player, session);
+                System.out.println("Successfully Sold!");
+                Logger.log("store", "sell: " + card.getCard_name());
+            } catch (Exception e) {
+                e.printStackTrace();
+                Logger.log("store", "sell: db error", Log.Severity.FATAL);
             }
-            if (!salableCards.contains(card)) {
-                System.out.println("Sorry you can't sell this card. Either you don't own this card or it's still in your decks.");
-                return;
-            }
-            player.getOwnedCardsList().remove(card);
-            player.setCoin(player.getCoin() + card.getPrice());
-            DBUtil.pushSingleObject(player, session);
-            System.out.println("Successfully Sold!");
-            Logger.log("store", "sell: " + card.getCard_name());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Logger.log("store", "sell: db error", Log.Severity.FATAL);
-        }
+
+            return null;
+        });
     }
 
 

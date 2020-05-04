@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Point3D?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.AnchorPane?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" id="menuPane" fx:id="pane" prefHeight="800.0" prefWidth="1200.0"
-            stylesheets="@../stylesheet/styles.css" xmlns="http://javafx.com/javafx/10.0.2-internal"
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" id="menuPane" fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity"
+            minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0"
+            stylesheets="@../stylesheet/styles.css" xmlns="http://javafx.com/javafx/11.0.1"
             fx:controller="ir.soroushtabesh.hearthstone.views.gui.controllers.MenuSceneController">
     <children>
         <Button fx:id="playButton" alignment="CENTER" layoutX="576.0" layoutY="229.0" mnemonicParsing="false"
@@ -16,7 +21,27 @@
                 onAction="#settingButtonAction" styleClass="menu_button" text="Setting"/>
         <Button fx:id="collectionButton" alignment="CENTER" layoutX="609.0" layoutY="653.0" mnemonicParsing="false"
                 onAction="#collectionButtonAction" styleClass="menu_button" text="Collection"/>
-        <Label fx:id="coins" layoutX="1038.0" layoutY="762.0" text="0"/>
+        <HBox alignment="CENTER" layoutX="1040.0" layoutY="756.0" prefHeight="64.0" prefWidth="146.0"
+              styleClass="coin-area" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="14.0"
+              AnchorPane.topAnchor="756.0">
+            <children>
+                <Label fx:id="coins" text="0">
+                    <HBox.margin>
+                        <Insets left="10.0"/>
+                    </HBox.margin>
+                </Label>
+                <Region maxHeight="-Infinity" maxWidth="200.0" minHeight="-Infinity" minWidth="0.0"
+                        HBox.hgrow="ALWAYS"/>
+                <ImageView fitHeight="24.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../image/gold.png"/>
+                    </image>
+                </ImageView>
+            </children>
+            <rotationAxis>
+                <Point3D x="0.5" y="0.5" z="0.5"/>
+            </rotationAxis>
+        </HBox>
     </children>
 
 </AnchorPane>

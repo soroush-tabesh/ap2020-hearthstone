@@ -6,7 +6,8 @@
             fx:id="pane"
             id="collectionPane"
             fx:controller="ir.soroushtabesh.hearthstone.views.gui.controllers.CollectionSceneController"
-            prefHeight="800.0" prefWidth="1200.0"
+            maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+            minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0"
             stylesheets="@../stylesheet/styles.css">
 
 

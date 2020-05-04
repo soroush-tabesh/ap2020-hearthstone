@@ -14,7 +14,7 @@ public abstract class AbstractScene {
         String format = String.format("fxml/%s.fxml", getClass().getSimpleName());
         FXMLLoader fxmlLoader = new FXMLLoader(getClass()
                 .getResource(format));
-        Pane root = null;
+        Pane root;
         try {
             root = fxmlLoader.load();
         } catch (Exception e) {
@@ -23,6 +23,7 @@ public abstract class AbstractScene {
             return;
         }
         setController(fxmlLoader.getController());
+        getController().setCurrentScene(this);
         setPane(root);
     }
 
@@ -44,6 +45,11 @@ public abstract class AbstractScene {
 
     public void fadeIn() {
         getController().setDisable(false);
+        getPane().setScaleX(1);
+        getPane().setScaleY(1);
+        Timeline timeline = AnimationUtil.getSceneFadeIn(getPane());
+        timeline.setOnFinished((evt) -> getPane().setOpacity(1));
+        timeline.play();
     }
 
     public void fadeOut() {

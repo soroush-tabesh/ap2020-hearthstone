@@ -28,6 +28,9 @@ public class Logger {
         log.setEvent(event);
         log.setDescription(desc);
         log.setSeverity(severity);
-        DBUtil.pushSingleObject(log);
+        DBUtil.doInJPATemp(session -> {
+            session.saveOrUpdate(log);
+            return null;
+        });
     }
 }
