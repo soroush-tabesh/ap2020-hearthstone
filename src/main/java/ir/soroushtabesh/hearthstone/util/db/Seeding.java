@@ -303,7 +303,7 @@ public class Seeding {
                 }
                 List<Card> cards = session.createQuery("from Card where id < 13", Card.class).list();
                 player.getOpenHeroes().add(mage);
-                player.getOwnedCardsList().addAll(cards);
+                cards.forEach(player::addOwnedCard);
             } catch (Exception e) {
                 e.printStackTrace();
             }
