@@ -1,18 +1,28 @@
 package ir.soroushtabesh.hearthstone.views.gui.controllers;
 
 import ir.soroushtabesh.hearthstone.views.gui.AbstractScene;
+import ir.soroushtabesh.hearthstone.views.gui.MenuScene;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public abstract class AbstractSceneController implements Initializable {
-    @FXML
-    private Pane pane;
 
     private AbstractScene currentScene;
+    @FXML
+    private Pane pane;
+    @FXML
+    private Button backButton;
+
+    @FXML
+    private void backPressed(ActionEvent event) {
+        SceneManager.getInstance().showScene(MenuScene.class);
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -34,5 +44,13 @@ public abstract class AbstractSceneController implements Initializable {
     public void setDisable(boolean disabled) {
         pane.setVisible(!disabled);
         System.out.println(getClass().getSimpleName() + " : disabled=" + disabled);
+    }
+
+    public void onStart(Object message) {
+
+    }
+
+    public void onStop() {
+
     }
 }

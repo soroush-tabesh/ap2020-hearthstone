@@ -45,12 +45,18 @@ public class Player {
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
     private Hero currentHero;
 
+    private PlayerStats playerStats = new PlayerStats();
+
     public Player(String username, String password) {
         this.username = username;
         this.password = password;
     }
 
     public Player() {
+    }
+
+    public PlayerStats getPlayerStats() {
+        return playerStats;
     }
 
     public Hero getCurrentHero() {

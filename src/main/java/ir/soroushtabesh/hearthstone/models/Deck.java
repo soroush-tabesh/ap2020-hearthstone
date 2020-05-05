@@ -21,6 +21,8 @@ public class Deck {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    private String name;
+
     @ManyToOne
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
     private Hero hero;
@@ -33,6 +35,8 @@ public class Deck {
     @Column(name = "count")
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
     private Map<Card, Integer> cardsInDeck = new HashMap<>();
+
+    private DeckHistory deckHistory = new DeckHistory();
 
     public Deck() {
     }
@@ -60,6 +64,18 @@ public class Deck {
         this.hero = hero;
     }
 
+    public DeckHistory getDeckHistory() {
+        return deckHistory;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Player getPlayer() {
         return player;
     }
@@ -73,7 +89,11 @@ public class Deck {
     }
 
     public void addCard(Card card) {
-        cardsInDeck.put(card, cardsInDeck.getOrDefault(card, 0) + 1);
+        addCard(card, 1);
+    }
+
+    public void addCard(Card card, int count) {
+        cardsInDeck.put(card, cardsInDeck.getOrDefault(card, 0) + count);
         Logger.log("deck add", card.getCard_name() + " to " + hero.getName() + "'s deck");
     }
 

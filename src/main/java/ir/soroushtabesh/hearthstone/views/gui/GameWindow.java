@@ -37,8 +37,7 @@ public class GameWindow extends Application {
             SceneManager.getInstance().showScene(LoginScene.class);
 //            FXUtil.runLater(()->SceneManager.getInstance().showScene(MenuScene.class),2000);
 //            AudioManager.getInstance().startBackgroundMusic();
-//        }, 2000);
-        }, 0);
+        }, 500);
     }
 
     private boolean setUpStage(Stage stage) {

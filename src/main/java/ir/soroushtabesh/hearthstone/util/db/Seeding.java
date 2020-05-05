@@ -21,6 +21,9 @@ import java.util.List;
 public class Seeding {
 
 
+    private Seeding() {
+    }
+
     public static void initiate1() {
         Logger.log("test", "test", Log.Severity.WARNING);
         DBUtil.doInJPA(session -> {
@@ -297,12 +300,24 @@ public class Seeding {
             try {
                 List<Hero> heroes = session.createQuery("from Hero ", Hero.class).list();
                 Hero mage = heroes.get(0);
+                List<Card> cards = session.createQuery("from Card where id < 13", Card.class).list();
                 for (Hero hero : heroes) {
                     Deck deck = new Deck(hero, player);
+                    cards.forEach(card -> deck.addCard(card, 2));
+                    /////fixme: test
+                    {
+                        deck.setName(hero.getName() + " #1");
+                        deck.getCardsInDeck().addAll(cards);
+                        int r = (int) (10 * Math.random());
+                        deck.getDeckHistory().setTotalGames(r);
+                        deck.getDeckHistory().setWonGames((int) (r * Math.random()));
+                        cards.forEach(card -> deck.getDeckHistory().getCardsInDeckUsage().put(card, (int) (10 * Math.random())));
+                        player.getPlayerStats().setGameCount(r);
+                        player.getPlayerStats().setWinCount((int) (r * Math.random()));
+                    }
                     session.saveOrUpdate(deck);
                     player.addDeck(deck);
                 }
-                List<Card> cards = session.createQuery("from Card where id < 13", Card.class).list();
                 player.getOpenHeroes().add(mage);
                 cards.forEach(player::addOwnedCard);
             } catch (Exception e) {
@@ -316,8 +331,5 @@ public class Seeding {
         File file = new File(Constants.DB_URL + Constants.DB_URL_SUFFIX);
         if (!file.exists())
             seed();
-    }
-
-    private Seeding() {
     }
 }

@@ -34,10 +34,31 @@
     -fx-background-position: center;
 }
 
+.button-native:hover {
+    -fx-effect: innershadow(gaussian, gold, 5, 0.5, 0, 0);
+}
+
+.button-native:pressed {
+    -fx-opacity: 0.5;
+}
+
 .coin-area {
     -fx-background-image: url("../image/golddi.png");
     -fx-background-size: stretch;
     -fx-background-position: center;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
 }
 
 #windowPane {
@@ -52,7 +73,6 @@
     -fx-background-size: stretch;
     -fx-background-position: center;
 }
-
 /*****************************************************************************************/
 
 /*Main Menu*/
@@ -118,25 +138,17 @@
     -fx-text-fill: gainsboro;
     -fx-font-size: 16;
 }
-
 /*****************************************************************************************/
 
 /*Collection*/
 #collectionPane {
     -fx-background-image: url("../image/collection-page.jpg");
 }
-
 /*****************************************************************************************/
 
 /*Shop*/
 #shopPane {
     -fx-background-image: url("../image/empty-bg.png");
-}
-
-.tab-pane {
-    -fx-border-color: black;
-    -fx-border-radius: 2;
-    -fx-border-width: 2;
 }
 
 .card-image {
@@ -146,17 +158,20 @@
     -fx-background-color: rgba(154, 154, 154, 0.29);
 }
 
-.scroll-pane {
-    -fx-background-color: transparent;
-
-}
-
-.scroll-pane > .viewport {
-    -fx-background-color: transparent;
-}
-
-.scroll-pane .viewport {
-    -fx-background-color: transparent;
+.tab-pane {
+    -fx-border-color: black;
+    -fx-border-radius: 2;
+    -fx-border-width: 2;
 }
 
 /*****************************************************************************************/
+
+/*Status*/
+#statusPane {
+    -fx-background-image: url("../image/empty-bg.png");
+}
+
+/*****************************************************************************************/
+
+
+

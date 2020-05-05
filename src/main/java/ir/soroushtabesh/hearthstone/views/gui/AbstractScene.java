@@ -64,9 +64,11 @@ public abstract class AbstractScene {
     }
 
     public void onStart(Object message) {
+        getController().onStart(message);
     }
 
     public void onStop() {
+        getController().onStop();
     }
 
 

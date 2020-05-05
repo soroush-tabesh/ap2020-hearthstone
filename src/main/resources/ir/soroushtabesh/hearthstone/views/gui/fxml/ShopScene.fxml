@@ -65,7 +65,7 @@
             </children>
         </VBox>
         <Button layoutX="1111.0" layoutY="1.0" mnemonicParsing="false" prefWidth="75.0" styleClass="button-native"
-                text="Back" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0"/>
+                text="Back" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0" onAction="#backPressed"/>
         <HBox alignment="CENTER" layoutX="1032.0" layoutY="710.0" prefHeight="29.0" prefWidth="146.0"
               styleClass="coin-area" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="15.0"
               AnchorPane.topAnchor="756.0">

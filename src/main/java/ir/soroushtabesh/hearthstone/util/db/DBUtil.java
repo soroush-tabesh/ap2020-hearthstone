@@ -6,9 +6,12 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 public class DBUtil {
+    private static final Object lock = new Object();
     private static SessionFactory sessionFactory;
     private static Session session;
-    private static final Object lock = new Object();
+
+    private DBUtil() {
+    }
 
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
@@ -105,9 +108,6 @@ public class DBUtil {
             session.getTransaction().commit();
         }
         return res;
-    }
-
-    private DBUtil() {
     }
 
 }

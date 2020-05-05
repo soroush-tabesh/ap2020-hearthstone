@@ -6,7 +6,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -127,8 +126,7 @@ public abstract class Card {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Card card = (Card) o;
-        return getId().equals(card.getId()) &&
-                Objects.equals(getCard_name(), card.getCard_name());
+        return getId().equals(card.getId());
     }
 
     @Override
