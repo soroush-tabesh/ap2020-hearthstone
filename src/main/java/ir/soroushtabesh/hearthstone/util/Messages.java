@@ -10,4 +10,7 @@ public class Messages {
     public static final String LOGIN_PAGE_DIALOG_CHECK_INPUT = "Please check your input.";
     public static final String LOGIN_PAGE_DIALOG_SUCCESS = "Your new account has been created. You may now login using" +
             " your credentials.";
+
+    private Messages() {
+    }
 }

@@ -6,6 +6,7 @@ import ir.soroushtabesh.hearthstone.models.cards.Spell;
 import ir.soroushtabesh.hearthstone.models.cards.Weapon;
 import ir.soroushtabesh.hearthstone.models.scripts.Dummy;
 import ir.soroushtabesh.hearthstone.models.scripts.HeroPower;
+import ir.soroushtabesh.hearthstone.util.Constants;
 import ir.soroushtabesh.hearthstone.util.HashUtil;
 import ir.soroushtabesh.hearthstone.util.Logger;
 
@@ -312,7 +313,7 @@ public class Seeding {
     }
 
     public static void initiate() {
-        File file = new File("./gameData.mv.db");
+        File file = new File(Constants.DB_URL + Constants.DB_URL_SUFFIX);
         if (!file.exists())
             seed();
     }
