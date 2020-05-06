@@ -6,7 +6,7 @@
            fx:controller="ir.soroushtabesh.hearthstone.views.gui.controllers.GameWindowController"
            maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
            minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0"
-           stylesheets="@../stylesheet/styles.css"
+           stylesheets="@/ir/soroushtabesh/hearthstone/views/gui/stylesheet/styles.css"
            fx:id="windowPane">
 
 

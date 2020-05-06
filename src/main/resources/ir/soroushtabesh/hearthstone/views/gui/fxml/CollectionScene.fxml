@@ -5,7 +5,8 @@
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" id="collectionPane" fx:id="pane" maxHeight="-Infinity"
             maxWidth="-Infinity"
             minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0"
-            stylesheets="@../stylesheet/styles.css" xmlns="http://javafx.com/javafx/11.0.1"
+            stylesheets="@/ir/soroushtabesh/hearthstone/views/gui/stylesheet/styles.css"
+            xmlns="http://javafx.com/javafx/11.0.1"
             fx:controller="ir.soroushtabesh.hearthstone.views.gui.controllers.CollectionSceneController">
 
     <Button fx:id="backButton" layoutX="1000.0" layoutY="725.0" mnemonicParsing="false" onAction="#backPressed"

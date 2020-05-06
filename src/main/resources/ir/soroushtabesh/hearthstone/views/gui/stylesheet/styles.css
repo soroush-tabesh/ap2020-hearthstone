@@ -1,6 +1,6 @@
 /*Global*/
 @font-face {
-    src: url("../font/Belweb.ttf");
+    src: url("/ir/soroushtabesh/hearthstone/views/gui/font/Belweb.ttf");
 }
 
 .root {
@@ -29,7 +29,7 @@
 
 .button-native {
     -fx-background-color: transparent;
-    -fx-background-image: url("../image/btnfront.png");
+    -fx-background-image: url("/ir/soroushtabesh/hearthstone/views/gui/image/btnfront.png");
     -fx-background-size: stretch;
     -fx-background-position: center;
 }
@@ -43,7 +43,7 @@
 }
 
 .coin-area {
-    -fx-background-image: url("../image/golddi.png");
+    -fx-background-image: url("/ir/soroushtabesh/hearthstone/views/gui/image/golddi.png");
     -fx-background-size: stretch;
     -fx-background-position: center;
 }
@@ -62,14 +62,14 @@
 }
 
 #windowPane {
-    -fx-background-image: url("../image/start-page-mq.jpg");
+    -fx-background-image: url("/ir/soroushtabesh/hearthstone/views/gui/image/start-page-mq.jpg");
 }
 
 /*****************************************************************************************/
 
 /*Login,Setting*/
 #loginPane, #settingPane {
-    -fx-background-image: url("../image/empty-bg.png");
+    -fx-background-image: url("/ir/soroushtabesh/hearthstone/views/gui/image/empty-bg.png");
     -fx-background-size: stretch;
     -fx-background-position: center;
 }
@@ -77,7 +77,7 @@
 
 /*Main Menu*/
 #menuPane {
-    -fx-background-image: url("../image/game-page-mq.jpg");
+    -fx-background-image: url("/ir/soroushtabesh/hearthstone/views/gui/image/game-page-mq.jpg");
 }
 
 .menu_button {
@@ -142,13 +142,13 @@
 
 /*Collection*/
 #collectionPane {
-    -fx-background-image: url("../image/collection-page.jpg");
+    -fx-background-image: url("/ir/soroushtabesh/hearthstone/views/gui/image/collection-page.jpg");
 }
 /*****************************************************************************************/
 
 /*Shop*/
 #shopPane {
-    -fx-background-image: url("../image/empty-bg.png");
+    -fx-background-image: url("/ir/soroushtabesh/hearthstone/views/gui/image/empty-bg.png");
 }
 
 .card-image {
@@ -168,7 +168,7 @@
 
 /*Status*/
 #statusPane {
-    -fx-background-image: url("../image/empty-bg.png");
+    -fx-background-image: url("/ir/soroushtabesh/hearthstone/views/gui/image/empty-bg.png");
 }
 
 /*****************************************************************************************/

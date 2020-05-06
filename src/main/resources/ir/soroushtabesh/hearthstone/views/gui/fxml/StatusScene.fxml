@@ -6,7 +6,8 @@
 <?import javafx.scene.layout.*?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" id="statusPane" fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity"
             minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0"
-            stylesheets="@../stylesheet/styles.css" xmlns="http://javafx.com/javafx/11.0.1"
+            stylesheets="@/ir/soroushtabesh/hearthstone/views/gui/stylesheet/styles.css"
+            xmlns="http://javafx.com/javafx/11.0.1"
             fx:controller="ir.soroushtabesh.hearthstone.views.gui.controllers.StatusSceneController">
     <children>
         <VBox layoutX="50.0" layoutY="194.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="50.0"
@@ -18,11 +19,6 @@
                     </padding>
                 </Label>
                 <TableView fx:id="deckTable" prefHeight="529.0" prefWidth="1097.0">
-                    <columns>
-                    </columns>
-                    <!--                    <columnResizePolicy>-->
-                    <!--                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>-->
-                    <!--                    </columnResizePolicy>-->
                 </TableView>
             </children>
         </VBox>

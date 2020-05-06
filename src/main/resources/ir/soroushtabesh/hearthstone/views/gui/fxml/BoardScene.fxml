@@ -8,7 +8,7 @@
             id="boardPane"
             maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
             minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0"
-            stylesheets="@../stylesheet/styles.css">
+            stylesheets="@/ir/soroushtabesh/hearthstone/views/gui/stylesheet/styles.css">
 
 
 </AnchorPane>

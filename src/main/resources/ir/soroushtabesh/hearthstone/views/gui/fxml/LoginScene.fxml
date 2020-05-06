@@ -5,7 +5,8 @@
 <?import javafx.scene.layout.*?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" id="loginPane" fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity"
             minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"
-            stylesheets="@../stylesheet/styles.css" xmlns="http://javafx.com/javafx/10.0.2-internal"
+            stylesheets="@/ir/soroushtabesh/hearthstone/views/gui/stylesheet/styles.css"
+            xmlns="http://javafx.com/javafx/10.0.2-internal"
             fx:controller="ir.soroushtabesh.hearthstone.views.gui.controllers.LoginSceneController">
     <children>
         <VBox alignment="CENTER" layoutX="167.0" layoutY="59.0" spacing="5.0">
