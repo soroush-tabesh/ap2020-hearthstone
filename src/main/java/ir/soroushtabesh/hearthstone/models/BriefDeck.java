@@ -18,10 +18,12 @@ public class BriefDeck {
     private String heroClass;
     private String favCard = "N/A";
     private int favCardUsage;
+    private Deck deck;
 
-    public static BriefDeck buildBriefDeck(Deck deck) {
+    public static BriefDeck build(Deck deck) {
         DeckHistory deckHistory = deck.getDeckHistory();
         BriefDeck briefDeck = new BriefDeck();
+        briefDeck.deck = deck;
         briefDeck.name = deck.getName();
         briefDeck.winCount = deckHistory.getWonGames();
         briefDeck.gameCount = deckHistory.getTotalGames();
@@ -48,9 +50,9 @@ public class BriefDeck {
         return briefDeck;
     }
 
-    public static ObservableList<BriefDeck> buildList(Collection<Deck> decks) {
+    public static ObservableList<BriefDeck> buildAll(Collection<Deck> decks) {
         ObservableList<BriefDeck> result = FXCollections.observableArrayList();
-        decks.forEach(deck -> result.add(buildBriefDeck(deck)));
+        decks.forEach(deck -> result.add(build(deck)));
         return result;
     }
 
@@ -88,5 +90,9 @@ public class BriefDeck {
 
     public int getFavCardUsage() {
         return favCardUsage;
+    }
+
+    public Deck getDeck() {
+        return deck;
     }
 }

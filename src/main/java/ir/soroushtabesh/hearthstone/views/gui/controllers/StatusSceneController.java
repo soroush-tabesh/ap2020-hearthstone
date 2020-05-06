@@ -82,7 +82,7 @@ public class StatusSceneController extends AbstractSceneController {
         super.onStart(message);
         Player player = PlayerManager.getInstance().getPlayer();
         PlayerStats playerStats = player.getPlayerStats();
-        decks = BriefDeck.buildList(player.getDecks());
+        decks = BriefDeck.buildAll(player.getDecks());
         sortedDecks = new SortedList<>(decks, (o1, o2) -> new CompareToBuilder()
                 .append(o2.getWinRatio(), o1.getWinRatio())
                 .append(o2.getWinCount(), o1.getWinCount())

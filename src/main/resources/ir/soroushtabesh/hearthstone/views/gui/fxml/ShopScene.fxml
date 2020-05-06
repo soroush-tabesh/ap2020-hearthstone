@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" id="shopPane" fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity"
             minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0"
-            stylesheets="@/ir/soroushtabesh/hearthstone/views/gui/stylesheet/styles.css"
-            xmlns="http://javafx.com/javafx/11.0.1"
+            stylesheets="@../stylesheet/styles.css" xmlns="http://javafx.com/javafx/11.0.1"
             fx:controller="ir.soroushtabesh.hearthstone.views.gui.controllers.ShopSceneController">
     <children>
-        <ScrollPane layoutX="40.0" layoutY="74.0" prefHeight="680.0" prefWidth="840.0" styleClass="card-image"
-                    AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="320.0" AnchorPane.topAnchor="74.0">
+        <ScrollPane layoutX="40.0" layoutY="74.0" prefHeight="680.0" prefWidth="866.0" styleClass="card-image"
+                    AnchorPane.bottomAnchor="46.0" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="74.0">
             <content>
-                <TilePane hgap="10.0" maxWidth="840.0" prefColumns="10" prefWidth="840.0" vgap="10.0"/>
+                <TilePane fx:id="tilePane" maxWidth="860.0" prefColumns="10" prefWidth="860.0"/>
             </content>
         </ScrollPane>
         <Label alignment="CENTER" layoutX="40.0" layoutY="30.0" styleClass="label_med" text="What are going to do? :">
@@ -21,20 +21,18 @@
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
             </padding>
         </Label>
-        <VBox layoutX="929.0" layoutY="74.0" spacing="10.0">
+        <VBox layoutX="929.0" layoutY="74.0" spacing="10.0" AnchorPane.leftAnchor="929.0" AnchorPane.rightAnchor="67.0"
+              AnchorPane.topAnchor="74.0">
             <children>
                 <Label alignment="CENTER" styleClass="label_med" text="Selected Card:"/>
-                <HBox prefHeight="324.0" prefWidth="204.0" styleClass="card-image">
-                    <children>
-                        <ImageView fitHeight="197.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true"/>
-                    </children>
-                </HBox>
+                <StackPane fx:id="cardPreview" prefHeight="324.0" prefWidth="204.0" styleClass="card-image">
+                </StackPane>
                 <VBox spacing="8.0">
                     <children>
-                        <HBox alignment="CENTER" spacing="5.0">
+                        <HBox alignment="BOTTOM_LEFT" spacing="5.0">
                             <children>
                                 <Label alignment="CENTER" styleClass="label_small" text="Price:"/>
-                                <Label alignment="CENTER" styleClass="label_small" text="N/A"/>
+                                <Label fx:id="priceLabel" alignment="CENTER" styleClass="label_small" text="N/A"/>
                                 <ImageView fitWidth="20.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="NEVER">
                                     <image>
                                         <Image url="@../image/gold.png"/>
@@ -45,10 +43,19 @@
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </HBox>
-                        <Button disable="true" mnemonicParsing="false" prefWidth="75.0" styleClass="button-native"
-                                text="Sell"/>
-                        <Button disable="true" layoutX="10.0" layoutY="49.0" mnemonicParsing="false" prefWidth="75.0"
-                                styleClass="button-native" text="Buy"/>
+                        <HBox alignment="CENTER_LEFT" layoutX="15.0" layoutY="15.0" spacing="5.0">
+                            <children>
+                                <Label alignment="CENTER" styleClass="label_small" text="Owned:"/>
+                                <Label fx:id="ownedLabel" alignment="CENTER" styleClass="label_small" text="N/A"/>
+                            </children>
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                        </HBox>
+                        <Button onAction="#sellButton" mnemonicParsing="false" prefWidth="75.0"
+                                styleClass="button-native" text="Sell"/>
+                        <Button onAction="#buyButton" layoutX="10.0" layoutY="49.0" mnemonicParsing="false"
+                                prefWidth="75.0" styleClass="button-native" text="Buy"/>
                     </children>
                     <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>

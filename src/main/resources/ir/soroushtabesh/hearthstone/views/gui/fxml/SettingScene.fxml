@@ -7,7 +7,7 @@
             id="settingPane" fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
             minWidth="-Infinity"
             prefHeight="400.0" prefWidth="600.0"
-            stylesheets="@/ir/soroushtabesh/hearthstone/views/gui/stylesheet/styles.css"
+            stylesheets="@../stylesheet/styles.css"
             fx:controller="ir.soroushtabesh.hearthstone.views.gui.controllers.SettingSceneController">
     <Button fx:id="backButton" layoutX="1111.0" layoutY="1.0" mnemonicParsing="false" prefWidth="75.0"
             styleClass="button-native"

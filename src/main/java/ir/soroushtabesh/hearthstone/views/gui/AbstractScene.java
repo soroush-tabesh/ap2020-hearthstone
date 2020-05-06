@@ -1,6 +1,7 @@
 package ir.soroushtabesh.hearthstone.views.gui;
 
 import ir.soroushtabesh.hearthstone.util.AnimationUtil;
+import ir.soroushtabesh.hearthstone.util.FXUtil;
 import ir.soroushtabesh.hearthstone.views.gui.controllers.AbstractSceneController;
 import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
@@ -11,15 +12,12 @@ public abstract class AbstractScene {
     private AbstractSceneController controller;
 
     public AbstractScene() {
-        String format = String.format("fxml/%s.fxml", getClass().getSimpleName());
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass()
-                .getResource(format));
+        FXMLLoader fxmlLoader = new FXMLLoader(FXUtil.getFXMLResource(getClass()));
         Pane root;
         try {
             root = fxmlLoader.load();
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println(format);
             return;
         }
         setController(fxmlLoader.getController());

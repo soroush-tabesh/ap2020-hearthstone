@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.StackPane?>
+<fx:root xmlns:fx="http://javafx.com/fxml/1" prefHeight="280.0" prefWidth="210.0" type="StackPane"
+         xmlns="http://javafx.com/javafx/11.0.1"
+         fx:controller="ir.soroushtabesh.hearthstone.views.gui.controls.WeaponCardView">
+    <Label fx:id="countLabel" styleClass="label_small" text="0" translateY="130.0" visible="false"/>
+    <ImageView fx:id="bgImage" fitHeight="280.0" fitWidth="210.0" pickOnBounds="true" preserveRatio="true">
+        <image>
+            <!--                        <Image url="@../image/card/Wicked Knife.png" />-->
+        </image>
+    </ImageView>
+    <ImageView fx:id="maskImage" fitHeight="280.0" fitWidth="210.0" pickOnBounds="true" preserveRatio="true">
+        <image>
+            <!--                        <Image url="@../image/card/mask/weaponMask.png" />-->
+        </image>
+    </ImageView>
+    <Label fx:id="attackLabel" styleClass="label_big" text="0" translateX="-60.0" translateY="104.0"/>
+    <Label fx:id="hpLabel" styleClass="label_big" text="0" translateX="64.0" translateY="105.0"/>
+    <Label fx:id="manaLabel" styleClass="label_big" text="0" translateX="-63.0" translateY="-83.0"/>
+</fx:root>

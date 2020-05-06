@@ -1,5 +1,6 @@
 package ir.soroushtabesh.hearthstone.models;
 
+import ir.soroushtabesh.hearthstone.models.cards.Weapon;
 import ir.soroushtabesh.hearthstone.util.Logger;
 import ir.soroushtabesh.hearthstone.util.db.DBUtil;
 import org.hibernate.Session;
@@ -108,13 +109,16 @@ public class Player {
         return new ArrayList<Card>(ownedCards.keySet());
     }
 
-    public void addOwnedCard(Card card) {
+    public boolean addOwnedCard(Card card) {
+        if (ownedCards.getOrDefault(card, 0) >= (card instanceof Weapon ? 1 : 2))
+            return false;
         ownedCards.put(card, ownedCards.getOrDefault(card, 0) + 1);
+        return true;
     }
 
     public boolean removeOwnedCard(Card card) {
         boolean res = false;
-        if (ownedCards.getOrDefault(card, 0) < 2) {
+        if (ownedCards.getOrDefault(card, 0) <= 1) {
             res = ownedCards.remove(card) != null;
         } else {
             ownedCards.put(card, ownedCards.getOrDefault(card, 0) - 1);
@@ -122,6 +126,10 @@ public class Player {
         Logger.log("ownedCards remove" + res,
                 card.getCard_name() + " from " + getUsername() + "'s collection");
         return res;
+    }
+
+    public int getOwnedAmount(Card card) {
+        return ownedCards.getOrDefault(card, 0);
     }
 
     public List<Hero> getOpenHeroes() {

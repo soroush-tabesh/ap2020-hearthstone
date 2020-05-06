@@ -1,12 +1,18 @@
 /*Global*/
 @font-face {
-    src: url("/ir/soroushtabesh/hearthstone/views/gui/font/Belweb.ttf");
+    src: url("../font/Belweb.ttf");
 }
 
 .root {
     -fx-font-family: "Belwe Bd BT";
     -fx-background-size: stretch;
     -fx-background-position: center;
+}
+
+.label_big {
+    -fx-font-size: 26;
+    -fx-text-fill: aliceblue;
+    -fx-effect: dropshadow(gaussian, #363636, 2, 0.8, 0, 0);
 }
 
 .label_med {
@@ -29,7 +35,7 @@
 
 .button-native {
     -fx-background-color: transparent;
-    -fx-background-image: url("/ir/soroushtabesh/hearthstone/views/gui/image/btnfront.png");
+    -fx-background-image: url("../image/btnfront.png");
     -fx-background-size: stretch;
     -fx-background-position: center;
 }
@@ -43,7 +49,7 @@
 }
 
 .coin-area {
-    -fx-background-image: url("/ir/soroushtabesh/hearthstone/views/gui/image/golddi.png");
+    -fx-background-image: url("../image/golddi.png");
     -fx-background-size: stretch;
     -fx-background-position: center;
 }
@@ -62,22 +68,23 @@
 }
 
 #windowPane {
-    -fx-background-image: url("/ir/soroushtabesh/hearthstone/views/gui/image/start-page-mq.jpg");
+    -fx-background-image: url("../image/start-page-mq.jpg");
 }
 
 /*****************************************************************************************/
 
 /*Login,Setting*/
 #loginPane, #settingPane {
-    -fx-background-image: url("/ir/soroushtabesh/hearthstone/views/gui/image/empty-bg.png");
+    -fx-background-image: url("../image/empty-bg.png");
     -fx-background-size: stretch;
     -fx-background-position: center;
 }
+
 /*****************************************************************************************/
 
 /*Main Menu*/
 #menuPane {
-    -fx-background-image: url("/ir/soroushtabesh/hearthstone/views/gui/image/game-page-mq.jpg");
+    -fx-background-image: url("../image/game-page-mq.jpg");
 }
 
 .menu_button {
@@ -138,17 +145,19 @@
     -fx-text-fill: gainsboro;
     -fx-font-size: 16;
 }
+
 /*****************************************************************************************/
 
 /*Collection*/
 #collectionPane {
-    -fx-background-image: url("/ir/soroushtabesh/hearthstone/views/gui/image/collection-page.jpg");
+    -fx-background-image: url("../image/collection-page.jpg");
 }
+
 /*****************************************************************************************/
 
 /*Shop*/
 #shopPane {
-    -fx-background-image: url("/ir/soroushtabesh/hearthstone/views/gui/image/empty-bg.png");
+    -fx-background-image: url("../image/empty-bg.png");
 }
 
 .card-image {
@@ -164,11 +173,19 @@
     -fx-border-width: 2;
 }
 
+#countLabel {
+    -fx-padding: 0 5 0 5;
+    -fx-border-radius: 3;
+    -fx-border-width: 2;
+    -fx-border-style: solid;
+    -fx-border-color: darkgoldenrod;
+}
+
 /*****************************************************************************************/
 
 /*Status*/
 #statusPane {
-    -fx-background-image: url("/ir/soroushtabesh/hearthstone/views/gui/image/empty-bg.png");
+    -fx-background-image: url("../image/empty-bg.png");
 }
 
 /*****************************************************************************************/
