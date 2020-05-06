@@ -4,6 +4,7 @@ import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
 import ir.soroushtabesh.hearthstone.models.BriefDeck;
 import ir.soroushtabesh.hearthstone.models.Player;
 import ir.soroushtabesh.hearthstone.models.PlayerStats;
+import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
@@ -88,10 +89,10 @@ public class StatusSceneController extends AbstractSceneController {
                 .append(o2.getGameCount(), o1.getGameCount())
                 .append(o2.getAvgMana(), o1.getAvgMana())
                 .toComparison());
-        deckTable.setItems(sortedDecks);
         gamesWonLabel.setText(playerStats.getWinCount() + "");
         gamesPlayedLabel.setText(playerStats.getGameCount() + "");
         coinsLabel.setText(player.getCoin() + "");
         usernameLabel.setText(player.getUsername());
+        Bindings.bindContent(deckTable.getItems(), sortedDecks);
     }
 }
