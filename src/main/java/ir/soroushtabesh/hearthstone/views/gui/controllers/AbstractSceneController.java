@@ -43,7 +43,6 @@ public abstract class AbstractSceneController implements Initializable {
 
     public void setDisable(boolean disabled) {
         pane.setVisible(!disabled);
-        System.out.println(getClass().getSimpleName() + " : disabled=" + disabled);
     }
 
     public void onStart(Object message) {

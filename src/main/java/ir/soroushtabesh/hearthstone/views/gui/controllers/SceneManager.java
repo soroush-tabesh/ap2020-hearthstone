@@ -1,6 +1,7 @@
 package ir.soroushtabesh.hearthstone.views.gui.controllers;
 
 import ir.soroushtabesh.hearthstone.util.FXUtil;
+import ir.soroushtabesh.hearthstone.util.Logger;
 import ir.soroushtabesh.hearthstone.views.gui.AbstractScene;
 import ir.soroushtabesh.hearthstone.views.gui.GameWindow;
 import javafx.scene.layout.StackPane;
@@ -37,7 +38,7 @@ public class SceneManager {
     }
 
     public <T extends AbstractScene> void showScene(Class<T> tClass, Object message) {
-        System.out.println("SceneManager.showScene");
+        Logger.log("SceneManager", "show scene: " + tClass.getSimpleName());
         if (currentScene != null && currentScene.getClass().equals(tClass)) {
             return;
         }

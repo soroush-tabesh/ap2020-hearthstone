@@ -42,6 +42,7 @@ public class SelectHeroDeckDialog extends Dialog<ButtonType> implements Initiali
     private ComboBox<Deck> deckCombo;
 
     public SelectHeroDeckDialog(Node owner) {
+        Logger.log("Dialog", getClass().getSimpleName());
         initOwner(owner.getScene().getWindow());
         setTitle("Play");
         setHeaderText("Select Hero and Deck");

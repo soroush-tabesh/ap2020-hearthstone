@@ -25,6 +25,7 @@ public class EditDeckDialog extends Dialog<ButtonType> implements Initializable 
     private ComboBox<Hero.HeroClass> heroCombo;
 
     public EditDeckDialog(Node owner, String title, String header, Deck deck) {
+        Logger.log("Dialog", getClass().getSimpleName());
         this.deck = deck;
         initOwner(owner.getScene().getWindow());
         setTitle(title);
