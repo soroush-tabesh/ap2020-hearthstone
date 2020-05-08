@@ -146,7 +146,6 @@ public class Deck {
         return true;
     }
 
-    //todo:change
     @Override
     public String toString() {
         return String.format("%s (%s)", name, heroClass);

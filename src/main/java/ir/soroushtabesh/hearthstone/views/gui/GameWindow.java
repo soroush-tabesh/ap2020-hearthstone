@@ -1,5 +1,6 @@
 package ir.soroushtabesh.hearthstone.views.gui;
 
+import ir.soroushtabesh.hearthstone.controllers.AudioManager;
 import ir.soroushtabesh.hearthstone.util.FXUtil;
 import ir.soroushtabesh.hearthstone.views.gui.controllers.GameWindowController;
 import ir.soroushtabesh.hearthstone.views.gui.controllers.SceneManager;
@@ -33,8 +34,7 @@ public class GameWindow extends Application {
         gameInit();
         FXUtil.runLater(() -> {
             SceneManager.getInstance().showScene(LoginScene.class);
-//            FXUtil.runLater(()->SceneManager.getInstance().showScene(MenuScene.class),2000);
-//            AudioManager.getInstance().startBackgroundMusic();
+            AudioManager.getInstance().startBackgroundMusic();
         }, 500);
     }
 

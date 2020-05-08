@@ -8,10 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import java.io.IOException;
 import java.net.URL;
@@ -19,6 +16,8 @@ import java.util.ResourceBundle;
 
 public class EditDeckDialog extends Dialog<ButtonType> implements Initializable {
     private final Deck deck;
+    @FXML
+    private Label errorLabel;
     @FXML
     private TextField deckNameField;
     @FXML
@@ -63,7 +62,9 @@ public class EditDeckDialog extends Dialog<ButtonType> implements Initializable 
     public void initialize(URL location, ResourceBundle resources) {
         deckNameField.setText(deck.getName());
         heroCombo.getItems().addAll(Hero.HeroClass.values());
-        heroCombo.setDisable(!deck.isPure());
+        boolean pure = deck.isPure();
+        heroCombo.setDisable(!pure);
+        errorLabel.setVisible(!pure);
         if (deck.getHeroClass() != null)
             heroCombo.setValue(deck.getHeroClass());
     }

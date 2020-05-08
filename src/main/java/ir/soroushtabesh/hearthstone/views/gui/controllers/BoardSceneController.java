@@ -1,5 +1,7 @@
 package ir.soroushtabesh.hearthstone.views.gui.controllers;
 
+import animatefx.animation.Hinge;
+import animatefx.animation.ZoomIn;
 import animatefx.animation.ZoomInRight;
 import ir.soroushtabesh.hearthstone.controllers.GameController;
 import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
@@ -26,6 +28,10 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class BoardSceneController extends AbstractSceneController {
+    @FXML
+    private StackPane burnedCardStand;
+    @FXML
+    private StackPane weaponStand;
     @FXML
     private ImageView heroPowerImage;
     @FXML
@@ -70,7 +76,17 @@ public class BoardSceneController extends AbstractSceneController {
         MenuItem playCard = new MenuItem("Play Card");
         cardContextMenu.getItems().add(playCard);
         playCard.setOnAction(event -> {
-            gameController.playCard(selectedCard.getBriefCard().getCard());
+            GameController.Message message = gameController.playCard(selectedCard.getBriefCard().getCard());
+            switch (message) {
+                case NO_MANA:
+                    FXUtil.showAlertInfo("Board", "Play card", "Not enough mana.");
+                    break;
+                case GROUND_FULL:
+                    FXUtil.showAlertInfo("Board", "Play card", "Ground is full");
+                    break;
+                case ERROR:
+                    FXUtil.showAlertInfo("Board", "Play card", "Error");
+            }
         });
     }
 
@@ -110,6 +126,20 @@ public class BoardSceneController extends AbstractSceneController {
 
             });
         });
+        gameController.currentWeaponProperty().addListener((observable, oldValue, newValue) -> {
+            weaponStand.getChildren().clear();
+            CardView cardView = getCardView(newValue);
+            weaponStand.getChildren().add(cardView);
+            new ZoomIn(cardView).play();
+        });
+        gameController.burnedCardProperty().addListener((observable, oldValue, newValue) -> {
+            burnedCardStand.getChildren().clear();
+            CardView cardView = getCardView(newValue);
+            burnedCardStand.getChildren().add(cardView);
+            Hinge hinge = new Hinge(cardView);
+            hinge.setOnFinished(event -> burnedCardStand.getChildren().clear());
+            hinge.play();
+        });
     }
 
     private CardView getCardView(Card card) {
@@ -146,6 +176,7 @@ public class BoardSceneController extends AbstractSceneController {
         handCardBox.getChildren().clear();
         manaLabel.setText("1/1");
         logBox.getChildren().clear();
+        weaponStand.getChildren().clear();
     }
 
     @Override

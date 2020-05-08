@@ -27,6 +27,9 @@
             AnchorPane.topAnchor="761.0"/>
     <HBox fx:id="groundBox" alignment="CENTER" layoutX="-100.0" layoutY="296.0" prefHeight="245.0" prefWidth="1414.0"
           scaleX="0.5" scaleY="0.5"/>
-    <ImageView fx:id="heroPowerImage" fitHeight="124.0" fitWidth="103.0" layoutX="696.0" layoutY="553.0"
+    <ImageView fx:id="heroPowerImage" fitHeight="124.0" fitWidth="103.0" layoutX="700.0" layoutY="522.0"
                pickOnBounds="true" preserveRatio="true"/>
+    <StackPane fx:id="weaponStand" layoutX="636.0" layoutY="600.0" prefHeight="230.0" prefWidth="190.0" scaleX="0.5"
+               scaleY="0.5"/>
+    <StackPane fx:id="burnedCardStand" layoutX="500.0" layoutY="282.0" prefHeight="150.0" prefWidth="200.0"/>
 </AnchorPane>

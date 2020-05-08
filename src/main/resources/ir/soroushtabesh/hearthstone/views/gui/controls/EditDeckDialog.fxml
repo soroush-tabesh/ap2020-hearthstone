@@ -10,7 +10,10 @@
             <Label text="Deck Name:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
             <TextField fx:id="deckNameField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
             <Label text="Hero Class:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-            <ComboBox fx:id="heroCombo" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            <HBox GridPane.rowIndex="1" GridPane.columnIndex="1" alignment="CENTER" spacing="5" GridPane.columnSpan="2">
+                <ComboBox fx:id="heroCombo"/>
+                <Label visible="false" fx:id="errorLabel" text="You have special cards in your deck."/>
+            </HBox>
         </GridPane>
     </content>
 </DialogPane>

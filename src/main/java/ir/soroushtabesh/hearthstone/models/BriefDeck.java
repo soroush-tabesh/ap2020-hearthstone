@@ -1,8 +1,11 @@
 package ir.soroushtabesh.hearthstone.models;
 
+import ir.soroushtabesh.hearthstone.models.cards.Minion;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.apache.commons.lang3.builder.CompareToBuilder;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -88,11 +91,14 @@ public class BriefDeck {
 
         heroClass = deck.getHeroClass().toString();
 
-        for (Map.Entry<Card, Integer> entry : deckHistory.getCardsInDeckUsage().entrySet()) {
-            if (entry.getValue() > favCardUsage) {
-                favCardUsage = entry.getValue();
-                favCard = entry.getKey().getCard_name();
-            }
-        }
+        List<Map.Entry<Card, Integer>> prior = new ArrayList<>(deckHistory.getCardsInDeckUsage().entrySet());
+        prior.sort((o1, o2) -> new CompareToBuilder()
+                .append(o2.getValue(), o1.getValue())
+                .append(o2.getKey().getRarity().ordinal(), o1.getKey().getRarity().ordinal())
+                .append(o2.getKey().getMana(), o1.getKey().getMana())
+                .append(o2.getKey() instanceof Minion ? 1 : 0, o1.getKey() instanceof Minion ? 1 : 0)
+                .toComparison());
+        favCardUsage = prior.get(0).getValue();
+        favCard = prior.get(0).getKey().getCard_name();
     }
 }
