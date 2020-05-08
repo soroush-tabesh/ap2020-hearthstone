@@ -3,6 +3,7 @@ package ir.soroushtabesh.hearthstone.views.gui.controls;
 import ir.soroushtabesh.hearthstone.models.Deck;
 import ir.soroushtabesh.hearthstone.models.Hero;
 import ir.soroushtabesh.hearthstone.util.FXUtil;
+import ir.soroushtabesh.hearthstone.util.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -54,8 +55,10 @@ public class EditDeckDialog extends Dialog<ButtonType> implements Initializable 
     }
 
     public void updateDeck() {
+        Logger.log("DeckManager", String.format("update deck: %s", deck.getName()));
         deck.setName(deckNameField.getText());
         deck.setHeroClass(heroCombo.getValue());
+        Logger.log("DeckManager", String.format("updated deck: %s (%s)", deck.getName(), deck.getHeroClass()));
     }
 
     @Override

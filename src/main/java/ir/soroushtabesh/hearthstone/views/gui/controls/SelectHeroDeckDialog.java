@@ -7,6 +7,7 @@ import ir.soroushtabesh.hearthstone.models.Hero;
 import ir.soroushtabesh.hearthstone.models.InfoPassive;
 import ir.soroushtabesh.hearthstone.models.Player;
 import ir.soroushtabesh.hearthstone.util.FXUtil;
+import ir.soroushtabesh.hearthstone.util.Logger;
 import ir.soroushtabesh.hearthstone.views.gui.BoardScene;
 import ir.soroushtabesh.hearthstone.views.gui.CollectionScene;
 import ir.soroushtabesh.hearthstone.views.gui.controllers.SceneManager;
@@ -56,26 +57,32 @@ public class SelectHeroDeckDialog extends Dialog<ButtonType> implements Initiali
         }
         getDialogPane().getButtonTypes().add(ButtonType.OK);
         getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
-        getDialogPane()
-                .lookupButton(ButtonType.OK)
-                .addEventFilter(ActionEvent.ACTION, event -> {
-                    if (heroCombo.getValue() == null) {
-                        event.consume();
-                        FXUtil.showAlertInfo("Play", "Deck", "Hero can't be empty.");
-                    } else if (deckCombo.getValue() == null) {
-                        event.consume();
-                        FXUtil.showAlertInfo("Play", "Deck", "Deck can't be empty.");
-                    } else if (passiveCombo.getValue() == null) {
-                        event.consume();
-                        FXUtil.showAlertInfo("Play", "Deck", "Passive can't be empty.");
-                    }
-                    Player player = PlayerManager.getInstance().getPlayer();
-                    player.setCurrentDeck(deckCombo.getValue());
-                    player.setCurrentHero(heroCombo.getValue());
-                    player.setCurrentPassive(passiveCombo.getValue());
-                    PlayerManager.getInstance().updatePlayer(player);
-                });
+        getDialogPane().lookupButton(ButtonType.OK).addEventFilter(ActionEvent.ACTION, this::okPressed);
+    }
 
+    private void okPressed(ActionEvent event) {
+        if (heroCombo.getValue() == null) {
+            event.consume();
+            FXUtil.showAlertInfo("Play", "Deck", "Hero can't be empty.");
+        } else if (deckCombo.getValue() == null) {
+            event.consume();
+            FXUtil.showAlertInfo("Play", "Deck", "Deck can't be empty.");
+        } else if (passiveCombo.getValue() == null) {
+            event.consume();
+            FXUtil.showAlertInfo("Play", "Deck", "Passive can't be empty.");
+        }
+        updatePlayer();
+    }
+
+    private void updatePlayer() {
+        Player player = PlayerManager.getInstance().getPlayer();
+        player.setCurrentDeck(deckCombo.getValue());
+        player.setCurrentHero(heroCombo.getValue());
+        player.setCurrentPassive(passiveCombo.getValue());
+        Logger.log("PlayerManager", String.format("update player:%s , deck:%s , hero:%s , passive:%s",
+                player.getUsername(), player.getCurrentDeck().getName(), player.getCurrentHero().getName()
+                , player.getCurrentPassive()));
+        PlayerManager.getInstance().updatePlayer(player);
     }
 
     @Override

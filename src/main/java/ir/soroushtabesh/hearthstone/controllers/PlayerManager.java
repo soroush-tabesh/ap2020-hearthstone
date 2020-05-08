@@ -41,7 +41,7 @@ public class PlayerManager {
                 e.printStackTrace();
                 return Message.ERROR;
             }
-            Logger.log("login", player.getUsername());
+            Logger.log("PlayerManager", "login " + player.getUsername());
             return Message.SUCCESS;
         });
     }
@@ -57,7 +57,7 @@ public class PlayerManager {
             e.printStackTrace();
             return Message.ERROR;
         }
-        Logger.log("delete-user", "deleted: " + player.getUsername());
+        Logger.log("PlayerManager", "delete-user" + player.getUsername());
         return Message.SUCCESS;
     }
 
@@ -75,7 +75,7 @@ public class PlayerManager {
                 e.printStackTrace();
                 return Message.ERROR;
             }
-            Logger.log("sign-up", player.getUsername());
+            Logger.log("PlayerManager", "sign-up: " + player.getUsername());
             return Message.SUCCESS;
         });
         if (message == Message.SUCCESS) {
@@ -97,6 +97,7 @@ public class PlayerManager {
     }
 
     public void updatePlayer(Player player) {
+        Logger.log("PlayerManager", "update player " + player.getUsername());
         DBUtil.doInJPA(session -> {
             session.saveOrUpdate(player);
             return null;

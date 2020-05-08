@@ -5,7 +5,9 @@ import ir.soroushtabesh.hearthstone.models.Card;
 import ir.soroushtabesh.hearthstone.models.Deck;
 import ir.soroushtabesh.hearthstone.models.Hero;
 import ir.soroushtabesh.hearthstone.models.cards.Minion;
+import ir.soroushtabesh.hearthstone.models.cards.Quest;
 import ir.soroushtabesh.hearthstone.models.cards.Weapon;
+import ir.soroushtabesh.hearthstone.util.Logger;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -98,6 +100,11 @@ public class GameController {
     private void fillDeck() {
         List<Card> fullDeck = deckModel.getFullDeck();
         Collections.shuffle(fullDeck);
+        for (int i = 0; i < fullDeck.size(); i++) {
+            if (fullDeck.get(i) instanceof Quest) {
+                Collections.swap(fullDeck, 0, i);
+            }
+        }
         deck.addAll(fullDeck);
     }
 
@@ -157,6 +164,7 @@ public class GameController {
     }
 
     public void log(String log) {
+        Logger.log("GameController", log);
         this.log.add(log);
     }
 
