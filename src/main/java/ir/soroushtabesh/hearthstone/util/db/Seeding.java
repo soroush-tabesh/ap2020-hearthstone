@@ -2,6 +2,7 @@ package ir.soroushtabesh.hearthstone.util.db;
 
 import ir.soroushtabesh.hearthstone.models.*;
 import ir.soroushtabesh.hearthstone.models.cards.Minion;
+import ir.soroushtabesh.hearthstone.models.cards.Quest;
 import ir.soroushtabesh.hearthstone.models.cards.Spell;
 import ir.soroushtabesh.hearthstone.models.cards.Weapon;
 import ir.soroushtabesh.hearthstone.models.scripts.Dummy;

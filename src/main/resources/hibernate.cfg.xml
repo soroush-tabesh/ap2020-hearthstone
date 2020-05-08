@@ -32,7 +32,7 @@
 
         <mapping class="ir.soroushtabesh.hearthstone.models.Card"/>
         <mapping class="ir.soroushtabesh.hearthstone.models.cards.Minion"/>
-        <mapping class="ir.soroushtabesh.hearthstone.models.Quest"/>
+        <mapping class="ir.soroushtabesh.hearthstone.models.cards.Quest"/>
         <mapping class="ir.soroushtabesh.hearthstone.models.cards.Spell"/>
         <mapping class="ir.soroushtabesh.hearthstone.models.cards.Weapon"/>
     </session-factory>
