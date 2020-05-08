@@ -2,8 +2,10 @@ package ir.soroushtabesh.hearthstone.views.gui.controllers;
 
 import ir.soroushtabesh.hearthstone.controllers.CardManager;
 import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
+import ir.soroushtabesh.hearthstone.models.Card;
 import ir.soroushtabesh.hearthstone.models.Player;
 import ir.soroushtabesh.hearthstone.util.FXUtil;
+import ir.soroushtabesh.hearthstone.views.gui.CollectionScene;
 import ir.soroushtabesh.hearthstone.views.gui.controls.CardView;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
@@ -30,26 +32,48 @@ public class ShopSceneController extends AbstractSceneController {
     private Label coins;
 
     private ObservableList<CardView> cards;
-    private CardView selectedCard = null;
+    private CardView selectedCardView = null;
+    private Card messageCard;
 
     @Override
     public void onStart(Object message) {
-        cards = CardView.buildAll(CardManager.getInstance().getAllCards());
-        cards.forEach(cardView -> {
-            cardView.setOnMouseClicked(event -> selectCard(cardView));
-            cardView.getCountLabel().setVisible(true);
-        });
-        Bindings.bindContent(tilePane.getChildren(), cards);
-        selectedCard = null;
-        cardPreview.getChildren().clear();
+        messageCard = null;
+        if (message instanceof Card)
+            messageCard = (Card) message;
+        new Thread(() -> {
+            cards = CardView.buildAll(CardManager.getInstance().getAllCards());
+            selectedCardView = null;
+            Player player = PlayerManager.getInstance().getPlayer();
+            FXUtil.runLater(() -> {
+                cards.forEach(cardView -> {
+                    cardView.setOnMouseClicked(event -> selectCard(cardView));
+                    cardView.getCountLabel().setVisible(true);
+                });
+                Bindings.bindContent(tilePane.getChildren(), cards);
+                cardPreview.getChildren().clear();
+                coins.setText(player.getCoin() + "");
+                cards.forEach(cardView -> {
+                    if (cardView.getBriefCard().getCard().equals(messageCard))
+                        selectCard(cardView);
+                });
+            }, 0);
+        }).start();
+    }
+
+    @Override
+    protected void backPressed(ActionEvent event) {
+        if (messageCard == null)
+            super.backPressed(event);
+        else
+            SceneManager.getInstance().showScene(CollectionScene.class, messageCard);
     }
 
     private void selectCard(CardView cardView) {
-        if (selectedCard != null)
-            selectedCard.setStyle("-fx-background-color: transparent");
+        if (selectedCardView != null)
+            selectedCardView.setStyle("-fx-background-color: transparent");
         Player player = PlayerManager.getInstance().getPlayer();
-        selectedCard = cardView;
-        selectedCard.setStyle("-fx-background-color: rgba(64,186,213,0.29)");
+        selectedCardView = cardView;
+        selectedCardView.setStyle("-fx-background-color: rgba(64,186,213,0.29)");
         cardPreview.getChildren().clear();
         cardPreview.getChildren().add(CardView.build(cardView.getBriefCard().getCard()));
         priceLabel.setText(cardView.getBriefCard().getPrice() + "");
@@ -62,63 +86,63 @@ public class ShopSceneController extends AbstractSceneController {
         super.onStop();
         Bindings.unbindContent(tilePane.getChildren(), cards);
         cardPreview.getChildren().clear();
-        selectedCard = null;
+        selectedCardView = null;
         cards = null;
     }
 
     @FXML
     private void buyButton(ActionEvent event) {
-        if (selectedCard == null) {
+        if (selectedCardView == null) {
             FXUtil.showAlert("Shop", "Buy", "Error: Please select a card first."
                     , Alert.AlertType.ERROR);
             return;
         }
-        CardManager.Message message = CardManager.getInstance().buyCard(selectedCard.getBriefCard().getCard());
+        CardManager.Message message = CardManager.getInstance().buyCard(selectedCardView.getBriefCard().getCard());
         switch (message) {
             case FULL:
-                FXUtil.showAlert("Shop", "Buy: " + selectedCard.getBriefCard().getName()
+                FXUtil.showAlert("Shop", "Buy: " + selectedCardView.getBriefCard().getName()
                         , "Error: You can't buy more."
                         , Alert.AlertType.ERROR);
                 break;
             case INSUFFICIENT:
-                FXUtil.showAlert("Shop", "Buy: " + selectedCard.getBriefCard().getName()
+                FXUtil.showAlert("Shop", "Buy: " + selectedCardView.getBriefCard().getName()
                         , "Error: You don't have enough coin."
                         , Alert.AlertType.ERROR);
                 break;
             case SUCCESS:
                 Optional<ButtonType> result = FXUtil.showAlert("Shop"
-                        , "Buy: " + selectedCard.getBriefCard().getName()
+                        , "Buy: " + selectedCardView.getBriefCard().getName()
                         , "Are you sure you want to buy?", Alert.AlertType.CONFIRMATION);
                 if (result.isPresent() && result.get() == ButtonType.OK)
-                    FXUtil.showAlertInfo("Shop", "Sell: " + selectedCard.getBriefCard().getName()
+                    FXUtil.showAlertInfo("Shop", "Sell: " + selectedCardView.getBriefCard().getName()
                             , "Successfully bought!");
         }
-        selectCard(selectedCard);
+        selectCard(selectedCardView);
     }
 
     @FXML
     private void sellButton(ActionEvent event) {
-        if (selectedCard == null) {
+        if (selectedCardView == null) {
             FXUtil.showAlert("Shop", "Sell", "Error: Please select a card first."
                     , Alert.AlertType.ERROR);
             return;
         }
-        CardManager.Message message = CardManager.getInstance().sellCard(selectedCard.getBriefCard().getCard());
+        CardManager.Message message = CardManager.getInstance().sellCard(selectedCardView.getBriefCard().getCard());
         switch (message) {
             case EMPTY:
-                FXUtil.showAlert("Shop", "Sell: " + selectedCard.getBriefCard().getName()
+                FXUtil.showAlert("Shop", "Sell: " + selectedCardView.getBriefCard().getName()
                         , "Error: You don't have this card."
                         , Alert.AlertType.ERROR);
                 break;
             case SUCCESS:
                 Optional<ButtonType> result = FXUtil.showAlert("Shop"
-                        , "Sell: " + selectedCard.getBriefCard().getName()
+                        , "Sell: " + selectedCardView.getBriefCard().getName()
                         , "Are you sure you want to sell?", Alert.AlertType.CONFIRMATION);
                 if (result.isPresent() && result.get() == ButtonType.OK)
-                    FXUtil.showAlertInfo("Shop", "Sell: " + selectedCard.getBriefCard().getName()
+                    FXUtil.showAlertInfo("Shop", "Sell: " + selectedCardView.getBriefCard().getName()
                             , "Successfully sold!");
         }
-        selectCard(selectedCard);
+        selectCard(selectedCardView);
     }
 
 }

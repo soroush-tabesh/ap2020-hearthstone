@@ -21,11 +21,9 @@ public class Deck {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String name;
+    private String name = "untitled deck";
 
-    @ManyToOne
-    @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
-    private Hero hero;
+    private Hero.HeroClass heroClass = Hero.HeroClass.ALL;
 
     @ManyToOne
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
@@ -41,13 +39,13 @@ public class Deck {
     public Deck() {
     }
 
-    public Deck(Hero hero, Player player) {
-        this.hero = hero;
+    public Deck(Hero.HeroClass heroClass, Player player) {
+        this.heroClass = heroClass;
         this.player = player;
     }
 
-    public Deck(Hero hero, Player player, Map<Card, Integer> cardsInDeck) {
-        this.hero = hero;
+    public Deck(Hero.HeroClass heroClass, Player player, Map<Card, Integer> cardsInDeck) {
+        this.heroClass = heroClass;
         this.player = player;
         this.cardsInDeck = cardsInDeck;
     }
@@ -56,12 +54,12 @@ public class Deck {
         return id;
     }
 
-    public Hero getHero() {
-        return hero;
+    public Hero.HeroClass getHeroClass() {
+        return heroClass;
     }
 
-    public void setHero(Hero hero) {
-        this.hero = hero;
+    public void setHeroClass(Hero.HeroClass heroClass) {
+        this.heroClass = heroClass;
     }
 
     public DeckHistory getDeckHistory() {
@@ -88,31 +86,61 @@ public class Deck {
         return new ArrayList<>(cardsInDeck.keySet());
     }
 
-    public void addCard(Card card) {
-        addCard(card, 1);
+    public Message addCard(Card card) {
+        return addCard(card, 1);
     }
 
-    public void addCard(Card card, int count) {
-        cardsInDeck.put(card, cardsInDeck.getOrDefault(card, 0) + count);
-        Logger.log("deck add", card.getCard_name() + " to " + hero.getName() + "'s deck");
+    public Message addCard(Card card, int count) {
+        if (!card.getHeroClass().equals(Hero.HeroClass.ALL) && !card.getHeroClass().equals(getHeroClass()))
+            return Message.INCOMPATIBLE;
+        int current = getCountInDeck(card);
+        int possess = player.getOwnedAmount(card);
+        if (current + count > Math.min(possess, 2))
+            return Message.INSUFFICIENT;
+        if (getTotalCountOfCards() >= 30)
+            return Message.FULL;
+        cardsInDeck.put(card, current + count);
+        Logger.log("deck add", card.getCard_name() + " to " + getHeroClass() + "'s deck");
+        return Message.SUCCESS;
     }
 
     public boolean removeCard(Card card) {
-        boolean res = false;
-        if (cardsInDeck.getOrDefault(card, 0) < 2) {
+        boolean res = true;
+        if (getCountInDeck(card) <= 1) {
             res = cardsInDeck.remove(card) != null;
         } else {
             cardsInDeck.put(card, cardsInDeck.getOrDefault(card, 0) - 1);
         }
-        Logger.log("deck remove" + res, card.getCard_name() + " from " + hero.getName() + "'s deck");
+        if (res)
+            Logger.log("deck remove" + res, card.getCard_name() + " from " + heroClass + "'s deck");
         return res;
+    }
+
+    public int getCountInDeck(Card card) {
+        return cardsInDeck.getOrDefault(card, 0);
+    }
+
+    public int getTotalCountOfCards() {
+        int res = 0;
+        for (Integer value : cardsInDeck.values()) {
+            res += value;
+        }
+        return res;
+    }
+
+    public boolean isPure() {
+        for (Card card : cardsInDeck.keySet()) {
+            if (card.getHeroClass() != Hero.HeroClass.ALL)
+                return false;
+        }
+        return true;
     }
 
     @Override
     public String toString() {
         return "Deck{" +
                 "deck_id=" + id +
-                ", hero=" + hero +
+                ", hero=" + heroClass +
                 ", player=" + player +
                 '}';
     }
@@ -128,6 +156,10 @@ public class Deck {
     @Override
     public int hashCode() {
         return getId();
+    }
+
+    public enum Message {
+        INCOMPATIBLE, INSUFFICIENT, SUCCESS, FULL
     }
 
 }

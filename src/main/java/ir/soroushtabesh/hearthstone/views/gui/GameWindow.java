@@ -19,8 +19,6 @@ public class GameWindow extends Application {
     private GameWindowController controller;
     private Parent root = null;
     private Scene scene = null;
-    private Image image;
-    private Image image2;
     private ImageCursor cursorNormal;
     private ImageCursor cursorDown;
 
@@ -63,8 +61,8 @@ public class GameWindow extends Application {
     }
 
     private void initCursor() {
-        image = new Image(getClass().getResourceAsStream("image/hearthstone-hand.png"));
-        image2 = new Image(getClass().getResourceAsStream("image/hearthstone-hand-down.png"));
+        Image image = new Image(getClass().getResourceAsStream("image/hearthstone-hand.png"));
+        Image image2 = new Image(getClass().getResourceAsStream("image/hearthstone-hand-down.png"));
         cursorNormal = new ImageCursor(image);
         cursorDown = new ImageCursor(image2);
         scene.setCursor(cursorNormal);

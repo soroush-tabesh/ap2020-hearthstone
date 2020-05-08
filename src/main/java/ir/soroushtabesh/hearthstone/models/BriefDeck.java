@@ -9,44 +9,23 @@ import java.util.Map;
 
 public class BriefDeck {
 
+    private final Deck deck;
     private String name;
     private int winCount;
     private int gameCount;
     private float winRatio;
     private float avgMana;
-    private String heroName;
     private String heroClass;
     private String favCard = "N/A";
     private int favCardUsage;
-    private Deck deck;
+
+    private BriefDeck(Deck deck) {
+        this.deck = deck;
+    }
 
     public static BriefDeck build(Deck deck) {
-        DeckHistory deckHistory = deck.getDeckHistory();
-        BriefDeck briefDeck = new BriefDeck();
-        briefDeck.deck = deck;
-        briefDeck.name = deck.getName();
-        briefDeck.winCount = deckHistory.getWonGames();
-        briefDeck.gameCount = deckHistory.getTotalGames();
-        briefDeck.winRatio = 1f * briefDeck.winCount / Math.max(briefDeck.gameCount, 1);
-
-        List<Card> cards = deck.getCardsInDeck();
-        if (!cards.isEmpty()) {
-            for (Card card : cards) {
-                briefDeck.avgMana += card.getMana();
-            }
-            briefDeck.avgMana /= cards.size();
-        }
-
-        briefDeck.heroName = deck.getHero().getName();
-        briefDeck.heroClass = deck.getHero().getHeroClass().toString();
-
-        for (Map.Entry<Card, Integer> entry : deckHistory.getCardsInDeckUsage().entrySet()) {
-            if (entry.getValue() > briefDeck.favCardUsage) {
-                briefDeck.favCardUsage = entry.getValue();
-                briefDeck.favCard = entry.getKey().getCard_name();
-            }
-        }
-
+        BriefDeck briefDeck = new BriefDeck(deck);
+        briefDeck.refresh();
         return briefDeck;
     }
 
@@ -76,10 +55,6 @@ public class BriefDeck {
         return avgMana;
     }
 
-    public String getHeroName() {
-        return heroName;
-    }
-
     public String getHeroClass() {
         return heroClass;
     }
@@ -94,5 +69,30 @@ public class BriefDeck {
 
     public Deck getDeck() {
         return deck;
+    }
+
+    public void refresh() {
+        DeckHistory deckHistory = deck.getDeckHistory();
+        name = deck.getName();
+        winCount = deckHistory.getWonGames();
+        gameCount = deckHistory.getTotalGames();
+        winRatio = 1f * winCount / Math.max(gameCount, 1);
+
+        List<Card> cards = deck.getCardsInDeck();
+        if (!cards.isEmpty()) {
+            for (Card card : cards) {
+                avgMana += card.getMana();
+            }
+            avgMana /= cards.size();
+        }
+
+        heroClass = deck.getHeroClass().toString();
+
+        for (Map.Entry<Card, Integer> entry : deckHistory.getCardsInDeckUsage().entrySet()) {
+            if (entry.getValue() > favCardUsage) {
+                favCardUsage = entry.getValue();
+                favCard = entry.getKey().getCard_name();
+            }
+        }
     }
 }

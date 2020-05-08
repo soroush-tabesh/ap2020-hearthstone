@@ -20,7 +20,7 @@ public abstract class AbstractSceneController implements Initializable {
     private Button backButton;
 
     @FXML
-    private void backPressed(ActionEvent event) {
+    protected void backPressed(ActionEvent event) {
         SceneManager.getInstance().showScene(MenuScene.class);
     }
 

@@ -1,6 +1,5 @@
 package ir.soroushtabesh.hearthstone.models;
 
-import ir.soroushtabesh.hearthstone.models.cards.Weapon;
 import ir.soroushtabesh.hearthstone.util.Logger;
 import ir.soroushtabesh.hearthstone.util.db.DBUtil;
 import org.hibernate.Session;
@@ -110,7 +109,7 @@ public class Player {
     }
 
     public boolean addOwnedCard(Card card) {
-        if (ownedCards.getOrDefault(card, 0) >= (card instanceof Weapon ? 1 : 2))
+        if (ownedCards.getOrDefault(card, 0) >= 2)
             return false;
         ownedCards.put(card, ownedCards.getOrDefault(card, 0) + 1);
         return true;
@@ -152,10 +151,10 @@ public class Player {
         if (hero == null)
             return null;
         for (Deck deck : decks) {
-            if (deck.getHero().getId().equals(hero.getId()))
+            if (deck.getHeroClass().equals(hero.getHeroClass()))
                 return deck;
         }
-        Deck deck = new Deck(hero, this);
+        Deck deck = new Deck(hero.getHeroClass(), this);
         decks.add(deck);
         DBUtil.pushSingleObject(this, session);
         return deck;

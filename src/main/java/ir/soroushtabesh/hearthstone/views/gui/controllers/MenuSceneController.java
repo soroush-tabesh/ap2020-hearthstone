@@ -1,5 +1,7 @@
 package ir.soroushtabesh.hearthstone.views.gui.controllers;
 
+import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
+import ir.soroushtabesh.hearthstone.models.Player;
 import ir.soroushtabesh.hearthstone.views.gui.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -46,4 +48,10 @@ public class MenuSceneController extends AbstractSceneController {
         SceneManager.getInstance().showScene(SettingScene.class);
     }
 
+    @Override
+    public void onStart(Object message) {
+        super.onStart(message);
+        Player player = PlayerManager.getInstance().getPlayer();
+        coins.setText(player.getCoin() + "");
+    }
 }

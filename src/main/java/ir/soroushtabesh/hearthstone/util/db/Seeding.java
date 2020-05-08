@@ -32,7 +32,7 @@ public class Seeding {
                 ScriptModel scriptModel = new Dummy();
                 HeroPower heroPower = new HeroPower();
                 Hero hero = new Hero();
-                Deck deck = new Deck(hero, player);
+                Deck deck = new Deck(hero.getHeroClass(), player);
                 Minion minion = new Minion();
                 Minion minion1 = new Minion();
 
@@ -302,7 +302,7 @@ public class Seeding {
                 Hero mage = heroes.get(0);
                 List<Card> cards = session.createQuery("from Card where id < 13", Card.class).list();
                 for (Hero hero : heroes) {
-                    Deck deck = new Deck(hero, player);
+                    Deck deck = new Deck(hero.getHeroClass(), player);
                     cards.forEach(card -> deck.addCard(card, 2));
                     /////fixme: test
                     {

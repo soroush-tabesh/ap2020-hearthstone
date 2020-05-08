@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<fx:root xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER_LEFT" spacing="5.0" styleClass="simple_border"
+         type="HBox" xmlns="http://javafx.com/javafx/11.0.1"
+         fx:controller="ir.soroushtabesh.hearthstone.views.gui.controls.CardTextView">
+    <Label fx:id="amountLabel" styleClass="simple_border" text="2">
+        <padding>
+            <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+        </padding>
+    </Label>
+    <Label fx:id="cardNameLabel" text="Name"/>
+    <padding>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+    </padding>
+
+</fx:root>

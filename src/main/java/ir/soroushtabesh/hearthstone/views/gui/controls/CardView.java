@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -37,6 +38,7 @@ public abstract class CardView extends StackPane implements Initializable {
     private String filename;
     private Image image;
     private BriefCard briefCard;
+    private boolean disabled = false;
 
     public CardView(Card card) {
         this.briefCard = BriefCard.build(card);
@@ -69,10 +71,6 @@ public abstract class CardView extends StackPane implements Initializable {
         bgImage.setImage(image);
         maskImage.setImage(new Image(getClass()
                 .getResourceAsStream(String.format("../image/card/mask/%s.png", getMaskName()))));
-//        setBorder(new Border(new BorderStroke(Color.BLUE,
-//                BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-//        maxHeightProperty().bind(widthProperty().multiply(4 / 3));
-//        maxWidthProperty().bind(heightProperty().multiply(3 / 4));
         double manax = manaLabel.getTranslateX();
         double attackx = attackLabel.getTranslateX();
         double hpx = hpLabel.getTranslateX();
@@ -118,6 +116,20 @@ public abstract class CardView extends StackPane implements Initializable {
 
     public Label getCountLabel() {
         return countLabel;
+    }
+
+    public void disable(boolean b) {
+//        setDisable(b);
+
+//        attackLabel.setDisable(b);
+//        hpLabel.setDisable(b);
+//        manaLabel.setDisable(b);
+        countLabel.setDisable(b);
+        disabled = b;
+        ColorAdjust desaturate = new ColorAdjust();
+        desaturate.setSaturation(b ? -1 : 1);
+        bgImage.setEffect(desaturate);
+        maskImage.setEffect(desaturate);
     }
 
 }

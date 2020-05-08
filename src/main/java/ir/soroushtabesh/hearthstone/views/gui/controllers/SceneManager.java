@@ -10,8 +10,8 @@ import java.util.List;
 
 public class SceneManager {
     private static SceneManager instance;
-    private GameWindow gameWindow;
-    private List<AbstractScene> scenes = new ArrayList<>();
+    private final GameWindow gameWindow;
+    private final List<AbstractScene> scenes = new ArrayList<>();
     private AbstractScene currentScene;
 
     private SceneManager(GameWindow gameWindow) {
@@ -67,5 +67,9 @@ public class SceneManager {
             currentScene.getPane().toFront();
             currentScene.fadeOut();
         }
+    }
+
+    public GameWindow getGameWindow() {
+        return gameWindow;
     }
 }
