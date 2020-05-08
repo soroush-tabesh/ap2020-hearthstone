@@ -55,6 +55,10 @@ public class SelectHeroDeckDialog extends Dialog<ButtonType> implements Initiali
             e.printStackTrace();
             return;
         }
+        setupButtons();
+    }
+
+    private void setupButtons() {
         getDialogPane().getButtonTypes().add(ButtonType.OK);
         getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
         getDialogPane().lookupButton(ButtonType.OK).addEventFilter(ActionEvent.ACTION, this::okPressed);
@@ -88,9 +92,23 @@ public class SelectHeroDeckDialog extends Dialog<ButtonType> implements Initiali
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Player player = PlayerManager.getInstance().getPlayer();
+        initHeroCombo(player);
+        initDeckCombo(player);
+        initPassiveCombo();
+    }
+
+    private void initHeroCombo(Player player) {
         heroCombo.getItems().addAll(player.getOpenHeroes());
         heroCombo.setValue(player.getCurrentHero());
+    }
 
+    private void initPassiveCombo() {
+        List<InfoPassive> passives = CardManager.getInstance().getAllPassives();
+        Collections.shuffle(passives);
+        passiveCombo.getItems().addAll(passives.subList(0, 3));
+    }
+
+    private void initDeckCombo(Player player) {
         ObjectProperty<Predicate<Deck>> categoryFilter = new SimpleObjectProperty<>();
         categoryFilter.bind(Bindings.createObjectBinding(() ->
                         deck -> heroCombo.getValue() == null
@@ -102,10 +120,6 @@ public class SelectHeroDeckDialog extends Dialog<ButtonType> implements Initiali
         Bindings.bindContent(deckCombo.getItems(), filteredItems);
 
         deckCombo.setValue(player.getCurrentDeck());
-
-        List<InfoPassive> passives = CardManager.getInstance().getAllPassives();
-        Collections.shuffle(passives);
-        passiveCombo.getItems().addAll(passives.subList(0, 3));
     }
 
     public void goCollection(ActionEvent event) {

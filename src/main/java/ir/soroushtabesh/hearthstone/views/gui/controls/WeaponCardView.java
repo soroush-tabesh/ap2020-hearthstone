@@ -7,11 +7,8 @@ public class WeaponCardView extends CardView {
     public WeaponCardView(Card card) {
         super(card);
     }
-
     @Override
     protected String getMaskName() {
         return "weaponMask";
     }
-
-
 }

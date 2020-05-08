@@ -35,7 +35,6 @@ public abstract class CardView extends StackPane implements Initializable {
     @FXML
     private ImageView bgImage;
 
-    private String filename;
     private final BriefCard briefCard;
 
     public CardView(Card card) {
@@ -63,36 +62,47 @@ public abstract class CardView extends StackPane implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //fixme: debug
-        Image image = new Image(getClass().getResourceAsStream(String.format("../image/card/CS1_069.png"
-                , briefCard.getCard().getCard_name())));
-        bgImage.setImage(image);
-        maskImage.setImage(new Image(getClass()
-                .getResourceAsStream(String.format("../image/card/mask/%s.png", getMaskName()))));
-        double manax = manaLabel.getTranslateX();
-        double attackx = attackLabel.getTranslateX();
-        double hpx = hpLabel.getTranslateX();
-        double manay = manaLabel.getTranslateY();
-        double attacky = attackLabel.getTranslateY();
-        double hpy = hpLabel.getTranslateY();
-        double w = getPrefWidth();
-        double h = getPrefHeight();
-        heightProperty().addListener((observable, oldValue, newValue) -> {
-            manaLabel.setTranslateY(maskImage.getFitHeight() * manay / h);
-            attackLabel.setTranslateY(maskImage.getFitHeight() * attacky / h);
-            hpLabel.setTranslateY(maskImage.getFitHeight() * hpy / h);
-        });
-        widthProperty().addListener((observable, oldValue, newValue) -> {
-            manaLabel.setTranslateX(maskImage.getFitWidth() * manax / w);
-            attackLabel.setTranslateX(maskImage.getFitWidth() * attackx / w);
-            hpLabel.setTranslateX(maskImage.getFitWidth() * hpx / w);
-        });
+        loadImages();
+        bindDimensions();
+        initViews();
+    }
+
+    private void initViews() {
         manaLabel.setText(briefCard.getMana() + "");
         attackLabel.setText(briefCard.getAttack() + "");
         hpLabel.setText(briefCard.getHP() + "");
         countLabel.setText(PlayerManager.getInstance().getPlayer().getOwnedAmount(briefCard.getCard()) + "");
-//        setStyle("-fx-background-color: rgba(225,106,107,0.3)");
     }
+
+    private void loadImages() {
+        //fixme: debug
+        bgImage.setImage(new Image(getClass().getResourceAsStream(String.format("../image/card/CS1_069.png"
+                , briefCard.getCard().getCard_name()))));
+        maskImage.setImage(new Image(getClass()
+                .getResourceAsStream(String.format("../image/card/mask/%s.png", getMaskName()))));
+    }
+
+    private void bindDimensions() {
+        double manaX = manaLabel.getTranslateX();
+        double attackX = attackLabel.getTranslateX();
+        double hpx = hpLabel.getTranslateX();
+        double manaY = manaLabel.getTranslateY();
+        double attackY = attackLabel.getTranslateY();
+        double hpy = hpLabel.getTranslateY();
+        double w = getPrefWidth();
+        double h = getPrefHeight();
+        heightProperty().addListener((observable, oldValue, newValue) -> {
+            manaLabel.setTranslateY(maskImage.getFitHeight() * manaY / h);
+            attackLabel.setTranslateY(maskImage.getFitHeight() * attackY / h);
+            hpLabel.setTranslateY(maskImage.getFitHeight() * hpy / h);
+        });
+        widthProperty().addListener((observable, oldValue, newValue) -> {
+            manaLabel.setTranslateX(maskImage.getFitWidth() * manaX / w);
+            attackLabel.setTranslateX(maskImage.getFitWidth() * attackX / w);
+            hpLabel.setTranslateX(maskImage.getFitWidth() * hpx / w);
+        });
+    }
+
 
     protected abstract String getMaskName();
 
@@ -117,11 +127,6 @@ public abstract class CardView extends StackPane implements Initializable {
     }
 
     public void disable(boolean b) {
-//        setDisable(b);
-
-//        attackLabel.setDisable(b);
-//        hpLabel.setDisable(b);
-//        manaLabel.setDisable(b);
         countLabel.setDisable(b);
         ColorAdjust desaturate = new ColorAdjust();
         desaturate.setSaturation(b ? -1 : 1);

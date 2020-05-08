@@ -39,19 +39,23 @@ public class EditDeckDialog extends Dialog<ButtonType> implements Initializable 
             e.printStackTrace();
             return;
         }
+        setupButtons();
+    }
+
+    private void setupButtons() {
         getDialogPane().getButtonTypes().add(ButtonType.OK);
         getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
-        getDialogPane()
-                .lookupButton(ButtonType.OK)
-                .addEventFilter(ActionEvent.ACTION, event -> {
-                    if (deckNameField.getText().isEmpty()) {
-                        event.consume();
-                        FXUtil.showAlertInfo("Collection", "Deck", "Deck name can't be empty.");
-                    } else if (heroCombo.getValue() == null) {
-                        event.consume();
-                        FXUtil.showAlertInfo("Collection", "Deck", "Hero class can't be empty.");
-                    }
-                });
+        getDialogPane().lookupButton(ButtonType.OK).addEventFilter(ActionEvent.ACTION, this::okPressed);
+    }
+
+    private void okPressed(ActionEvent event) {
+        if (deckNameField.getText().isEmpty()) {
+            event.consume();
+            FXUtil.showAlertInfo("Collection", "Deck", "Deck name can't be empty.");
+        } else if (heroCombo.getValue() == null) {
+            event.consume();
+            FXUtil.showAlertInfo("Collection", "Deck", "Hero class can't be empty.");
+        }
     }
 
     public void updateDeck() {

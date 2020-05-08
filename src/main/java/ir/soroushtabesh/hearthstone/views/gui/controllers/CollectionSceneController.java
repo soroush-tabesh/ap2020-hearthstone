@@ -23,7 +23,6 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
-import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
@@ -76,23 +75,38 @@ public class CollectionSceneController extends AbstractSceneController {
     }
 
     private void initFilters() {
-        nameFilter = new SimpleObjectProperty<>();
-        categoryFilter = new SimpleObjectProperty<>();
-        manaFilter = new SimpleObjectProperty<>();
-        possessionFilter = new SimpleObjectProperty<>();
+        initNameFilter();
+        initCategoryFilter();
+        initManaFilter();
+        initPossessionFilter();
+    }
 
+    private void initNameFilter() {
+        nameFilter = new SimpleObjectProperty<>();
         nameFilter.bind(Bindings.createObjectBinding(() ->
                         cardView -> cardView.getBriefCard().getName().toLowerCase()
                                 .contains(searchBox.getText().toLowerCase()),
                 searchBox.textProperty()));
+    }
+
+    private void initCategoryFilter() {
+        categoryFilter = new SimpleObjectProperty<>();
         categoryFilter.bind(Bindings.createObjectBinding(() ->
                         cardView -> categoryChoice.getValue() == null
                                 || categoryChoice.getValue() == cardView.getBriefCard().getCard().getHeroClass(),
                 categoryChoice.valueProperty()));
+    }
+
+    private void initManaFilter() {
+        manaFilter = new SimpleObjectProperty<>();
         manaFilter.bind(Bindings.createObjectBinding(() ->
                         cardView -> manaChoice.getValue() == null
                                 || manaChoice.getValue() == cardView.getBriefCard().getMana(),
                 manaChoice.valueProperty()));
+    }
+
+    private void initPossessionFilter() {
+        possessionFilter = new SimpleObjectProperty<>();
         possessionFilter.bind(Bindings.createObjectBinding(() ->
                         cardView -> possession.getSelectedToggle() == null
                                 || possession.getSelectedToggle() == toggleAll
@@ -104,12 +118,12 @@ public class CollectionSceneController extends AbstractSceneController {
     }
 
     private void initContextMenu() {
-        cardContextMenu = getCardContextMenu();
-        cardTextContextMenu = getCardTextContextMenu();
-        deckContextMenu = getDeckContextMenu();
+        cardContextMenu = generateCardContextMenu();
+        cardTextContextMenu = generateCardTextContextMenu();
+        deckContextMenu = generateDeckContextMenu();
     }
 
-    private ContextMenu getCardContextMenu() {
+    private ContextMenu generateCardContextMenu() {
         ContextMenu contextMenu = new ContextMenu();
         MenuItem shopItem = new MenuItem("Shop");
         MenuItem addToDeckItem = new MenuItem("Add to deck");
@@ -148,7 +162,7 @@ public class CollectionSceneController extends AbstractSceneController {
         return contextMenu;
     }
 
-    private ContextMenu getCardTextContextMenu() {
+    private ContextMenu generateCardTextContextMenu() {
         ContextMenu contextMenu = new ContextMenu();
         MenuItem removeFromDeck = new MenuItem("Remove Card");
         removeFromDeck.setOnAction(event -> {
@@ -167,7 +181,7 @@ public class CollectionSceneController extends AbstractSceneController {
         return contextMenu;
     }
 
-    public ContextMenu getDeckContextMenu() {
+    public ContextMenu generateDeckContextMenu() {
         ContextMenu contextMenu = new ContextMenu();
         MenuItem removeDeck = new MenuItem("Remove Deck");
         MenuItem editDeck = new MenuItem("Edit Deck");
@@ -227,25 +241,28 @@ public class CollectionSceneController extends AbstractSceneController {
             return;
         BriefDeck deck = (BriefDeck) target.getProperties().get("deck");
         deck.refresh();
-        putDeckToPane(deck, target);
+        generateDeckTitlePane(deck, target);
     }
 
     private void updateSelectedDeckView() {
         updateDeckView(decksAccordion.getExpandedPane());
     }
 
-    private void initDeckView() {
-        decksAccordion.getPanes().clear();
-        decks.forEach(this::addDeckViewToAccordion);
+    private void bindDeckView() {
+        generateBriefDecks();
+        FXUtil.runLater(() -> {
+            decksAccordion.getPanes().clear();
+            decks.forEach(this::addDeckViewToAccordion);
+        }, 0);
     }
 
     private void addDeckViewToAccordion(BriefDeck briefDeck) {
         TitledPane titledPane = new TitledPane();
-        putDeckToPane(briefDeck, titledPane);
+        generateDeckTitlePane(briefDeck, titledPane);
         decksAccordion.getPanes().add(titledPane);
     }
 
-    private void putDeckToPane(BriefDeck briefDeck, TitledPane titledPane) {
+    private void generateDeckTitlePane(BriefDeck briefDeck, TitledPane titledPane) {
         titledPane.setOnMouseClicked(event -> {
             if (!event.getButton().equals(MouseButton.SECONDARY))
                 return;
@@ -274,39 +291,39 @@ public class CollectionSceneController extends AbstractSceneController {
         this.message = message;
         clearFilters(null);
         new Thread(() -> {
-            List<Card> allCards = CardManager.getInstance().getAllCards();
-            ObservableList<CardView> list = FXCollections.observableList(CardView.buildAll(allCards));
-            bindToFilteredList(list);
-            bindDeck();
-            FXUtil.runLater(() -> {
-                initDeckView();
-                Bindings.bindContent(tilePane.getChildren(), filteredItems);
-                list.forEach(cardView -> {
-                    cardView.setOnContextMenuRequested(event ->
-                            cardContextMenu.show(cardView, event.getScreenX(), event.getScreenY()));
-                    cardView.setOnMouseClicked(event -> selectCard(cardView));
-                    cardView.getCountLabel().setVisible(true);
-                    if (cardView.getBriefCard().getAmount() == 0) {
-                        cardView.disable(true);
-                    }
-                    if (cardView.getBriefCard().getCard().equals(message)) {
-                        selectCard(cardView);
-                    }
-                });
-            }, 0);
+            ObservableList<CardView> list = FXCollections.observableList(CardView
+                    .buildAll(CardManager.getInstance().getAllCards()));
+            bindTilePaneToCards(list);
+            bindDeckView();
+            FXUtil.runLater(() -> list.forEach(cardView -> prepareCardView(message, cardView)), 0);
         }).start();
     }
 
-    private void bindDeck() {
+    private void prepareCardView(Object message, CardView cardView) {
+        cardView.setOnContextMenuRequested(event ->
+                cardContextMenu.show(cardView, event.getScreenX(), event.getScreenY()));
+        cardView.setOnMouseClicked(event -> selectCard(cardView));
+        cardView.getCountLabel().setVisible(true);
+        if (cardView.getBriefCard().getAmount() == 0) {
+            cardView.disable(true);
+        }
+        if (cardView.getBriefCard().getCard().equals(message)) {
+            selectCard(cardView);
+        }
+    }
+
+
+    private void generateBriefDecks() {
         Player player = PlayerManager.getInstance().getPlayer();
         decks = BriefDeck.buildAll(player.getDecks());
     }
 
-    private void bindToFilteredList(ObservableList<CardView> list) {
+    private void bindTilePaneToCards(ObservableList<CardView> list) {
         filteredItems = new FilteredList<>(list);
         filteredItems.predicateProperty().bind(Bindings.createObjectBinding(
                 () -> nameFilter.get().and(categoryFilter.get()).and(manaFilter.get()).and(possessionFilter.get()),
                 nameFilter, categoryFilter, manaFilter, possessionFilter));
+        FXUtil.runLater(() -> Bindings.bindContent(tilePane.getChildren(), filteredItems), 0);
     }
 
     private void selectCard(CardView cardView) {

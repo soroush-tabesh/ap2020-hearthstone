@@ -34,13 +34,16 @@ public class HeroView extends StackPane implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //fixme: debug
-        Image image = new Image(getClass().getResourceAsStream(String.format("../image/hero/Anduin_Wrynn.png"
-                , briefHero.getName())));
-        bgImage.setImage(image);
-        maskImage.setImage(new Image(getClass()
-                .getResourceAsStream("../image/hero/mask/heroMask.png")));
+        loadImages();
+        bindDimensions();
+        initViews();
+    }
 
+    private void initViews() {
+        hpLabel.setText(briefHero.getHp() + "");
+    }
+
+    private void bindDimensions() {
         double hpx = hpLabel.getTranslateX();
         double hpy = hpLabel.getTranslateY();
         double w = getPrefWidth();
@@ -51,6 +54,13 @@ public class HeroView extends StackPane implements Initializable {
         widthProperty().addListener((observable, oldValue, newValue) -> {
             hpLabel.setTranslateX(maskImage.getFitWidth() * hpx / w);
         });
-        hpLabel.setText(briefHero.getHp() + "");
+    }
+
+    private void loadImages() {
+        //fixme: debug
+        bgImage.setImage(new Image(getClass().getResourceAsStream(String.format("../image/hero/Anduin_Wrynn.png"
+                , briefHero.getName()))));
+        maskImage.setImage(new Image(getClass()
+                .getResourceAsStream("../image/hero/mask/heroMask.png")));
     }
 }
