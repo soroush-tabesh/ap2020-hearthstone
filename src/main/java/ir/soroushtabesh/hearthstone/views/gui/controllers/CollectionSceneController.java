@@ -60,6 +60,7 @@ public class CollectionSceneController extends AbstractSceneController {
     private TitledPane paneContextTemp;
     private CardTextView cardTextContextTemp;
     private ObservableList<BriefDeck> decks;
+    private Object message;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -270,6 +271,7 @@ public class CollectionSceneController extends AbstractSceneController {
     @Override
     public void onStart(Object message) {
         super.onStart(message);
+        this.message = message;
         clearFilters(null);
         new Thread(() -> {
             List<Card> allCards = CardManager.getInstance().getAllCards();
@@ -327,5 +329,14 @@ public class CollectionSceneController extends AbstractSceneController {
         manaChoice.setValue(null);
         possession.selectToggle(possession.getToggles().get(0));
         searchBox.clear();
+    }
+
+    @Override
+    protected void backPressed(ActionEvent event) {
+        if (message instanceof Class) {
+            SceneManager.getInstance().showScene((Class) message);
+        } else {
+            super.backPressed(event);
+        }
     }
 }

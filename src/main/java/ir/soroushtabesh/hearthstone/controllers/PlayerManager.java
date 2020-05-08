@@ -96,6 +96,13 @@ public class PlayerManager {
         }
     }
 
+    public void updatePlayer(Player player) {
+        DBUtil.doInJPA(session -> {
+            session.saveOrUpdate(player);
+            return null;
+        });
+    }
+
     public enum Message {
         EXISTS, SUCCESS, ERROR, WRONG
     }

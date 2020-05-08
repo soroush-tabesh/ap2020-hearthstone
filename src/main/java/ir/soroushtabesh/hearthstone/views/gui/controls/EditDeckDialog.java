@@ -31,7 +31,7 @@ public class EditDeckDialog extends Dialog<ButtonType> implements Initializable 
         setHeaderText(header);
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setControllerFactory(theClass -> this);
-        fxmlLoader.setLocation(getClass().getResource("EditDeckDialog.fxml"));
+        fxmlLoader.setLocation(getClass().getResource(getClass().getSimpleName() + ".fxml"));
         try {
             getDialogPane().setContent(fxmlLoader.load());
         } catch (IOException e) {

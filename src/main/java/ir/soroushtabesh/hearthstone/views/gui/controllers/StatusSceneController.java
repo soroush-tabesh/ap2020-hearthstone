@@ -35,7 +35,6 @@ public class StatusSceneController extends AbstractSceneController {
     private TableColumn<BriefDeck, String> gameCountColumn;
     private TableColumn<BriefDeck, String> winRatioColumn;
     private TableColumn<BriefDeck, String> avgManaColumn;
-    private TableColumn<BriefDeck, String> heroNameColumn;
     private TableColumn<BriefDeck, String> heroClassColumn;
     private TableColumn<BriefDeck, String> favCardColumn;
     private TableColumn<BriefDeck, String> favCardUsageColumn;
@@ -56,8 +55,6 @@ public class StatusSceneController extends AbstractSceneController {
         winRatioColumn.setCellValueFactory(new PropertyValueFactory<>("winRatio"));
         avgManaColumn = new TableColumn<>("Average Mana");
         avgManaColumn.setCellValueFactory(new PropertyValueFactory<>("avgMana"));
-        heroNameColumn = new TableColumn<>("Hero Name");
-        heroNameColumn.setCellValueFactory(new PropertyValueFactory<>("heroName"));
         heroClassColumn = new TableColumn<>("Hero Class");
         heroClassColumn.setCellValueFactory(new PropertyValueFactory<>("heroClass"));
         favCardColumn = new TableColumn<>("Favourite Card");
@@ -69,7 +66,6 @@ public class StatusSceneController extends AbstractSceneController {
                 , gameCountColumn
                 , winRatioColumn
                 , avgManaColumn
-                , heroNameColumn
                 , heroClassColumn
                 , favCardColumn
                 , favCardUsageColumn));

@@ -39,6 +39,12 @@
     -fx-effect: dropshadow(gaussian, #363636, 2, 0.7, 0, 0);
 }
 
+.label_log {
+    -fx-font-size: 8;
+    -fx-text-fill: gainsboro;
+    -fx-effect: dropshadow(gaussian, #363636, 2, 0.7, 0, 0);
+}
+
 .button-native {
     -fx-background-color: transparent;
     -fx-background-image: url("../image/btnfront.png");
@@ -211,5 +217,26 @@
 
 /*****************************************************************************************/
 
+/*Board*/
+#boardPane {
+    -fx-background-image: url("../image/board.jpg");
+}
+
+#endTurn {
+    -fx-background-color: transparent;
+    -fx-background-image: url("../image/end_turn.png");
+    -fx-background-size: stretch;
+    -fx-background-position: center;
+}
+
+#endTurn:hover {
+    -fx-effect: innershadow(gaussian, gold, 5, 0.5, 0, 0);
+}
+
+#endTurn:pressed {
+    -fx-opacity: 0.5;
+}
+
+/*****************************************************************************************/
 
 

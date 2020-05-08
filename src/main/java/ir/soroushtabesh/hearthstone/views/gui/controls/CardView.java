@@ -36,9 +36,7 @@ public abstract class CardView extends StackPane implements Initializable {
     private ImageView bgImage;
 
     private String filename;
-    private Image image;
-    private BriefCard briefCard;
-    private boolean disabled = false;
+    private final BriefCard briefCard;
 
     public CardView(Card card) {
         this.briefCard = BriefCard.build(card);
@@ -66,7 +64,7 @@ public abstract class CardView extends StackPane implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //fixme: debug
-        image = new Image(getClass().getResourceAsStream(String.format("../image/card/CS1_069.png"
+        Image image = new Image(getClass().getResourceAsStream(String.format("../image/card/CS1_069.png"
                 , briefCard.getCard().getCard_name())));
         bgImage.setImage(image);
         maskImage.setImage(new Image(getClass()
@@ -125,7 +123,6 @@ public abstract class CardView extends StackPane implements Initializable {
 //        hpLabel.setDisable(b);
 //        manaLabel.setDisable(b);
         countLabel.setDisable(b);
-        disabled = b;
         ColorAdjust desaturate = new ColorAdjust();
         desaturate.setSaturation(b ? -1 : 1);
         bgImage.setEffect(desaturate);

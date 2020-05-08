@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.StackPane?>
+<fx:root xmlns:fx="http://javafx.com/fxml/1" type="StackPane"
+         xmlns="http://javafx.com/javafx/11.0.1"
+         fx:controller="ir.soroushtabesh.hearthstone.views.gui.controls.HeroView" maxHeight="-Infinity"
+         maxWidth="-Infinity" prefHeight="221.0" prefWidth="150.0">
+    <ImageView fx:id="bgImage" fitHeight="250.0" fitWidth="155.0" pickOnBounds="true" preserveRatio="true">
+        <image>
+            <!--            <Image url="@../image/hero/Anduin_Wrynn.png"/>-->
+        </image>
+    </ImageView>
+    <ImageView fx:id="maskImage" fitHeight="250.0" fitWidth="155.0" pickOnBounds="true" preserveRatio="true">
+        <image>
+            <!--            <Image url="@../image/hero/mask/heroMask.png"/>-->
+        </image>
+    </ImageView>
+    <Label fx:id="hpLabel" contentDisplay="CENTER" styleClass="label_big" text="30" translateX="55.0"
+           translateY="33.0"/>
+</fx:root>

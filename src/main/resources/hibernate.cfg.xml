@@ -25,6 +25,7 @@
         <mapping class="ir.soroushtabesh.hearthstone.models.Log"/>
         <mapping class="ir.soroushtabesh.hearthstone.models.Hero"/>
         <mapping class="ir.soroushtabesh.hearthstone.models.Deck"/>
+        <mapping class="ir.soroushtabesh.hearthstone.models.InfoPassive"/>
 
         <mapping class="ir.soroushtabesh.hearthstone.models.ScriptModel"/>
         <mapping class="ir.soroushtabesh.hearthstone.models.scripts.Dummy"/>

@@ -126,10 +126,16 @@ public class Seeding {
             Weapon weapon2 = new Weapon();
             Weapon weapon3 = new Weapon();
 
+            InfoPassive passive1 = new InfoPassive("Twice Draw", "");
+            InfoPassive passive2 = new InfoPassive("Off Draws", "");
+            InfoPassive passive3 = new InfoPassive("Warriors", "");
+            InfoPassive passive4 = new InfoPassive("Nurse", "");
+            InfoPassive passive5 = new InfoPassive("Free power", "");
+
             DBUtil.pushObjects(mage, warlock, rogue, heroPower_mage, heroPower_rogue, heroPower_warlock
                     , mage_spec_morph, warlock_spec_dread, rogue_spec_smith, spell1, spell2, spell3, spell4,
                     minion1, minion2, minion3, minion4, minion5, minion6, minion7, minion8, quest1
-                    , quest2, quest3, weapon1, weapon2, weapon3);
+                    , quest2, quest3, weapon1, weapon2, weapon3, passive1, passive2, passive3, passive4, passive5);
 
             DBUtil.doInJPA(session -> {
                 mage.setName("Chaghal");

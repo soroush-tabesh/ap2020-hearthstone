@@ -1,6 +1,7 @@
 package ir.soroushtabesh.hearthstone.controllers;
 
 import ir.soroushtabesh.hearthstone.models.Card;
+import ir.soroushtabesh.hearthstone.models.InfoPassive;
 import ir.soroushtabesh.hearthstone.models.Player;
 import ir.soroushtabesh.hearthstone.util.db.DBUtil;
 
@@ -18,6 +19,10 @@ public class CardManager {
 
     public List<Card> getAllCards() {
         return DBUtil.doInJPA(session -> session.createQuery("from Card ", Card.class).list());
+    }
+
+    public List<InfoPassive> getAllPassives() {
+        return DBUtil.doInJPA(session -> session.createQuery("from InfoPassive ", InfoPassive.class).list());
     }
 
     public Message buyCard(Card card) {

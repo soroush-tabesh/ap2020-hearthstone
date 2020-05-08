@@ -104,10 +104,7 @@ public class Hero {
 
     @Override
     public String toString() {
-        return "Hero" + "\n" +
-                "Name: " + name + "\n" +
-                "HP: " + hp + "\n" +
-                "Class: " + heroClass;
+        return String.format("%s (%s)", name, heroClass);
     }
 
     @Override

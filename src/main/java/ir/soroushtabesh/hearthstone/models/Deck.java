@@ -128,6 +128,16 @@ public class Deck {
         return res;
     }
 
+    public List<Card> getFullDeck() {
+        List<Card> res = new ArrayList<>();
+        cardsInDeck.forEach((key, value) -> {
+            for (int i = 0; i < value; i++) {
+                res.add(key);
+            }
+        });
+        return res;
+    }
+
     public boolean isPure() {
         for (Card card : cardsInDeck.keySet()) {
             if (card.getHeroClass() != Hero.HeroClass.ALL)
@@ -136,13 +146,10 @@ public class Deck {
         return true;
     }
 
+    //todo:change
     @Override
     public String toString() {
-        return "Deck{" +
-                "deck_id=" + id +
-                ", hero=" + heroClass +
-                ", player=" + player +
-                '}';
+        return String.format("%s (%s)", name, heroClass);
     }
 
     @Override
