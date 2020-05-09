@@ -2,11 +2,74 @@
 _Currently under development._ 
 
 ## How to run the application
-In the source package(ir.soroushtabesh.hearthstone) there's an Application class which you only need to run
-main method. Database system will initialize itself and there's no need for extra work.
+In the source package(ir.soroushtabesh.hearthstone) run Main class.
+ Database system will initialize itself and no extra work is needed.
+
+## Phase 2 Documentation
+This phase implements a graphical UI to interact with data models and there's a minimal implementaion of 
+board and logic.
+### Libraries and Dependencies
+Java 13 is used for build.
+Project is built using Gradle.
+
+- [Hibernate](http://hibernate.org/orm/) - Robust and widely used ORM, with an active community.
+- [H2](https://h2database.com) - Small SQL database, with embedded mode available.
+- [Apache Log4j 2](https://logging.apache.org/log4j/) - Taking control of Hibernate logging.
+- [Guava](https://github.com/google/guava) - Collections, caching, primitives support, concurrency libraries, common
+ annotations, string processing, I/O, and more.
+- [Apache Commons Codec](http://commons.apache.org/proper/commons-codec/) - General encoding/decoding algorithms, e.g. 
+phonetic, base64 or URL. 
+- [OpenJFX](https://openjfx.io/) - Alternate JavaFX library as it's no longer contained in JDK.
+- [Apache Lang](http://commons.apache.org/proper/commons-lang/) - Provides extra functionality for classes in java.lang.
+e.g. CompareToBuilder.
+- [AnimateFX](https://github.com/Typhon0/AnimateFX) - A library of ready-to-use animations for JavaFX.
+
+### Resources
+
+- [Game Pedia](https://hearthstone.gamepedia.com/) - A complete resource of game cards and heroes.
+- [Hearthstone's assets](https://github.com/GitHtub/Hearthstone/tree/master/Assets) - UI elements and font.
+- [Vlad Mihalcea' Blog](https://vladmihalcea.com/) - Contains perfect articles on Hibernate.
+- [Baeldung](https://www.baeldung.com/) - Tutorials of hibernate.
+- [SVG PathBuilder](https://codepen.io/anthonydugois/full/mewdyZ) - Online tool for making SVG paths.
+
+### A brief description of architecture
+
+####GUI
+- Oracle has stopped maintaining JFX since Java11. So in order to keep my program runnable on various environments
+I switched to OpenJFX. In addition, OpenJFX's newer versions have fixed older JFX bugs and improved it in various ways.
+- The GUI follows an MVC pattern as JFX suggests. GUI's controllers are simply mapper classes reaching logic's controllers.  
+- Flyweight design pattern is used for loading the cards because cards are used in multiple places and are expensive to build.
+- A Scene Management system is used for scene transmition and loading.  
+####Models
+- Database communication is done using a Dependency Injection which DBUtil class provides.   
+- Data models are mostly JPA entities but for the sake of ease, some Proxy classes(starting with prefix Brief-) are implemented
+to avoid direct modification of JPA entities.   
+- The view-model binding is controlled via Observers as this game is event-based.   
+- Data models which contain Collections, are always being lazily loaded to reduce memory-cpu load. Lazy loading is done using 
+Hibernate's internal Proxy classes.   
+- Hibernate is configuered to use second-level cache.  
+- Database transactions are controlled under a local Transaction management to avoid concurrent modification of database and 
+cached models.
+
+ | Database relations |
+ | ------------- |
+ | ![](./readme_resources/DB2.png) |
+ 
+
+####Controllers
+- Logic's controllers are Singleton classed shared in Program as they're uniquely defined per user.    
+
+### Logging
+Before establishing a stable connection with the database, Log4j is solely used for logging events in a file but after connecting to the database,
+logs are recorded in a database table and SQL logs are recorded in a file.
+
+ 
+
+
+
 
 ## Phase 1 Documentation
-This phase implements data models and a modest CLI for the sake of test. CLI supports user sign-up, login session,
+This phase implements data models, and a modest CLI for the sake of test. CLI supports user sign-up, login session,
  a simple collection management system and a simple store system.
 ### Libraries and Dependencies
 Java 13 is used for build.
