@@ -62,8 +62,11 @@ public class BoardSceneController extends AbstractSceneController {
     public void onStart(Object message) {
         super.onStart(message);
         initUI();
-        if (!validateHeroAndDeck()) {
+        Optional<ButtonType> msg = validateHeroAndDeck();
+        if (msg.isEmpty() || msg.get() == ButtonType.CANCEL) {
             super.backPressed(null);
+            return;
+        } else if (msg.get() == ButtonType.APPLY) {
             return;
         }
         initController();
@@ -200,10 +203,9 @@ public class BoardSceneController extends AbstractSceneController {
         gameController = new GameController(player.getCurrentHero(), player.getCurrentDeck());
     }
 
-    private boolean validateHeroAndDeck() {
+    private Optional<ButtonType> validateHeroAndDeck() {
         SelectHeroDeckDialog dialog = new SelectHeroDeckDialog(heroStand);
-        Optional<ButtonType> res = dialog.showAndWait();
-        return res.isPresent() && !res.get().equals(ButtonType.CANCEL);
+        return dialog.showAndWait();
     }
 
     private void initUI() {

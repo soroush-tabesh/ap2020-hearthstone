@@ -41,6 +41,10 @@ public class SelectHeroDeckDialog extends Dialog<ButtonType> implements Initiali
     @FXML
     private ComboBox<Deck> deckCombo;
 
+    private FilteredList<Deck> filteredItems;
+    private ObjectProperty<Predicate<Deck>> categoryFilter;
+
+
     public SelectHeroDeckDialog(Node owner) {
         Logger.log("Dialog", getClass().getSimpleName());
         initOwner(owner.getScene().getWindow());
@@ -110,17 +114,17 @@ public class SelectHeroDeckDialog extends Dialog<ButtonType> implements Initiali
     }
 
     private void initDeckCombo(Player player) {
-        ObjectProperty<Predicate<Deck>> categoryFilter = new SimpleObjectProperty<>();
+        categoryFilter = new SimpleObjectProperty<>();
         categoryFilter.bind(Bindings.createObjectBinding(() ->
-                        deck -> heroCombo.getValue() == null
-                                || heroCombo.getValue().getHeroClass() == Hero.HeroClass.ALL
-                                || heroCombo.getValue().getHeroClass() == deck.getHeroClass(),
+                        deck -> (heroCombo.getValue() != null)
+                                && (heroCombo.getValue().getHeroClass() == Hero.HeroClass.ALL
+                                || heroCombo.getValue().getHeroClass() == deck.getHeroClass()),
                 heroCombo.valueProperty()));
-        FilteredList<Deck> filteredItems = new FilteredList<>(FXCollections.observableArrayList(player.getDecks()));
+        filteredItems = new FilteredList<>(FXCollections.observableArrayList(player.getDecks()));
         filteredItems.predicateProperty().bind(Bindings.createObjectBinding(categoryFilter::get, categoryFilter));
+        if (player.getCurrentDeck() != null)
+            deckCombo.setValue(player.getCurrentDeck());
         Bindings.bindContent(deckCombo.getItems(), filteredItems);
-
-        deckCombo.setValue(player.getCurrentDeck());
     }
 
     public void goCollection(ActionEvent event) {

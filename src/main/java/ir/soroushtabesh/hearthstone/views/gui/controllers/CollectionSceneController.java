@@ -69,6 +69,27 @@ public class CollectionSceneController extends AbstractSceneController {
         initContextMenu();
     }
 
+    @Override
+    public void onStart(Object message) {
+        super.onStart(message);
+        this.message = message;
+        clearFilters(null);
+        new Thread(() -> {
+            ObservableList<CardView> list = FXCollections.observableList(CardView
+                    .buildAll(CardManager.getInstance().getAllCards()));
+            bindTilePaneToCards(list);
+            bindDeckView();
+            FXUtil.runLater(() -> list.forEach(cardView -> prepareCardView(message, cardView)), 0);
+        }).start();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Bindings.unbindContent(tilePane.getChildren(), filteredItems);
+        clearFilters(null);
+    }
+
     private void initViews() {
         categoryChoice.getItems().addAll(Hero.HeroClass.values());
         manaChoice.getItems().addAll(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
@@ -205,14 +226,6 @@ public class CollectionSceneController extends AbstractSceneController {
         return contextMenu;
     }
 
-    @FXML
-    private void newDeckAction(ActionEvent event) {
-        Deck deck = openAddDeck();
-        if (deck != null) {
-            addDeckViewToAccordion(BriefDeck.build(deck));
-        }
-    }
-
     private Deck openAddDeck() {
         Deck deck = new Deck();
         EditDeckDialog editDeckDialog = new EditDeckDialog(getPane(), "Collection"
@@ -285,20 +298,6 @@ public class CollectionSceneController extends AbstractSceneController {
         titledPane.setContent(vBox);
     }
 
-    @Override
-    public void onStart(Object message) {
-        super.onStart(message);
-        this.message = message;
-        clearFilters(null);
-        new Thread(() -> {
-            ObservableList<CardView> list = FXCollections.observableList(CardView
-                    .buildAll(CardManager.getInstance().getAllCards()));
-            bindTilePaneToCards(list);
-            bindDeckView();
-            FXUtil.runLater(() -> list.forEach(cardView -> prepareCardView(message, cardView)), 0);
-        }).start();
-    }
-
     private void prepareCardView(Object message, CardView cardView) {
         cardView.setOnContextMenuRequested(event ->
                 cardContextMenu.show(cardView, event.getScreenX(), event.getScreenY()));
@@ -311,7 +310,6 @@ public class CollectionSceneController extends AbstractSceneController {
             selectCard(cardView);
         }
     }
-
 
     private void generateBriefDecks() {
         Player player = PlayerManager.getInstance().getPlayer();
@@ -333,11 +331,12 @@ public class CollectionSceneController extends AbstractSceneController {
         selectedCardView.setStyle("-fx-background-color: rgba(64,186,213,0.29)");
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        Bindings.unbindContent(tilePane.getChildren(), filteredItems);
-        clearFilters(null);
+    @FXML
+    private void newDeckAction(ActionEvent event) {
+        Deck deck = openAddDeck();
+        if (deck != null) {
+            addDeckViewToAccordion(BriefDeck.build(deck));
+        }
     }
 
     @FXML

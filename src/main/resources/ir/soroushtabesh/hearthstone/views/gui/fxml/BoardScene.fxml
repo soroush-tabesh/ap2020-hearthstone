@@ -8,7 +8,8 @@
             stylesheets="@../stylesheet/styles.css" xmlns="http://javafx.com/javafx/11.0.1"
             fx:controller="ir.soroushtabesh.hearthstone.views.gui.controllers.BoardSceneController">
     <StackPane fx:id="heroStand" layoutX="534.0" layoutY="522.0"/>
-    <ScrollPane layoutY="514.0" prefHeight="286.0" prefWidth="528.0" styleClass="card-image" vbarPolicy="NEVER">
+    <ScrollPane hbarPolicy="ALWAYS" layoutY="492.0" prefHeight="308.0" prefWidth="528.0" styleClass="card-image"
+                vbarPolicy="NEVER">
         <HBox fx:id="handCardBox" alignment="TOP_CENTER" maxHeight="-Infinity" minHeight="-Infinity"
               prefHeight="110.0"/>
     </ScrollPane>
@@ -18,7 +19,7 @@
     <Button id="endTurn" layoutX="1002.0" layoutY="308.0" mnemonicParsing="false" onAction="#endTurn" prefHeight="78.0"
             prefWidth="131.0"/>
     <ScrollPane layoutX="22.0" layoutY="235.0" prefHeight="272.0" prefWidth="103.0">
-        <VBox fx:id="logBox" prefWidth="100.0"/>
+        <VBox fx:id="logBox"/>
     </ScrollPane>
     <Label fx:id="deckRemLabel" contentDisplay="CENTER" layoutX="1106.0" layoutY="450.0" rotate="90.0"
            styleClass="label_small" text="30"/>

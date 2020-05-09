@@ -45,7 +45,7 @@ public class Seeding {
                     Hero.HeroClass.PALADIN,
                     30,
                     new HeroPower("The Silver Hand"));
-            Hero priest = new Hero("Tyrande Whisperwind.png",
+            Hero priest = new Hero("Tyrande Whisperwind",
                     Hero.HeroClass.PRIEST,
                     30,
                     new HeroPower("Heal"));
