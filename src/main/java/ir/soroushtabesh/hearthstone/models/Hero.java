@@ -6,8 +6,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -28,30 +26,18 @@ public class Hero {
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
     private HeroPower heroPower;
 
-    @OneToMany
-    @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
-    @JoinColumn(name = "hero_id")
-    private List<Card> specialCards = new ArrayList<>();
-
     @ManyToOne
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
     private ScriptModel specialPower;
 
-    public Hero(String name, HeroClass heroClass, int hp, HeroPower heroPower, List<Card> specialCards, ScriptModel specialPower) {
+    public Hero(String name, HeroClass heroClass, int hp, HeroPower heroPower) {
         this.name = name;
         this.heroClass = heroClass;
         this.hp = hp;
         this.heroPower = heroPower;
-        this.specialCards = specialCards;
-        this.specialPower = specialPower;
     }
 
     public Hero() {
-    }
-
-
-    public void addSpecialCard(Card card) {
-        specialCards.add(card);
     }
 
     public Integer getId() {
@@ -88,10 +74,6 @@ public class Hero {
 
     public void setHeroPower(HeroPower heroPower) {
         this.heroPower = heroPower;
-    }
-
-    public List<Card> getSpecialCards() {
-        return specialCards;
     }
 
     public ScriptModel getSpecialPower() {

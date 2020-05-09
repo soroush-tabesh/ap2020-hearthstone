@@ -14,6 +14,10 @@ public class HeroPower extends ScriptModel {
     public HeroPower() {
     }
 
+    public HeroPower(String name) {
+        this.name = name;
+    }
+
     public HeroPower(String name, String description) {
         this.name = name;
         this.description = description;

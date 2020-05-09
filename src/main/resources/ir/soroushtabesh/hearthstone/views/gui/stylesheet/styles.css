@@ -201,9 +201,17 @@
 }
 
 #countLabel {
-    -fx-padding: 0 5 0 5;
+    -fx-padding: 2 3 2 5;
     -fx-border-radius: 3;
-    -fx-border-width: 2;
+    -fx-border-width: 1;
+    -fx-border-style: solid;
+    -fx-border-color: darkgoldenrod;
+}
+
+#classLabel {
+    -fx-padding: 5 5 0 5;
+    -fx-border-radius: 3;
+    -fx-border-width: 1;
     -fx-border-style: solid;
     -fx-border-color: darkgoldenrod;
 }

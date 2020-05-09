@@ -92,31 +92,38 @@ public class BoardSceneController extends AbstractSceneController {
 
     private void bindUI() {
         Player player = PlayerManager.getInstance().getPlayer();
-        heroStand.getChildren().add(HeroView.build(player.getCurrentHero()));
-        //fixme: debug
-        heroPowerImage.setImage(new Image(getClass().getResourceAsStream(String.format("../image/card/Anduin_Wrynn.png"
-                , player.getCurrentHero().getHeroPower().getName()))));
-        gameController.getDeck().addListener((ListChangeListener<Card>) c -> {
-            c.next();
-            deckRemLabel.setText(gameController.getDeck().size() + "");
+        bindHeroStand(player);
+        bindHeroPowerImage(player);
+        bindDeckRemLabel();
+        bindGroundBox();
+        bindHand();
+        bindMana();
+        bindLogs();
+        bindWeaponStand();
+        bindBurnedCardStand();
+    }
+
+    private void bindBurnedCardStand() {
+        gameController.burnedCardProperty().addListener((observable, oldValue, newValue) -> {
+            burnedCardStand.getChildren().clear();
+            CardView cardView = getCardView(newValue);
+            burnedCardStand.getChildren().add(cardView);
+            Hinge hinge = new Hinge(cardView);
+            hinge.setOnFinished(event -> burnedCardStand.getChildren().clear());
+            hinge.play();
         });
-        gameController.getGround().addListener((ListChangeListener<Card>) c
-                -> {
-            c.next();
-            c.getAddedSubList().forEach(card -> {
-                CardView cardView = getCardView(card);
-                groundBox.getChildren().add(cardView);
-                new ZoomInRight(cardView).play();
-            });
+    }
+
+    private void bindWeaponStand() {
+        gameController.currentWeaponProperty().addListener((observable, oldValue, newValue) -> {
+            weaponStand.getChildren().clear();
+            CardView cardView = getCardView(newValue);
+            weaponStand.getChildren().add(cardView);
+            new ZoomIn(cardView).play();
         });
-        gameController.getHand().addListener((ListChangeListener<Card>) c -> {
-            c.next();
-            c.getRemoved().forEach(card -> handCardBox.getChildren()
-                    .removeIf(node -> ((CardView) node).getBriefCard().getCard().equals(card)));
-            c.getAddedSubList().forEach(card -> handCardBox.getChildren().add(getCardView(card)));
-        });
-        gameController.manaProperty().addListener((observable, oldValue, newValue) ->
-                manaLabel.setText(String.format("%d/%d", newValue.intValue(), gameController.getManaMax())));
+    }
+
+    private void bindLogs() {
         gameController.getLog().addListener((ListChangeListener<String>) c -> {
             c.next();
             c.getAddedSubList().forEach(s -> {
@@ -126,20 +133,48 @@ public class BoardSceneController extends AbstractSceneController {
 
             });
         });
-        gameController.currentWeaponProperty().addListener((observable, oldValue, newValue) -> {
-            weaponStand.getChildren().clear();
-            CardView cardView = getCardView(newValue);
-            weaponStand.getChildren().add(cardView);
-            new ZoomIn(cardView).play();
+    }
+
+    private void bindMana() {
+        gameController.manaProperty().addListener((observable, oldValue, newValue) ->
+                manaLabel.setText(String.format("%d/%d", newValue.intValue(), gameController.getManaMax())));
+    }
+
+    private void bindHand() {
+        gameController.getHand().addListener((ListChangeListener<Card>) c -> {
+            c.next();
+            c.getRemoved().forEach(card -> handCardBox.getChildren()
+                    .removeIf(node -> ((CardView) node).getBriefCard().getCard().equals(card)));
+            c.getAddedSubList().forEach(card -> handCardBox.getChildren().add(getCardView(card)));
         });
-        gameController.burnedCardProperty().addListener((observable, oldValue, newValue) -> {
-            burnedCardStand.getChildren().clear();
-            CardView cardView = getCardView(newValue);
-            burnedCardStand.getChildren().add(cardView);
-            Hinge hinge = new Hinge(cardView);
-            hinge.setOnFinished(event -> burnedCardStand.getChildren().clear());
-            hinge.play();
+    }
+
+    private void bindGroundBox() {
+        gameController.getGround().addListener((ListChangeListener<Card>) c
+                -> {
+            c.next();
+            c.getAddedSubList().forEach(card -> {
+                CardView cardView = getCardView(card);
+                groundBox.getChildren().add(cardView);
+                new ZoomInRight(cardView).play();
+            });
         });
+    }
+
+    private void bindDeckRemLabel() {
+        gameController.getDeck().addListener((ListChangeListener<Card>) c -> {
+            c.next();
+            deckRemLabel.setText(gameController.getDeck().size() + "");
+        });
+    }
+
+    private void bindHeroPowerImage(Player player) {
+        heroPowerImage.setImage(new Image(getClass().getResourceAsStream(String.format("../image/card/heroPower/%s.png"
+                , player.getCurrentHero().getHeroPower().getName()))));
+    }
+
+    private void bindHeroStand(Player player) {
+        heroStand.getChildren().add(HeroView.build(player.getCurrentHero()));
     }
 
     private CardView getCardView(Card card) {

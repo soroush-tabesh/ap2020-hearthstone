@@ -5,11 +5,8 @@ import ir.soroushtabesh.hearthstone.models.cards.Minion;
 import ir.soroushtabesh.hearthstone.models.cards.Quest;
 import ir.soroushtabesh.hearthstone.models.cards.Spell;
 import ir.soroushtabesh.hearthstone.models.cards.Weapon;
-import ir.soroushtabesh.hearthstone.models.scripts.Dummy;
 import ir.soroushtabesh.hearthstone.models.scripts.HeroPower;
 import ir.soroushtabesh.hearthstone.util.Constants;
-import ir.soroushtabesh.hearthstone.util.HashUtil;
-import ir.soroushtabesh.hearthstone.util.Logger;
 
 import java.io.File;
 import java.util.List;
@@ -25,106 +22,347 @@ public class Seeding {
     private Seeding() {
     }
 
-    public static void initiate1() {
-        Logger.log("test", "test", Log.Severity.WARNING);
-        DBUtil.doInJPA(session -> {
-            try {
-                Player player = new Player("akbar", HashUtil.hash("akbar"));
-                ScriptModel scriptModel = new Dummy();
-                HeroPower heroPower = new HeroPower();
-                Hero hero = new Hero();
-                Deck deck = new Deck(hero.getHeroClass(), player);
-                Minion minion = new Minion();
-                Minion minion1 = new Minion();
-
-                session.saveOrUpdate(player);
-                session.saveOrUpdate(scriptModel);
-                session.saveOrUpdate(heroPower);
-                session.saveOrUpdate(hero);
-                session.saveOrUpdate(deck);
-                session.saveOrUpdate(minion);
-                session.saveOrUpdate(minion1);
-
-                player.addDeck(deck);
-                player.addOpenHero(hero);
-                player.addOwnedCard(minion);
-                player.addOwnedCard(minion1);
-
-                hero.addSpecialCard(minion);
-                hero.setHeroClass(Hero.HeroClass.DRUID);
-                hero.setHeroPower(heroPower);
-                hero.setHp(40);
-                hero.setName("Akbar");
-                hero.setSpecialPower(scriptModel);
-
-                deck.addCard(minion);
-                deck.addCard(minion1);
-
-                minion.setCard_name("Ghozmit");
-                minion.setAttackPower(2);
-                minion.setHp(5);
-                minion.setMinionClass(Minion.MinionClass.BEAST);
-                minion.setDescription("Khafan");
-                minion.setHeroClass(hero.getHeroClass());
-                minion.setMana(3);
-                minion.setPrice(12);
-                minion.setRarity(Card.Rarity.RARE);
-                minion.setScriptModel(scriptModel);
-
-                minion1.setCard_name("Peshgel");
-                minion1.setAttackPower(3);
-                minion1.setHp(1);
-                minion1.setMinionClass(Minion.MinionClass.BEAST);
-                minion1.setDescription("Oskol");
-                minion1.setHeroClass(hero.getHeroClass());
-                minion1.setMana(1);
-                minion1.setPrice(3);
-                minion1.setRarity(Card.Rarity.EPIC);
-                minion1.setScriptModel(scriptModel);
-
-                session.saveOrUpdate(player);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        });
-    }
-
     public static void seed() {
         try {
-            Hero mage = new Hero();
-            Hero warlock = new Hero();
-            Hero rogue = new Hero();
+            //Heroes
+            Hero mage = new Hero("Jaina Proudmoore",
+                    Hero.HeroClass.MAGE,
+                    30,
+                    new HeroPower("Fireblast"));
+            Hero warlock = new Hero("Gul'dan",
+                    Hero.HeroClass.WARLOCK,
+                    35,
+                    new HeroPower("Life Tap"));
+            Hero rogue = new Hero("Valeera Sanguinar",
+                    Hero.HeroClass.ROUGE,
+                    30,
+                    new HeroPower("Dagger Mastery"));
+            Hero hunter = new Hero("Alleria Windrunner",
+                    Hero.HeroClass.HUNTER,
+                    30,
+                    new HeroPower("Caltrops"));
+            Hero paladin = new Hero("Prince Arthas",
+                    Hero.HeroClass.PALADIN,
+                    30,
+                    new HeroPower("The Silver Hand"));
+            Hero priest = new Hero("Tyrande Whisperwind.png",
+                    Hero.HeroClass.PRIEST,
+                    30,
+                    new HeroPower("Heal"));
 
-            HeroPower heroPower_mage = new HeroPower();
-            HeroPower heroPower_warlock = new HeroPower();
-            HeroPower heroPower_rogue = new HeroPower();
+            //Special cards
+            Spell mage_spec = new Spell("Polymorph",
+                    "Transform a minion into a 1/1 Sheep.",
+                    4,
+                    Hero.HeroClass.MAGE,
+                    3,
+                    Card.Rarity.COMMON);
+            Spell mage_spec2 = new Spell("Mirror Image",
+                    "Summon two 0/2 minions with Taunt.",
+                    1,
+                    Hero.HeroClass.MAGE,
+                    3,
+                    Card.Rarity.COMMON);
+            Spell rogue_spec = new Spell("Friendly Smith",
+                    "Discover a weapon\n" +
+                            "from any class. Add it\n" +
+                            "to your Adventure Deck\n" +
+                            "with +2/+2.",
+                    1,
+                    Hero.HeroClass.ROUGE,
+                    3,
+                    Card.Rarity.COMMON);
+            Minion rogue_spec2 = new Minion("Skyvateer",
+                    "Stealth\n" +
+                            "Deathrattle: Draw a card.",
+                    2,
+                    Hero.HeroClass.ROUGE,
+                    2,
+                    Card.Rarity.COMMON,
+                    3,
+                    1,
+                    Minion.MinionClass.PIRATE);
+            Minion warlock_spec = new Minion("Dreadscale",
+                    "At the end of your turn, deal 1 damage to all other minions.",
+                    3,
+                    Hero.HeroClass.WARLOCK,
+                    12,
+                    Card.Rarity.LEGENDARY,
+                    2,
+                    4,
+                    Minion.MinionClass.BEAST);
+            Minion warlock_spec2 = new Minion("Felguard",
+                    "Taunt. Battlecry: Destroy one of your Mana Crystals.",
+                    3,
+                    Hero.HeroClass.WARLOCK,
+                    7,
+                    Card.Rarity.RARE,
+                    5,
+                    3,
+                    Minion.MinionClass.DEMON);
+            Minion hunter_spec = new Minion("Swamp King Dred",
+                    "After your opponent plays a minion, attack it.",
+                    7,
+                    Hero.HeroClass.HUNTER,
+                    8,
+                    Card.Rarity.LEGENDARY,
+                    9,
+                    9,
+                    Minion.MinionClass.BEAST);
+            Spell hunter_spec2 = new Spell("Unleash the Hounds",
+                    "For each enemy minion, summon a 1/1 Hound with Charge.",
+                    3,
+                    Hero.HeroClass.HUNTER,
+                    3,
+                    Card.Rarity.COMMON);
+            Spell paladin_spec = new Spell("Gnomish Army Knife",
+                    "Give a minion Charge, Windfury, Divine Shield, Lifesteal, Poisonous, Taunt, and Stealth.",
+                    5,
+                    Hero.HeroClass.PALADIN,
+                    3,
+                    Card.Rarity.FREE);
+            Spell paladin_spec2 = new Spell("Blessing of Might",
+                    "Give a minion +3 Attack.",
+                    1,
+                    Hero.HeroClass.PALADIN,
+                    3,
+                    Card.Rarity.FREE);
+            Minion priest_spec = new Minion("High Priest Amet",
+                    "Whenever you summon a minion, set its Health equal to this minion's.",
+                    4,
+                    Hero.HeroClass.PRIEST,
+                    8,
+                    Card.Rarity.LEGENDARY,
+                    7,
+                    2,
+                    Minion.MinionClass.ALL);
+            Spell priest_spec2 = new Spell("Holy Ripple",
+                    "Deal 1 damage to all enemies. Restore 1 Health to all friendly characters.",
+                    2,
+                    Hero.HeroClass.PRIEST,
+                    3,
+                    Card.Rarity.RARE);
 
-            Spell mage_spec_morph = new Spell();
-            Minion warlock_spec_dread = new Minion();
-            Spell rogue_spec_smith = new Spell();
+            //Spells
+            Spell spell1 = new Spell("Sprint",
+                    "Draw 4 cards.",
+                    7,
+                    Hero.HeroClass.ALL,
+                    7,
+                    Card.Rarity.FREE);
+            Spell spell2 = new Spell("Swarm of Locusts",
+                    "Summon seven 1/1 Locusts with Rush.",
+                    6,
+                    Hero.HeroClass.ALL,
+                    3,
+                    Card.Rarity.RARE);
+            Spell spell3 = new Spell("Pharaoh's Blessing",
+                    "Give a minion +4/+4, Divine Shield, and Taunt.",
+                    6,
+                    Hero.HeroClass.ALL,
+                    3,
+                    Card.Rarity.RARE);
+            Spell spell4 = new Spell("Book of Specters",
+                    "Draw 3 cards. Discard any spells drawn.",
+                    2,
+                    Hero.HeroClass.ALL,
+                    3,
+                    Card.Rarity.EPIC);
+            Spell spell5 = new Spell("Frostbolt",
+                    "Deal 3 damage to a character and Freeze it.",
+                    2,
+                    Hero.HeroClass.ALL,
+                    2,
+                    Card.Rarity.COMMON);
+            Spell spell6 = new Spell("Brawl",
+                    "Destroy all minions except one. (chosen randomly)",
+                    5,
+                    Hero.HeroClass.ALL,
+                    5,
+                    Card.Rarity.EPIC);
+            Spell spell7 = new Spell("Overflow",
+                    "Restore 5 Health to all characters. Draw 5 cards.",
+                    7,
+                    Hero.HeroClass.ALL,
+                    5,
+                    Card.Rarity.RARE);
+            Spell spell8 = new Spell("Mind Control",
+                    "Take control of an enemy minion.",
+                    10,
+                    Hero.HeroClass.ALL,
+                    15,
+                    Card.Rarity.COMMON);
+            Spell spell9 = new Spell("Slam",
+                    "Deal 2 damage to a minion. If it survives, draw a card.",
+                    2,
+                    Hero.HeroClass.ALL,
+                    2,
+                    Card.Rarity.COMMON);
+            Spell spell10 = new Spell("Deadly Shot",
+                    "Destroy a random enemy minion.",
+                    3,
+                    Hero.HeroClass.ALL,
+                    7,
+                    Card.Rarity.COMMON);
 
-            Spell spell1 = new Spell();
-            Spell spell2 = new Spell();
-            Spell spell3 = new Spell();
-            Spell spell4 = new Spell();
+            //Minion
+            Minion minion1 = new Minion("Sathrovarr",
+                    "Battlecry: Choose a friendly minion. Add a copy of it to your hand, deck and battlefield.",
+                    9,
+                    Hero.HeroClass.ALL,
+                    8,
+                    Card.Rarity.LEGENDARY,
+                    5,
+                    5,
+                    Minion.MinionClass.DEMON);
+            Minion minion2 = new Minion("Tomb Warden",
+                    "Taunt\n" +
+                            "Battlecry: Summon a copy of this minion.",
+                    8,
+                    Hero.HeroClass.ALL,
+                    8,
+                    Card.Rarity.RARE,
+                    6,
+                    3,
+                    Minion.MinionClass.MECH);
+            Minion minion3 = new Minion("Security Rover",
+                    "Whenever this minion takes damage, summon a 2/3 Mech with Taunt.",
+                    6,
+                    Hero.HeroClass.ALL,
+                    10,
+                    Card.Rarity.RARE,
+                    6,
+                    2,
+                    Minion.MinionClass.MECH);
+            Minion minion4 = new Minion("Curio Collector",
+                    "Whenever you draw a card, gain +1/+1.",
+                    5,
+                    Hero.HeroClass.ALL,
+                    8,
+                    Card.Rarity.LEGENDARY,
+                    4,
+                    4,
+                    Minion.MinionClass.ALL);
+            Minion minion5 = new Minion("Wolfrider",
+                    "Charge",
+                    3,
+                    Hero.HeroClass.ALL,
+                    1,
+                    Card.Rarity.COMMON,
+                    1,
+                    3,
+                    Minion.MinionClass.ALL);
+            Minion minion6 = new Minion("Wisp",
+                    "",
+                    0,
+                    Hero.HeroClass.ALL,
+                    1,
+                    Card.Rarity.COMMON,
+                    1,
+                    1,
+                    Minion.MinionClass.ALL);
+            Minion minion7 = new Minion("Voodoo Doctor",
+                    "Battlecry: Restore 2 Health.",
+                    2,
+                    Hero.HeroClass.ALL,
+                    2,
+                    Card.Rarity.COMMON,
+                    1,
+                    2,
+                    Minion.MinionClass.ALL);
+            Minion minion8 = new Minion("Waterboy",
+                    "Battlecry: Your next Hero Power this turn costs (0).",
+                    2,
+                    Hero.HeroClass.ALL,
+                    2,
+                    Card.Rarity.EPIC,
+                    1,
+                    2,
+                    Minion.MinionClass.ALL);
+            Minion minion9 = new Minion("Zilliax",
+                    "Magnetic\n" +
+                            "Divine Shield, Taunt, Lifesteal, Rush",
+                    5,
+                    Hero.HeroClass.ALL,
+                    2,
+                    Card.Rarity.LEGENDARY,
+                    2,
+                    3,
+                    Minion.MinionClass.MECH);
+            Minion minion10 = new Minion("Baron Geddon",
+                    "At the end of your turn, deal 2 damage to ALL other characters.",
+                    7,
+                    Hero.HeroClass.ALL,
+                    2,
+                    Card.Rarity.LEGENDARY,
+                    5,
+                    7,
+                    Minion.MinionClass.ELEMENTAL);
 
-            Minion minion1 = new Minion();
-            Minion minion2 = new Minion();
-            Minion minion3 = new Minion();
-            Minion minion4 = new Minion();
-            Minion minion5 = new Minion();
-            Minion minion6 = new Minion();
-            Minion minion7 = new Minion();
-            Minion minion8 = new Minion();
+            //Quests
+            Quest quest1 = new Quest("Strength in Numbers",
+                    "Sidequest: Spend 10 Mana on minions.\n" +
+                            "Reward: Summon a minion from your deck.",
+                    1,
+                    Hero.HeroClass.ALL,
+                    3,
+                    Card.Rarity.COMMON);
+            Quest quest2 = new Quest("Learn Draconic",
+                    "Sidequest: Spend 8 Mana on spells. Reward: Summon a 6/6 Dragon.",
+                    1,
+                    Hero.HeroClass.ALL,
+                    3,
+                    Card.Rarity.COMMON);
 
-            Quest quest1 = new Quest();
-            Quest quest2 = new Quest();
-            Quest quest3 = new Quest();
-
-            Weapon weapon1 = new Weapon();
-            Weapon weapon2 = new Weapon();
-            Weapon weapon3 = new Weapon();
+            //Weapons
+            Weapon weapon1 = new Weapon("Blood Fury",
+                    "",
+                    3,
+                    Hero.HeroClass.ALL,
+                    7,
+                    Card.Rarity.COMMON,
+                    8,
+                    3);
+            Weapon weapon2 = new Weapon("Battle Axe",
+                    "",
+                    1,
+                    Hero.HeroClass.ALL,
+                    1,
+                    Card.Rarity.COMMON,
+                    2,
+                    2);
+            Weapon weapon3 = new Weapon("Dragon Claw",
+                    "",
+                    5,
+                    Hero.HeroClass.ALL,
+                    5,
+                    Card.Rarity.COMMON,
+                    2,
+                    5);
+            Weapon weapon4 = new Weapon("Mirage Blade",
+                    "Your hero is Immune while attacking.",
+                    2,
+                    Hero.HeroClass.ALL,
+                    4,
+                    Card.Rarity.COMMON,
+                    3,
+                    2);
+            Weapon weapon5 = new Weapon("Wicked Knife",
+                    "",
+                    1,
+                    Hero.HeroClass.ALL,
+                    1,
+                    Card.Rarity.COMMON,
+                    1,
+                    2);
+            Weapon weapon6 = new Weapon("Desert Spear",
+                    "After your hero attacks, summon a 1/1 Locust with Rush.",
+                    3,
+                    Hero.HeroClass.ALL,
+                    6,
+                    Card.Rarity.COMMON,
+                    3,
+                    1);
 
             InfoPassive passive1 = new InfoPassive("Twice Draw", "");
             InfoPassive passive2 = new InfoPassive("Off Draws", "");
@@ -132,170 +370,15 @@ public class Seeding {
             InfoPassive passive4 = new InfoPassive("Nurse", "");
             InfoPassive passive5 = new InfoPassive("Free power", "");
 
-            DBUtil.pushObjects(mage, warlock, rogue, heroPower_mage, heroPower_rogue, heroPower_warlock
-                    , mage_spec_morph, warlock_spec_dread, rogue_spec_smith, spell1, spell2, spell3, spell4,
-                    minion1, minion2, minion3, minion4, minion5, minion6, minion7, minion8, quest1
-                    , quest2, quest3, weapon1, weapon2, weapon3, passive1, passive2, passive3, passive4, passive5);
-
-            DBUtil.doInJPA(session -> {
-                mage.setName("Chaghal");
-                mage.setHp(30);
-                mage.setHeroPower(heroPower_mage);
-                mage.getSpecialCards().add(mage_spec_morph);
-                mage.getSpecialCards().add(weapon1);
-                mage.setHeroClass(Hero.HeroClass.MAGE);
-
-                warlock.setName("Cholagh");
-                warlock.setHp(35);
-                warlock.setHeroPower(heroPower_warlock);
-                warlock.getSpecialCards().add(warlock_spec_dread);
-                warlock.getSpecialCards().add(weapon2);
-                warlock.setHeroClass(Hero.HeroClass.WARLOCK);
-
-                rogue.setName("Kafbor");
-                rogue.setHp(30);
-                rogue.setHeroPower(heroPower_rogue);
-                rogue.getSpecialCards().add(rogue_spec_smith);
-                rogue.getSpecialCards().add(weapon3);
-                rogue.setHeroClass(Hero.HeroClass.ROUGE);
-
-                mage_spec_morph.setCard_name("Polymorph");
-                mage_spec_morph.setDescription("Transform a minion into a 1/1 Sheep");
-                mage_spec_morph.setHeroClass(Hero.HeroClass.MAGE);
-                mage_spec_morph.setMana(4);
-                mage_spec_morph.setPrice(5);
-
-                warlock_spec_dread.setCard_name("Dreadscale");
-                warlock_spec_dread.setDescription("At the end of the turn deal 1 damage to all other minions");
-                warlock_spec_dread.setHeroClass(Hero.HeroClass.WARLOCK);
-                warlock_spec_dread.setMana(3);
-                warlock_spec_dread.setPrice(4);
-                warlock_spec_dread.setMinionClass(Minion.MinionClass.BEAST);
-                warlock_spec_dread.setHp(2);
-                warlock_spec_dread.setAttackPower(4);
-
-                rogue_spec_smith.setCard_name("Friendly Smith");
-                rogue_spec_smith.setDescription("Discover a weapon from any class. Add it to your adventure deck with +2/+2");
-                rogue_spec_smith.setHeroClass(Hero.HeroClass.ROUGE);
-                rogue_spec_smith.setMana(1);
-                rogue_spec_smith.setPrice(2);
-
-                spell1.setCard_name("Daneshgah");
-                spell1.setDescription("Transforms a minion into a 0/5 Daneshjoo with Taunt.");
-                spell1.setMana(2);
-                spell1.setPrice(6);
-
-                spell2.setCard_name("Corona");
-                spell2.setDescription("Deal 1 damage to all minions.");
-                spell2.setMana(3);
-                spell2.setPrice(4);
-                spell2.setRarity(Card.Rarity.RARE);
-
-                spell3.setCard_name("Ghati");
-                spell3.setDescription("Give a beast +3/+3 and shuffle your deck with 3 copy of it");
-                spell3.setMana(3);
-                spell3.setPrice(6);
-
-                spell4.setCard_name("Snipe");
-                spell4.setDescription("Secret: Deal 5 damage to the first played minion by your opponent.");
-                spell4.setMana(2);
-                spell4.setPrice(6);
-                spell4.setRarity(Card.Rarity.EPIC);
-
-                minion1.setCard_name("Daneshjoo");
-                minion1.setDescription("Taunt");
-                minion1.setMana(3);
-                minion1.setPrice(5);
-                minion1.setMinionClass(Minion.MinionClass.MURLOC);
-                minion1.setHp(5);
-                minion1.setAttackPower(0);
-
-                minion2.setCard_name("TA");
-                minion2.setDescription("Charge");
-                minion2.setMana(1);
-                minion2.setPrice(0);
-                minion2.setMinionClass(Minion.MinionClass.BEAST);
-                minion2.setHp(1);
-                minion2.setAttackPower(1);
-
-                minion3.setCard_name("Ostad");
-                minion3.setDescription("Summon 3 TA. Divine Shield");
-                minion3.setMana(7);
-                minion3.setPrice(9);
-                minion3.setMinionClass(Minion.MinionClass.DRAGON);
-                minion3.setHp(0);
-                minion3.setAttackPower(0);
-
-                minion4.setCard_name("Ghozmit");
-                minion4.setMana(2);
-                minion4.setPrice(2);
-                minion4.setMinionClass(Minion.MinionClass.DEMON);
-                minion4.setHp(2);
-                minion4.setAttackPower(2);
-
-                minion5.setCard_name("Peshgel");
-                minion5.setMana(0);
-                minion5.setPrice(0);
-                minion5.setMinionClass(Minion.MinionClass.GENERAL);
-                minion5.setHp(1);
-                minion5.setAttackPower(1);
-
-                minion6.setCard_name("Kabaramadala");
-                minion6.setMana(9);
-                minion6.setPrice(10);
-                minion6.setMinionClass(Minion.MinionClass.MURLOC);
-                minion6.setHp(8);
-                minion6.setAttackPower(8);
-
-                minion7.setCard_name("Palang");
-                minion7.setMana(3);
-                minion7.setPrice(2);
-                minion7.setMinionClass(Minion.MinionClass.MURLOC);
-                minion7.setHp(4);
-                minion7.setAttackPower(2);
-
-                minion8.setCard_name("Pedar Sag");
-                minion8.setDescription("Deathrattle: Deal 2 damage to enemy hero");
-                minion8.setMana(1);
-                minion8.setPrice(0);
-                minion8.setMinionClass(Minion.MinionClass.GENERAL);
-                minion8.setHp(1);
-                minion8.setAttackPower(1);
-
-                quest1.setCard_name("Chert");
-                quest1.setDescription("Boro donbale nokhod sia");
-
-                quest2.setCard_name("Chert");
-                quest2.setDescription("Naro donbale nokhod sia");
-
-                quest3.setCard_name("Chert");
-                quest3.setDescription("Bia donbale nokhod sia");
-
-                weapon1.setCard_name("Desert Spear");
-                weapon1.setDescription("After attack, summon a Pesghel with Rush.");
-                weapon1.setAttackPower(1);
-                weapon1.setDurability(3);
-                weapon1.setPrice(3);
-                weapon1.setMana(2);
-                weapon1.setHeroClass(Hero.HeroClass.ROUGE);
-                weapon1.setRarity(Card.Rarity.RARE);
-
-                weapon2.setCard_name("Chomagh");
-                weapon2.setDescription("");
-                weapon2.setAttackPower(3);
-                weapon2.setDurability(2);
-                weapon2.setPrice(3);
-                weapon2.setMana(3);
-                weapon2.setHeroClass(Hero.HeroClass.WARLOCK);
-
-                weapon3.setCard_name("Tof");
-                weapon3.setDescription("After attack, summon a Pesghel with Rush.");
-                weapon3.setAttackPower(1);
-                weapon3.setDurability(1);
-                weapon3.setPrice(1);
-                weapon3.setMana(1);
-                return null;
-            });
+            DBUtil.pushObjects(
+                    mage, warlock, rogue, hunter, priest, paladin
+                    , spell1, spell2, spell3, spell4, spell5, spell6, spell7, spell8, spell9, spell10
+                    , minion1, minion2, minion3, minion4, minion5, minion6, minion7, minion8, minion9, minion10
+                    , weapon1, weapon2, weapon3, weapon4, weapon5, weapon6
+                    , mage_spec, warlock_spec, rogue_spec, hunter_spec, priest_spec, paladin_spec
+                    , mage_spec2, warlock_spec2, rogue_spec2, hunter_spec2, priest_spec2, paladin_spec2
+                    , quest1, quest2
+                    , passive1, passive2, passive3, passive4, passive5);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -304,31 +387,30 @@ public class Seeding {
 
     public static void seedPlayer(Player player) {
         DBUtil.doInJPA(session -> {
-            try {
-                List<Hero> heroes = session.createQuery("from Hero ", Hero.class).list();
-                Hero mage = heroes.get(0);
-                List<Card> cards = session.createQuery("from Card where id < 13", Card.class).list();
-                for (Hero hero : heroes) {
-                    Deck deck = new Deck(hero.getHeroClass(), player);
-                    cards.forEach(card -> deck.addCard(card, 2));
-                    /////fixme: test
-                    {
-                        deck.setName(hero.getName() + " #1");
-                        deck.getCardsInDeck().addAll(cards);
-                        int r = (int) (10 * Math.random());
-                        deck.getDeckHistory().setTotalGames(r);
-                        deck.getDeckHistory().setWonGames((int) (r * Math.random()));
-                        cards.forEach(card -> deck.getDeckHistory().getCardsInDeckUsage().put(card, (int) (10 * Math.random())));
-                        player.getPlayerStats().setGameCount(r);
-                        player.getPlayerStats().setWinCount((int) (r * Math.random()));
-                    }
-                    session.saveOrUpdate(deck);
-                    player.addDeck(deck);
-                }
-                player.getOpenHeroes().add(mage);
-                cards.forEach(player::addOwnedCard);
-            } catch (Exception e) {
-                e.printStackTrace();
+            List<Hero> heroes = session.createQuery("from Hero ", Hero.class).list();
+            player.getOpenHeroes().addAll(heroes);
+            List<Card> cards = session.createQuery("from Card where id < 27", Card.class).list();
+            cards.forEach(player::addOwnedCard);
+
+            //showcase seed
+            for (Hero hero : heroes) {
+                Deck deck = new Deck(hero.getHeroClass(), player);
+                cards.forEach(deck::addCard);
+
+                deck.setName(hero.getName() + " #1");
+                deck.getCardsInDeck().addAll(cards);
+
+                int r = (int) (10 * Math.random());
+
+                deck.getDeckHistory().setTotalGames(r);
+                deck.getDeckHistory().setWonGames((int) (r * Math.random()));
+                cards.forEach(card -> deck.getDeckHistory().getCardsInDeckUsage().put(card, (int) (10 * Math.random())));
+
+                player.getPlayerStats().setGameCount(r);
+                player.getPlayerStats().setWinCount((int) (r * Math.random()));
+
+                session.saveOrUpdate(deck);
+                player.addDeck(deck);
             }
             return null;
         });

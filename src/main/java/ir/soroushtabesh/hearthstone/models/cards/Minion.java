@@ -1,6 +1,7 @@
 package ir.soroushtabesh.hearthstone.models.cards;
 
 import ir.soroushtabesh.hearthstone.models.Card;
+import ir.soroushtabesh.hearthstone.models.Hero;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.Entity;
@@ -36,6 +37,16 @@ public class Minion extends Card {
     }
 
     public void setMinionClass(MinionClass minionClass) {
+        this.minionClass = minionClass;
+    }
+
+    public Minion() {
+    }
+
+    public Minion(String card_name, String description, Integer mana, Hero.HeroClass heroClass, Integer price, Rarity rarity, Integer hp, Integer attackPower, MinionClass minionClass) {
+        super(card_name, description, mana, heroClass, price, rarity);
+        this.hp = hp;
+        this.attackPower = attackPower;
         this.minionClass = minionClass;
     }
 

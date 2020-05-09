@@ -47,7 +47,7 @@ public class ShopSceneController extends AbstractSceneController {
             FXUtil.runLater(() -> {
                 cards.forEach(cardView -> {
                     cardView.setOnMouseClicked(event -> selectCard(cardView));
-                    cardView.getCountLabel().setVisible(true);
+                    cardView.forCollection(true);
                 });
                 Bindings.bindContent(tilePane.getChildren(), cards);
                 cardPreview.getChildren().clear();
@@ -118,6 +118,7 @@ public class ShopSceneController extends AbstractSceneController {
                             , "Successfully bought!");
         }
         selectCard(selectedCardView);
+        selectedCardView.update();
     }
 
     @FXML
@@ -143,6 +144,7 @@ public class ShopSceneController extends AbstractSceneController {
                             , "Successfully sold!");
         }
         selectCard(selectedCardView);
+        selectedCardView.update();
     }
 
 }

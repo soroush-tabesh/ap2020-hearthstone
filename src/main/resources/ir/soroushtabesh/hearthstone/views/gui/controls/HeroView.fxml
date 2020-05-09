@@ -9,7 +9,7 @@
          maxWidth="-Infinity" prefHeight="221.0" prefWidth="150.0">
     <ImageView fx:id="bgImage" fitHeight="250.0" fitWidth="155.0" pickOnBounds="true" preserveRatio="true">
         <image>
-            <!--            <Image url="@../image/hero/Anduin_Wrynn.png"/>-->
+            <!--            <Image url="@../image/hero/Anduin Wrynn.png"/>-->
         </image>
     </ImageView>
     <ImageView fx:id="maskImage" fitHeight="250.0" fitWidth="155.0" pickOnBounds="true" preserveRatio="true">

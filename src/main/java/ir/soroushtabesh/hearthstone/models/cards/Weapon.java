@@ -1,6 +1,7 @@
 package ir.soroushtabesh.hearthstone.models.cards;
 
 import ir.soroushtabesh.hearthstone.models.Card;
+import ir.soroushtabesh.hearthstone.models.Hero;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.Entity;
@@ -10,6 +11,15 @@ import javax.persistence.Entity;
 public class Weapon extends Card {
     private Integer durability = 1;
     private Integer attackPower = 1;
+
+    public Weapon() {
+    }
+
+    public Weapon(String card_name, String description, Integer mana, Hero.HeroClass heroClass, Integer price, Rarity rarity, Integer durability, Integer attackPower) {
+        super(card_name, description, mana, heroClass, price, rarity);
+        this.durability = durability;
+        this.attackPower = attackPower;
+    }
 
     @Override
     public String toString() {

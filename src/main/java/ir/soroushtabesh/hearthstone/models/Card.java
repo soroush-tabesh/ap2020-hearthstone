@@ -135,6 +135,6 @@ public abstract class Card {
     }
 
     public enum Rarity {
-        COMMON, RARE, EPIC, LEGENDARY
+        FREE, COMMON, RARE, EPIC, LEGENDARY
     }
 }

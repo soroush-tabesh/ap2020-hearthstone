@@ -57,10 +57,14 @@ public class HeroView extends StackPane implements Initializable {
     }
 
     private void loadImages() {
-        //fixme: debug
-        bgImage.setImage(new Image(getClass().getResourceAsStream(String.format("../image/hero/Anduin_Wrynn.png"
-                , briefHero.getName()))));
         maskImage.setImage(new Image(getClass()
                 .getResourceAsStream("../image/hero/mask/heroMask.png")));
+        try {
+            bgImage.setImage(new Image(getClass().getResourceAsStream(String.format("../image/hero/%s.png"
+                    , briefHero.getName()))));
+        } catch (Exception e) {
+            e.printStackTrace();
+            bgImage.setImage(new Image(getClass().getResourceAsStream("../image/hero/card_hero_neutral.png")));
+        }
     }
 }

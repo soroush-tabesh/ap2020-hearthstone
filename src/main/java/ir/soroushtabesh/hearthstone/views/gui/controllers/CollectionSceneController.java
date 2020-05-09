@@ -303,7 +303,7 @@ public class CollectionSceneController extends AbstractSceneController {
         cardView.setOnContextMenuRequested(event ->
                 cardContextMenu.show(cardView, event.getScreenX(), event.getScreenY()));
         cardView.setOnMouseClicked(event -> selectCard(cardView));
-        cardView.getCountLabel().setVisible(true);
+        cardView.forCollection(true);
         if (cardView.getBriefCard().getAmount() == 0) {
             cardView.disable(true);
         }

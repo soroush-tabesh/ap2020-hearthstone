@@ -31,6 +31,8 @@ public abstract class CardView extends StackPane implements Initializable {
     @FXML
     private Label countLabel;
     @FXML
+    private Label classLabel;
+    @FXML
     private ImageView maskImage;
     @FXML
     private ImageView bgImage;
@@ -72,12 +74,16 @@ public abstract class CardView extends StackPane implements Initializable {
         attackLabel.setText(briefCard.getAttack() + "");
         hpLabel.setText(briefCard.getHP() + "");
         countLabel.setText(PlayerManager.getInstance().getPlayer().getOwnedAmount(briefCard.getCard()) + "");
+        classLabel.setText(briefCard.getCard().getHeroClass().toString());
     }
 
     private void loadImages() {
-        //fixme: debug
-        bgImage.setImage(new Image(getClass().getResourceAsStream(String.format("../image/card/CS1_069.png"
-                , briefCard.getCard().getCard_name()))));
+        try {
+            bgImage.setImage(new Image(getClass().getResourceAsStream(String.format("../image/card/%s.png"
+                    , briefCard.getCard().getCard_name()))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         maskImage.setImage(new Image(getClass()
                 .getResourceAsStream(String.format("../image/card/mask/%s.png", getMaskName()))));
     }
@@ -122,16 +128,31 @@ public abstract class CardView extends StackPane implements Initializable {
         return manaLabel;
     }
 
-    public Label getCountLabel() {
+    protected Label getCountLabel() {
         return countLabel;
+    }
+
+    protected Label getClassLabel() {
+        return classLabel;
+    }
+
+    public void forCollection(boolean is) {
+        getCountLabel().setVisible(is);
+        getClassLabel().setVisible(is);
     }
 
     public void disable(boolean b) {
         countLabel.setDisable(b);
+        classLabel.setDisable(b);
         ColorAdjust desaturate = new ColorAdjust();
         desaturate.setSaturation(b ? -1 : 1);
         bgImage.setEffect(desaturate);
         maskImage.setEffect(desaturate);
+    }
+
+    public void update() {
+        briefCard.refresh();
+        initViews();
     }
 
 }
