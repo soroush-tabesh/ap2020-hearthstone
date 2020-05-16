@@ -40,6 +40,7 @@ public class CardManager {
     }
 
     public Message sellCard(Card card) {
+        //todo: check for card availability in decks
         return DBUtil.doInJPA(session -> {
             Player player = PlayerManager.getInstance().getPlayer();
             if (player.getOwnedAmount(card) <= 0)
