@@ -37,7 +37,7 @@ public class DeckManager {
     }
 
     public boolean removeCardFromDeck(Card card, Deck deck) {
-        Boolean res = DBUtil.doInJPA(session -> deck.removeCard(card));
+        Boolean res = DBUtil.doInJPA(session -> deck.removeCardOnce(card));
         if (res)
             Logger.log("DeckManager", String.format("remove card '%s' from deck '%s'"
                     , card.getCard_name(), deck.getName()));

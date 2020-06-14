@@ -104,7 +104,7 @@ public class Deck {
         return Message.SUCCESS;
     }
 
-    public boolean removeCard(Card card) {
+    public boolean removeCardOnce(Card card) {
         boolean res = true;
         if (getCountInDeck(card) <= 1) {
             res = cardsInDeck.remove(card) != null;

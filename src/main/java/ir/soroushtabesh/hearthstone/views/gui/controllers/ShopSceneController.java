@@ -128,20 +128,25 @@ public class ShopSceneController extends AbstractSceneController {
                     , Alert.AlertType.ERROR);
             return;
         }
-        CardManager.Message message = CardManager.getInstance().sellCard(selectedCardView.getBriefCard().getCard());
-        switch (message) {
-            case EMPTY:
-                FXUtil.showAlert("Shop", "Sell: " + selectedCardView.getBriefCard().getName()
-                        , "Error: You don't have this card."
-                        , Alert.AlertType.ERROR);
-                break;
-            case SUCCESS:
-                Optional<ButtonType> result = FXUtil.showAlert("Shop"
-                        , "Sell: " + selectedCardView.getBriefCard().getName()
-                        , "Are you sure you want to sell?", Alert.AlertType.CONFIRMATION);
-                if (result.isPresent() && result.get() == ButtonType.OK)
+        Card card = selectedCardView.getBriefCard().getCard();
+        CardManager cardManager = CardManager.getInstance();
+        Optional<ButtonType> result = FXUtil.showAlert("Shop"
+                , "Sell: " + selectedCardView.getBriefCard().getName()
+                , "Are you sure you want to sell?"
+                        + (cardManager.isInAnyDeck(card) ? " You have this card in some of your decks" : "")
+                , cardManager.isInAnyDeck(card) ? Alert.AlertType.WARNING : Alert.AlertType.CONFIRMATION);
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            CardManager.Message message = cardManager.sellCard(card);
+            switch (message) {
+                case EMPTY:
+                    FXUtil.showAlert("Shop", "Sell: " + selectedCardView.getBriefCard().getName()
+                            , "Error: You don't have this card."
+                            , Alert.AlertType.ERROR);
+                    break;
+                case SUCCESS:
                     FXUtil.showAlertInfo("Shop", "Sell: " + selectedCardView.getBriefCard().getName()
                             , "Successfully sold!");
+            }
         }
         selectCard(selectedCardView);
         selectedCardView.update();

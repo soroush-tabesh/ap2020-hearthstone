@@ -40,7 +40,6 @@ public class CardManager {
     }
 
     public Message sellCard(Card card) {
-        //todo: check for card availability in decks
         return DBUtil.doInJPA(session -> {
             Player player = PlayerManager.getInstance().getPlayer();
             if (player.getOwnedAmount(card) <= 0)
@@ -50,6 +49,11 @@ public class CardManager {
             Logger.log("CardManager", "sell " + card.getCard_name());
             return Message.SUCCESS;
         });
+    }
+
+    public boolean isInAnyDeck(Card card) {
+        Player player = PlayerManager.getInstance().getPlayer();
+        return player.getOwnedCardsList().contains(card);
     }
 
     public enum Message {

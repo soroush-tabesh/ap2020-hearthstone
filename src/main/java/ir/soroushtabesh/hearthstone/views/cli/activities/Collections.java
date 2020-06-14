@@ -247,7 +247,7 @@ public class Collections extends CLIActivity {
                     Logger.log("collections", "remove: hero not selected", Log.Severity.WARNING);
                     return null;
                 }
-                if (deck.removeCard(card)) {
+                if (deck.removeCardOnce(card)) {
                     DBUtil.pushSingleObject(deck, session);
                     System.out.println("Successfully removed from your deck.");
                     if (deck.getCardsInDeck().size() < 10)

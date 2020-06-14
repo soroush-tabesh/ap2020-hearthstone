@@ -30,16 +30,16 @@ public class Player {
 
     @ManyToMany
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
-    private List<Hero> openHeroes = new ArrayList<>();
+    private final List<Hero> openHeroes = new ArrayList<>();
 
     @OneToMany(mappedBy = "player")
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
-    private List<Deck> decks = new ArrayList<>();
+    private final List<Deck> decks = new ArrayList<>();
 
     @ElementCollection
     @Column(name = "count")
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
-    private Map<Card, Integer> ownedCards = new HashMap<>();
+    private final Map<Card, Integer> ownedCards = new HashMap<>();
 
     @ManyToOne
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
@@ -53,7 +53,7 @@ public class Player {
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
     private InfoPassive currentPassive;
 
-    private PlayerStats playerStats = new PlayerStats();
+    private final PlayerStats playerStats = new PlayerStats();
 
     public Player(String username, String password) {
         this.username = username;
@@ -121,7 +121,7 @@ public class Player {
     }
 
     public List<Card> getOwnedCardsList() {
-        return new ArrayList<Card>(ownedCards.keySet());
+        return new ArrayList<>(ownedCards.keySet());
     }
 
     public boolean addOwnedCard(Card card) {
@@ -137,6 +137,10 @@ public class Player {
             res = ownedCards.remove(card) != null;
         } else {
             ownedCards.put(card, ownedCards.getOrDefault(card, 0) - 1);
+        }
+        for (Deck deck : decks) {
+            deck.removeCardOnce(card);
+            deck.removeCardOnce(card);
         }
         Logger.log("ownedCards remove" + res,
                 card.getCard_name() + " from " + getUsername() + "'s collection");
