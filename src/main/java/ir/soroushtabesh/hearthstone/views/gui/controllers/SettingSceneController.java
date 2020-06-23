@@ -14,6 +14,7 @@ public class SettingSceneController extends AbstractSceneController {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        //todo: save settings
         super.initialize(url, resourceBundle);
         volumeSlider.setMax(1);
         volumeSlider.valueProperty().bindBidirectional(AudioManager.getInstance().bgMusicVolumeProperty());

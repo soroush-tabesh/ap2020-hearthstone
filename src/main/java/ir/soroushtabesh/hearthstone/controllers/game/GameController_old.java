@@ -1,4 +1,4 @@
-package ir.soroushtabesh.hearthstone.controllers;
+package ir.soroushtabesh.hearthstone.controllers.game;
 
 import ir.soroushtabesh.hearthstone.models.BriefHero;
 import ir.soroushtabesh.hearthstone.models.Card;
@@ -18,7 +18,7 @@ import javafx.collections.ObservableList;
 import java.util.Collections;
 import java.util.List;
 
-public class GameController {
+public class GameController_old {
     private Deck deckModel;
     private Hero heroModel;
     private ObservableList<Card> hand = FXCollections.observableArrayList();
@@ -31,7 +31,7 @@ public class GameController {
     private ObjectProperty<Weapon> currentWeapon = new SimpleObjectProperty<>();
     private ObjectProperty<Card> burnedCard = new SimpleObjectProperty<>();
 
-    public GameController(Hero heroModel, Deck deckModel) {
+    public GameController_old(Hero heroModel, Deck deckModel) {
         this.deckModel = deckModel;
         this.heroModel = heroModel;
         briefHero = BriefHero.build(heroModel);
@@ -97,23 +97,6 @@ public class GameController {
         return burnedCard;
     }
 
-    private void fillDeck() {
-        List<Card> fullDeck = deckModel.getFullDeck();
-        Collections.shuffle(fullDeck);
-        for (int i = 0; i < fullDeck.size(); i++) {
-            if (fullDeck.get(i) instanceof Quest) {
-                Collections.swap(fullDeck, 0, i);
-            }
-        }
-        deck.addAll(fullDeck);
-    }
-
-    private void fillHand() {
-        for (int i = 0; i < 3; i++) {
-            hand.add(deck.remove(0));
-        }
-    }
-
     public void startGame() {
         fillDeck();
         fillHand();
@@ -123,7 +106,7 @@ public class GameController {
 
     public Message playCard(Card card) {
         if (card.getMana() > mana.intValue())
-            return Message.NO_MANA;
+            return Message.INSUFFICIENT;
         if (ground.size() >= 7)
             return Message.GROUND_FULL;
         int index = hand.indexOf(card);
@@ -137,6 +120,17 @@ public class GameController {
             currentWeapon.setValue((Weapon) card);
         log("Play: " + card.getCard_name() + " (" + card.getClass().getSimpleName() + ")");
         return Message.SUCCESS;
+    }
+
+    public void endTurn() {
+        resetMana();
+        drawToHand();
+        log("End turn");
+    }
+
+    public void log(String log) {
+        Logger.log("GameController", log);
+        this.log.add(log);
     }
 
     private boolean drawToHand() {
@@ -157,18 +151,24 @@ public class GameController {
         mana.setValue(manaMax.getValue());
     }
 
-    public void endTurn() {
-        resetMana();
-        drawToHand();
-        log("End turn");
+    private void fillDeck() {
+        List<Card> fullDeck = deckModel.getFullDeck();
+        Collections.shuffle(fullDeck);
+        for (int i = 0; i < fullDeck.size(); i++) {
+            if (fullDeck.get(i) instanceof Quest) {
+                Collections.swap(fullDeck, 0, i);
+            }
+        }
+        deck.addAll(fullDeck);
     }
 
-    public void log(String log) {
-        Logger.log("GameController", log);
-        this.log.add(log);
+    private void fillHand() {
+        for (int i = 0; i < 3; i++) {
+            hand.add(deck.remove(0));
+        }
     }
 
     public enum Message {
-        NO_MANA, GROUND_FULL, ERROR, SUCCESS
+        INSUFFICIENT, GROUND_FULL, ERROR, SUCCESS;
     }
 }

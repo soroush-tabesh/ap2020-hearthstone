@@ -1,10 +1,11 @@
 package ir.soroushtabesh.hearthstone.views.gui.controllers;
 
 import animatefx.animation.Hinge;
+import animatefx.animation.SlideInDown;
 import animatefx.animation.ZoomIn;
 import animatefx.animation.ZoomInRight;
-import ir.soroushtabesh.hearthstone.controllers.GameController;
 import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
+import ir.soroushtabesh.hearthstone.controllers.game.GameController_old;
 import ir.soroushtabesh.hearthstone.models.Card;
 import ir.soroushtabesh.hearthstone.models.Player;
 import ir.soroushtabesh.hearthstone.util.FXUtil;
@@ -47,7 +48,7 @@ public class BoardSceneController extends AbstractSceneController {
     @FXML
     private Label deckRemLabel;
 
-    private GameController gameController;
+    private GameController_old gameController;
     private Map<Card, CardView> cardViewMap = new HashMap<>();
     private ContextMenu cardContextMenu;
     private CardView selectedCard;
@@ -79,9 +80,9 @@ public class BoardSceneController extends AbstractSceneController {
         MenuItem playCard = new MenuItem("Play Card");
         cardContextMenu.getItems().add(playCard);
         playCard.setOnAction(event -> {
-            GameController.Message message = gameController.playCard(selectedCard.getBriefCard().getCard());
+            GameController_old.Message message = gameController.playCard(selectedCard.getBriefCard().getCard());
             switch (message) {
-                case NO_MANA:
+                case INSUFFICIENT:
                     FXUtil.showAlertInfo("Board", "Play card", "Not enough mana.");
                     break;
                 case GROUND_FULL:
@@ -148,7 +149,10 @@ public class BoardSceneController extends AbstractSceneController {
             c.next();
             c.getRemoved().forEach(card -> handCardBox.getChildren()
                     .removeIf(node -> ((CardView) node).getBriefCard().getCard().equals(card)));
-            c.getAddedSubList().forEach(card -> handCardBox.getChildren().add(getCardView(card)));
+            c.getAddedSubList().forEach(card -> {
+                CardView cardView = getCardView(card);
+                handCardBox.getChildren().add(cardView);
+            });
         });
     }
 
@@ -160,6 +164,7 @@ public class BoardSceneController extends AbstractSceneController {
                 CardView cardView = getCardView(card);
                 groundBox.getChildren().add(cardView);
                 new ZoomInRight(cardView).play();
+                new SlideInDown(cardView).play();
             });
         });
     }
@@ -185,14 +190,22 @@ public class BoardSceneController extends AbstractSceneController {
         if (cardView == null) {
             cardView = CardView.build(card);
             CardView finalCardView = cardView;
-            CardView finalCardView1 = cardView;
             cardView.setOnMouseClicked(event -> {
                 if (finalCardView.getParent() == handCardBox) {
-                    selectedCard = finalCardView1;
+                    selectedCard = finalCardView;
                     cardContextMenu
                             .show(finalCardView, event.getScreenX(), event.getScreenY());
                 }
             });
+//            cardView.setOnDragDetected(event -> {
+//                Dragboard dragboard = finalCardView.startDragAndDrop(TransferMode.COPY_OR_MOVE);
+//                ClipboardContent content = new ClipboardContent();
+//                SnapshotParameters sp = new SnapshotParameters();
+//                sp.setFill(Color.TRANSPARENT);
+//                sp.setTransform(Transform.scale(0.5,0.5));
+//                content.putImage(finalCardView.snapshot(sp,null));
+//                dragboard.setContent(content);
+//            });
             cardViewMap.put(card, cardView);
         }
         return cardView;
@@ -200,7 +213,7 @@ public class BoardSceneController extends AbstractSceneController {
 
     private void initController() {
         Player player = PlayerManager.getInstance().getPlayer();
-        gameController = new GameController(player.getCurrentHero(), player.getCurrentDeck());
+        gameController = new GameController_old(player.getCurrentHero(), player.getCurrentDeck());
     }
 
     private Optional<ButtonType> validateHeroAndDeck() {

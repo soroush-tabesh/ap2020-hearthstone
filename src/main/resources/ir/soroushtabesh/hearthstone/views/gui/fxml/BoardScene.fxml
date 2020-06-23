@@ -8,8 +8,8 @@
             stylesheets="@../stylesheet/styles.css" xmlns="http://javafx.com/javafx/11.0.1"
             fx:controller="ir.soroushtabesh.hearthstone.views.gui.controllers.BoardSceneController">
     <StackPane fx:id="heroStand" layoutX="534.0" layoutY="522.0"/>
-    <ScrollPane hbarPolicy="ALWAYS" layoutY="492.0" prefHeight="308.0" prefWidth="528.0" styleClass="card-image"
-                vbarPolicy="NEVER">
+    <ScrollPane hbarPolicy="ALWAYS" layoutX="-57.0" layoutY="518.0" prefHeight="308.0" prefWidth="528.0" scaleX="0.7"
+                scaleY="0.7" styleClass="card-image" vbarPolicy="NEVER">
         <HBox fx:id="handCardBox" alignment="TOP_CENTER" maxHeight="-Infinity" minHeight="-Infinity"
               prefHeight="110.0"/>
     </ScrollPane>
