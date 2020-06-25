@@ -1,11 +1,7 @@
 package ir.soroushtabesh.hearthstone.util.db;
 
 import ir.soroushtabesh.hearthstone.models.*;
-import ir.soroushtabesh.hearthstone.models.cards.Minion;
-import ir.soroushtabesh.hearthstone.models.cards.Quest;
-import ir.soroushtabesh.hearthstone.models.cards.Spell;
-import ir.soroushtabesh.hearthstone.models.cards.Weapon;
-import ir.soroushtabesh.hearthstone.models.scripts.HeroPower;
+import ir.soroushtabesh.hearthstone.models.cards.*;
 import ir.soroushtabesh.hearthstone.util.Constants;
 
 import java.io.File;
@@ -28,27 +24,33 @@ public class Seeding {
             Hero mage = new Hero("Jaina Proudmoore",
                     Hero.HeroClass.MAGE,
                     30,
-                    new HeroPower("Fireblast"));
+                    new HeroPower("Fireblast", "", 2
+                            , Hero.HeroClass.MAGE, 2, Card.Rarity.FREE));
             Hero warlock = new Hero("Gul'dan",
                     Hero.HeroClass.WARLOCK,
                     35,
-                    new HeroPower("Life Tap"));
+                    new HeroPower("Life Tap", "", 2
+                            , Hero.HeroClass.WARLOCK, 2, Card.Rarity.FREE));
             Hero rogue = new Hero("Valeera Sanguinar",
                     Hero.HeroClass.ROUGE,
                     30,
-                    new HeroPower("Dagger Mastery"));
+                    new HeroPower("Dagger Mastery", "", 2
+                            , Hero.HeroClass.ROUGE, 2, Card.Rarity.FREE));
             Hero hunter = new Hero("Alleria Windrunner",
                     Hero.HeroClass.HUNTER,
                     30,
-                    new HeroPower("Caltrops"));
+                    new HeroPower("Caltrops", "", 2
+                            , Hero.HeroClass.HUNTER, 2, Card.Rarity.FREE));
             Hero paladin = new Hero("Prince Arthas",
                     Hero.HeroClass.PALADIN,
                     30,
-                    new HeroPower("The Silver Hand"));
+                    new HeroPower("The Silver Hand", "", 2
+                            , Hero.HeroClass.PALADIN, 2, Card.Rarity.FREE));
             Hero priest = new Hero("Tyrande Whisperwind",
                     Hero.HeroClass.PRIEST,
                     30,
-                    new HeroPower("Heal"));
+                    new HeroPower("Heal", "", 2
+                            , Hero.HeroClass.PRIEST, 2, Card.Rarity.FREE));
 
             //Special cards
             Spell mage_spec = new Spell("Polymorph",
@@ -389,7 +391,9 @@ public class Seeding {
         DBUtil.doInJPA(session -> {
             List<Hero> heroes = session.createQuery("from Hero ", Hero.class).list();
             player.getOpenHeroes().addAll(heroes);
-            List<Card> cards = session.createQuery("from Card where id < 27", Card.class).list();
+            List<Card> cards = session
+                    .createQuery("from Card where id < 37 and deckAssociative=true", Card.class)
+                    .setMaxResults(27).list();
             cards.forEach(player::addOwnedCard);
 
             //showcase seed

@@ -132,7 +132,7 @@ public class Store extends CLIActivity {
                 player.setCoin(player.getCoin() - card.getPrice());
                 DBUtil.pushSingleObject(player, session);
                 System.out.println("Successfully Purchased!");
-                Logger.log("store", "buy: " + card.getCard_name());
+                Logger.log("store", "buy: " + card.getName());
             } catch (Exception e) {
                 e.printStackTrace();
                 Logger.log("store", "buy: db error", Log.Severity.FATAL);
@@ -160,7 +160,7 @@ public class Store extends CLIActivity {
                 player.setCoin(player.getCoin() + card.getPrice());
                 DBUtil.pushSingleObject(player, session);
                 System.out.println("Successfully Sold!");
-                Logger.log("store", "sell: " + card.getCard_name());
+                Logger.log("store", "sell: " + card.getName());
             } catch (Exception e) {
                 e.printStackTrace();
                 Logger.log("store", "sell: db error", Log.Severity.FATAL);

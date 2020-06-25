@@ -80,7 +80,7 @@ public abstract class CardView extends StackPane implements Initializable {
     private void loadImages() {
         try {
             bgImage.setImage(new Image(getClass().getResourceAsStream(String.format("../image/card/%s.png"
-                    , briefCard.getCard().getCard_name()))));
+                    , briefCard.getCard().getName()))));
         } catch (Exception e) {
             e.printStackTrace();
         }

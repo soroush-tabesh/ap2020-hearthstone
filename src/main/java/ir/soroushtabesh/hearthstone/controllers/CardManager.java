@@ -35,7 +35,7 @@ public class CardManager {
             if (!player.addOwnedCard(card))
                 return Message.FULL;
             player.setCoin(player.getCoin() - card.getPrice());
-            Logger.log("CardManager", "buy " + card.getCard_name());
+            Logger.log("CardManager", "buy " + card.getName());
             return Message.SUCCESS;
         });
     }
@@ -47,7 +47,7 @@ public class CardManager {
                 return Message.EMPTY;
             player.removeOwnedCard(card);
             player.setCoin(player.getCoin() + card.getPrice());
-            Logger.log("CardManager", "sell " + card.getCard_name());
+            Logger.log("CardManager", "sell " + card.getName());
             return Message.SUCCESS;
         });
     }

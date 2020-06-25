@@ -1,5 +1,8 @@
 package ir.soroushtabesh.hearthstone.models;
 
+import com.google.gson.GsonBuilder;
+import ir.soroushtabesh.hearthstone.controllers.game.GameController;
+import ir.soroushtabesh.hearthstone.controllers.game.scripts.GenericScript;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.Entity;
@@ -9,18 +12,53 @@ import javax.persistence.Id;
 
 @Entity
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public abstract class ScriptModel {
+public class ScriptModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    private Class<? extends GenericScript> scriptClass;
+    private String scriptData;
+
+    public ScriptModel() {
+    }
+
+    public ScriptModel(GenericScript genericScript) {
+        scriptClass = genericScript.getClass();
+        scriptData = new GsonBuilder().create().toJson(genericScript);
+    }
+
+    public ScriptModel(Class<? extends GenericScript> scriptClass, String scriptData) {
+        this.scriptClass = scriptClass;
+        this.scriptData = scriptData;
+    }
+
+    public GenericScript getScript(GameController gameController) {
+        GenericScript genericScript = new GsonBuilder().create().fromJson(scriptData, scriptClass);
+        genericScript.setGameController(gameController);
+        return genericScript;
+    }
+
+    public String getScriptData() {
+        return scriptData;
+    }
+
+    public void setScriptData(String scriptData) {
+        this.scriptData = scriptData;
+    }
+
+    public Class<? extends GenericScript> getScriptClass() {
+        return scriptClass;
+    }
+
+    public void setScriptClass(Class<? extends GenericScript> scriptClass) {
+        this.scriptClass = scriptClass;
+    }
+
     public Integer getId() {
         return id;
     }
-
-    //will further contain a reference to a controller script
-    //this class is just a model to load the specified controller
 
     @Override
     public String toString() {

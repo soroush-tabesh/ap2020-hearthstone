@@ -100,7 +100,7 @@ public class Deck {
         if (getTotalCountOfCards() >= 30)
             return Message.FULL;
         cardsInDeck.put(card, current + count);
-        Logger.log("deck add", card.getCard_name() + " to " + getHeroClass() + "'s deck");
+        Logger.log("deck add", card.getName() + " to " + getHeroClass() + "'s deck");
         return Message.SUCCESS;
     }
 
@@ -112,7 +112,7 @@ public class Deck {
             cardsInDeck.put(card, cardsInDeck.getOrDefault(card, 0) - 1);
         }
         if (res)
-            Logger.log("deck remove" + res, card.getCard_name() + " from " + heroClass + "'s deck");
+            Logger.log("deck remove" + res, card.getName() + " from " + heroClass + "'s deck");
         return res;
     }
 

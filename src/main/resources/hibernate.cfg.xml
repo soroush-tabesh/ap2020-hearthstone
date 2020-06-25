@@ -28,8 +28,7 @@
         <mapping class="ir.soroushtabesh.hearthstone.models.InfoPassive"/>
 
         <mapping class="ir.soroushtabesh.hearthstone.models.ScriptModel"/>
-        <mapping class="ir.soroushtabesh.hearthstone.models.scripts.Dummy"/>
-        <mapping class="ir.soroushtabesh.hearthstone.models.scripts.HeroPower"/>
+        <mapping class="ir.soroushtabesh.hearthstone.models.cards.HeroPower"/>
 
         <mapping class="ir.soroushtabesh.hearthstone.models.Card"/>
         <mapping class="ir.soroushtabesh.hearthstone.models.cards.Minion"/>

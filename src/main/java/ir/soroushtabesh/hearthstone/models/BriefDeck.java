@@ -99,6 +99,6 @@ public class BriefDeck {
                 .append(o2.getKey() instanceof Minion ? 1 : 0, o1.getKey() instanceof Minion ? 1 : 0)
                 .toComparison());
         favCardUsage = prior.get(0).getValue();
-        favCard = prior.get(0).getKey().getCard_name();
+        favCard = prior.get(0).getKey().getName();
     }
 }

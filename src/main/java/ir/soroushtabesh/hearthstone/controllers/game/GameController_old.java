@@ -118,7 +118,7 @@ public class GameController_old {
             ground.add(removed);
         if (card instanceof Weapon)
             currentWeapon.setValue((Weapon) card);
-        log("Play: " + card.getCard_name() + " (" + card.getClass().getSimpleName() + ")");
+        log("Play: " + card.getName() + " (" + card.getClass().getSimpleName() + ")");
         return Message.SUCCESS;
     }
 

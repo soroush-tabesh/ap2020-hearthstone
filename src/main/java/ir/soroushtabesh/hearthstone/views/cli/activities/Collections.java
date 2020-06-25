@@ -220,7 +220,7 @@ public class Collections extends CLIActivity {
                 deck.addCard(card);
                 DBUtil.pushSingleObject(player, session);
                 System.out.println("Successfully added to your deck.");
-                Logger.log("collections", "add: " + card.getCard_name());
+                Logger.log("collections", "add: " + card.getName());
             } catch (Exception e) {
                 e.printStackTrace();
                 Logger.log("collections", "add: db error", Log.Severity.FATAL);

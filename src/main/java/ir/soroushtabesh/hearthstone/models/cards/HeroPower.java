@@ -8,18 +8,20 @@ import javax.persistence.Entity;
 
 @Entity
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Spell extends Card {
+public class HeroPower extends Card {
 
-    public Spell() {
+    public HeroPower() {
     }
 
-    public Spell(String card_name, String description, Integer mana
+    public HeroPower(String card_name, String description, Integer mana
             , Hero.HeroClass heroClass, Integer price, Rarity rarity) {
         super(card_name, description, mana, heroClass, price, rarity);
+        setTradable(false);
+        setDeckAssociative(false);
     }
 
     @Override
     public String toString() {
-        return super.toString() + "\nType: Spell";
+        return "HeroPower{}";
     }
 }

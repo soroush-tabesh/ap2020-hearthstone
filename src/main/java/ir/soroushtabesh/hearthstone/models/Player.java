@@ -143,7 +143,7 @@ public class Player {
             deck.removeCardOnce(card);
         }
         Logger.log("ownedCards remove" + res,
-                card.getCard_name() + " from " + getUsername() + "'s collection");
+                card.getName() + " from " + getUsername() + "'s collection");
         return res;
     }
 

@@ -65,7 +65,7 @@ public class BriefCard {
     public void refresh() {
         price = card.getPrice();
         mana = card.getMana();
-        name = card.getCard_name();
+        name = card.getName();
         if (card instanceof Minion) {
             hp = ((Minion) card).getHp();
             attack = ((Minion) card).getAttackPower();

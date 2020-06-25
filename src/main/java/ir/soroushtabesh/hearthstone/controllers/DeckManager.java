@@ -40,7 +40,7 @@ public class DeckManager {
         Boolean res = DBUtil.doInJPA(session -> deck.removeCardOnce(card));
         if (res)
             Logger.log("DeckManager", String.format("remove card '%s' from deck '%s'"
-                    , card.getCard_name(), deck.getName()));
+                    , card.getName(), deck.getName()));
         return res;
     }
 
@@ -48,7 +48,7 @@ public class DeckManager {
         Deck.Message res = DBUtil.doInJPA(session -> deck.addCard(card));
         if (res == Deck.Message.SUCCESS)
             Logger.log("DeckManager", String.format("add card '%s' to deck '%s'"
-                    , card.getCard_name(), deck.getName()));
+                    , card.getName(), deck.getName()));
         return res;
     }
 

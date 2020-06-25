@@ -9,10 +9,6 @@ import ir.soroushtabesh.hearthstone.models.InfoPassive;
 
 public class LocalGameController extends GameController {
 
-    public LocalGameController() {
-        super(null);
-    }
-
     @Override
     public PlayerController registerPlayer(Hero hero, Deck deck, InfoPassive infoPassive) {
         return null;
@@ -25,11 +21,11 @@ public class LocalGameController extends GameController {
 
     @Override
     protected void startGame(int playerId, long token) {
-
+        setStarted();
     }
 
     @Override
-    protected Message drawCard(CardObject cardObject, GameObject target, int playerId, long token) {
+    protected Message drawCard(CardObject cardObject, GameObject optionalTarget, int playerId, long token) {
         return null;
     }
 

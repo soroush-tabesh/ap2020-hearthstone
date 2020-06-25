@@ -15,7 +15,7 @@ public abstract class Card {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String card_name = "";
+    private String name = "";
 
     private String description = "";
 
@@ -24,9 +24,13 @@ public abstract class Card {
     @Enumerated(EnumType.STRING)
     private Hero.HeroClass heroClass = Hero.HeroClass.ALL;
 
+    @Enumerated(EnumType.STRING)
+    private ActionType actionType = ActionType.GLOBAL;
+
     private Integer price = 0;
 
     private Boolean tradable = true;
+    private Boolean deckAssociative = true;
 
     @Enumerated(EnumType.STRING)
     private Rarity rarity = Rarity.COMMON;
@@ -40,7 +44,7 @@ public abstract class Card {
 
     public Card(String card_name, String description, Integer mana
             , Hero.HeroClass heroClass, Integer price, Rarity rarity) {
-        this.card_name = card_name;
+        this.name = card_name;
         this.description = description;
         this.mana = mana;
         this.heroClass = heroClass;
@@ -48,9 +52,9 @@ public abstract class Card {
         this.rarity = rarity;
     }
 
-    public static Card getCardByName(String cardname, Session session) {
-        return session.createQuery("from Card where card_name=:cardname", Card.class)
-                .setParameter("cardname", cardname).uniqueResult();
+    public static Card getCardByName(String cardName, Session session) {
+        return session.createQuery("from Card where name=:cardName", Card.class)
+                .setParameter("cardName", cardName).uniqueResult();
     }
 
     public Boolean getTradable() {
@@ -59,6 +63,22 @@ public abstract class Card {
 
     public void setTradable(Boolean tradable) {
         this.tradable = tradable;
+    }
+
+    public Boolean getDeckAssociative() {
+        return deckAssociative;
+    }
+
+    public void setDeckAssociative(Boolean deckAssociable) {
+        this.deckAssociative = deckAssociable;
+    }
+
+    public ActionType getActionType() {
+        return actionType;
+    }
+
+    public void setActionType(ActionType actionType) {
+        this.actionType = actionType;
     }
 
     public Integer getPrice() {
@@ -73,12 +93,12 @@ public abstract class Card {
         return id;
     }
 
-    public String getCard_name() {
-        return card_name;
+    public String getName() {
+        return name;
     }
 
-    public void setCard_name(String card_name) {
-        this.card_name = card_name;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
@@ -124,7 +144,7 @@ public abstract class Card {
     @Override
     public String toString() {
         return "Card\n" +
-                "Name: " + card_name + '\n' +
+                "Name: " + name + '\n' +
                 "Description: " + description + '\n' +
                 "Mana: " + mana + '\n' +
                 "Price: " + price + '\n' +
@@ -147,5 +167,9 @@ public abstract class Card {
 
     public enum Rarity {
         FREE, COMMON, RARE, EPIC, LEGENDARY
+    }
+
+    public enum ActionType {
+        GLOBAL, TARGETED
     }
 }
