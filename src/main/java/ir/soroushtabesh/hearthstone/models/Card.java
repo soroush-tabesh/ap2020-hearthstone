@@ -26,6 +26,8 @@ public abstract class Card {
 
     private Integer price = 0;
 
+    private Boolean tradable = true;
+
     @Enumerated(EnumType.STRING)
     private Rarity rarity = Rarity.COMMON;
 
@@ -36,7 +38,8 @@ public abstract class Card {
     public Card() {
     }
 
-    public Card(String card_name, String description, Integer mana, Hero.HeroClass heroClass, Integer price, Rarity rarity) {
+    public Card(String card_name, String description, Integer mana
+            , Hero.HeroClass heroClass, Integer price, Rarity rarity) {
         this.card_name = card_name;
         this.description = description;
         this.mana = mana;
@@ -48,6 +51,14 @@ public abstract class Card {
     public static Card getCardByName(String cardname, Session session) {
         return session.createQuery("from Card where card_name=:cardname", Card.class)
                 .setParameter("cardname", cardname).uniqueResult();
+    }
+
+    public Boolean getTradable() {
+        return tradable;
+    }
+
+    public void setTradable(Boolean tradable) {
+        this.tradable = tradable;
     }
 
     public Integer getPrice() {

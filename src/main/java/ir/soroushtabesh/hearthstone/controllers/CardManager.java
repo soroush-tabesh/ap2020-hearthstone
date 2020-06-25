@@ -19,7 +19,8 @@ public class CardManager {
     }
 
     public List<Card> getAllCards() {
-        return DBUtil.doInJPA(session -> session.createQuery("from Card ", Card.class).list());
+        return DBUtil.doInJPA(session ->
+                session.createQuery("from Card where tradable=true", Card.class).list());
     }
 
     public List<InfoPassive> getAllPassives() {
