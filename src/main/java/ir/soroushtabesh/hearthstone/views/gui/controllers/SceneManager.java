@@ -33,11 +33,11 @@ public class SceneManager {
         windowPane.getChildren().add(scene.getPane());
     }
 
-    public <T extends AbstractScene> void showScene(Class<T> tClass) {
+    public void showScene(Class<? extends AbstractScene> tClass) {
         showScene(tClass, null);
     }
 
-    public <T extends AbstractScene> void showScene(Class<T> tClass, Object message) {
+    public void showScene(Class<? extends AbstractScene> tClass, Object message) {
         Logger.log("SceneManager", "show scene: " + tClass.getSimpleName());
         if (currentScene != null && currentScene.getClass().equals(tClass)) {
             return;
