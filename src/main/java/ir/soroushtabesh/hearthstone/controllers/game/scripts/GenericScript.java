@@ -1,12 +1,24 @@
 package ir.soroushtabesh.hearthstone.controllers.game.scripts;
 
 import ir.soroushtabesh.hearthstone.controllers.game.GameController;
+import ir.soroushtabesh.hearthstone.controllers.game.PlayerController;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.GameObject;
 
 public abstract class GenericScript {
+    public static final String GAME_START = "onScriptAdded";
+    public static final String REMOVE_SCRIPT = "onScriptRemoved";
     private transient int id;
     private transient GameObject ownerObject;
     private transient GameController gameController;
+    private transient PlayerController playerController;
+
+    protected PlayerController getPlayerController() {
+        return playerController;
+    }
+
+    public void setPlayerController(PlayerController playerController) {
+        this.playerController = playerController;
+    }
 
     public GameController getGameController() {
         return gameController;
@@ -38,4 +50,9 @@ public abstract class GenericScript {
     public void onScriptRemoved() {
     }
 
+    public void onTurnStart() {
+    }
+
+    public void onTurnEnd() {
+    }
 }

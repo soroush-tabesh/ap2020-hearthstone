@@ -3,6 +3,9 @@ package ir.soroushtabesh.hearthstone.controllers.game.viewmodels;
 import ir.soroushtabesh.hearthstone.controllers.game.GameController;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.GenericScript;
 import ir.soroushtabesh.hearthstone.models.Card;
+import ir.soroushtabesh.hearthstone.models.cards.Minion;
+import ir.soroushtabesh.hearthstone.models.cards.Spell;
+import ir.soroushtabesh.hearthstone.models.cards.Weapon;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
@@ -41,5 +44,17 @@ public abstract class CardObject extends GameObject {
 
     public Card getCardModel() {
         return cardModel;
+    }
+
+    public static CardObject build(int playerId, GameController gameController, Card card) {
+        CardObject cardObject = null;
+        if (card instanceof Minion) {
+            cardObject = new MinionObject(playerId, gameController, (Minion) card);
+        } else if (card instanceof Spell) {
+            cardObject = new SpellObject(playerId, gameController, (Spell) card);
+        } else if (card instanceof Weapon) {
+            cardObject = new WeaponObject(playerId, gameController, (Weapon) card);
+        }
+        return cardObject;
     }
 }

@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.ResourceBundle;
 
 public abstract class CardView extends StackPane implements Initializable {
+    private final BriefCard briefCard;
     @FXML
     private Label attackLabel;
     @FXML
@@ -36,8 +37,6 @@ public abstract class CardView extends StackPane implements Initializable {
     private ImageView maskImage;
     @FXML
     private ImageView bgImage;
-
-    private final BriefCard briefCard;
 
     public CardView(Card card) {
         this.briefCard = BriefCard.build(card);

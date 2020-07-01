@@ -28,7 +28,7 @@ public class Hero {
 
     @ManyToOne
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
-    private ScriptModel specialPower;
+    private ScriptModel specialPower = new ScriptModel();
 
     public Hero(String name, HeroClass heroClass, int hp, HeroPower heroPower) {
         this.name = name;

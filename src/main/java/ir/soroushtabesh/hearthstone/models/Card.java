@@ -37,7 +37,7 @@ public abstract class Card {
 
     @ManyToOne
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
-    private ScriptModel scriptModel;
+    private ScriptModel scriptModel = new ScriptModel();
 
     public Card() {
     }

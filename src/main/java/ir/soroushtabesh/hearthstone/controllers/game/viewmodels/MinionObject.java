@@ -1,7 +1,6 @@
 package ir.soroushtabesh.hearthstone.controllers.game.viewmodels;
 
 import ir.soroushtabesh.hearthstone.controllers.game.GameController;
-import ir.soroushtabesh.hearthstone.models.Card;
 import ir.soroushtabesh.hearthstone.models.cards.Minion;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -24,10 +23,10 @@ public class MinionObject extends CardObject {
     private final BooleanProperty halo3 = new SimpleBooleanProperty(false);
     private final BooleanProperty halo4 = new SimpleBooleanProperty(false);
 
-    public MinionObject(int playerId, GameController gameController, Card cardModel) {
+    public MinionObject(int playerId, GameController gameController, Minion cardModel) {
         super(playerId, gameController, cardModel);
-        attackPower.set(((Minion) cardModel).getAttackPower());
-        hp.set(((Minion) cardModel).getHp());
+        attackPower.set(cardModel.getAttackPower());
+        hp.set(cardModel.getHp());
     }
 
     public int getHp() {

@@ -19,41 +19,33 @@ import java.util.Map;
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Player {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
-    private Integer id;
-
-    private String username;
-    private String password;
-    private Integer coin = 50;
-    private Boolean deleted = false;
-
     @ManyToMany
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
     private final List<Hero> openHeroes = new ArrayList<>();
-
     @OneToMany(mappedBy = "player")
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
     private final List<Deck> decks = new ArrayList<>();
-
     @ElementCollection
     @Column(name = "count")
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
     private final Map<Card, Integer> ownedCards = new HashMap<>();
-
+    private final PlayerStats playerStats = new PlayerStats();
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    private Integer id;
+    private String username;
+    private String password;
+    private Integer coin = 50;
+    private Boolean deleted = false;
     @ManyToOne
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
     private Hero currentHero;
-
     @ManyToOne
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
     private Deck currentDeck;
-
     @ManyToOne
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
     private InfoPassive currentPassive;
-
-    private final PlayerStats playerStats = new PlayerStats();
 
     public Player(String username, String password) {
         this.username = username;

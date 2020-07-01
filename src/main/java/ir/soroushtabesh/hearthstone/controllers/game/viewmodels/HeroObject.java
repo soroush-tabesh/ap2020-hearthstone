@@ -13,6 +13,7 @@ public class HeroObject extends GameObject {
     private final Hero heroModel;
     private final HeroPowerObject heroPower;
     private final IntegerProperty hp = new SimpleIntegerProperty();
+    private final IntegerProperty shield = new SimpleIntegerProperty();
     private final ObjectProperty<WeaponObject> currentWeapon = new SimpleObjectProperty<>();
     private final GenericScript specialPowerScript;
 
@@ -45,12 +46,28 @@ public class HeroObject extends GameObject {
         return hp;
     }
 
+    public int getShield() {
+        return shield.get();
+    }
+
+    public void setShield(int shield) {
+        this.shield.set(shield);
+    }
+
+    public IntegerProperty shieldProperty() {
+        return shield;
+    }
+
     public WeaponObject getCurrentWeapon() {
         return currentWeapon.get();
     }
 
     public ObjectProperty<WeaponObject> currentWeaponProperty() {
         return currentWeapon;
+    }
+
+    public void setCurrentWeapon(WeaponObject currentWeapon) {
+        this.currentWeapon.set(currentWeapon);
     }
 
     public GenericScript getSpecialPowerScript() {

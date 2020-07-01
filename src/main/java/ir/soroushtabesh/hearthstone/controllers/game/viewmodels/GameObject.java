@@ -12,10 +12,10 @@ public abstract class GameObject {
     private final int id;
     private final int playerId;
     private final GameController gameController;
-    private final List<GenericScript> miscScripts = new ArrayList<>();
+    private final List<GenericScript> componentScripts = new ArrayList<>();
 
     public GameObject(int playerId, GameController gameController) {
-        this.id = gameController.generateID(this);
+        this.id = gameController.getModelPool().generateID(this);
         this.playerId = playerId;
         this.gameController = gameController;
     }
@@ -33,19 +33,23 @@ public abstract class GameObject {
     }
 
     public void addMiscScript(GenericScript genericScript) {
-        miscScripts.add(genericScript);
+        if (genericScript == null)
+            return;
+        componentScripts.add(genericScript);
         genericScript.setOwnerObject(this);
-        gameController.getScriptEngine().registerScript(genericScript, this);
+        gameController.getScriptEngine().registerScript(genericScript);
     }
 
     public void removeMiscScript(GenericScript genericScript) {
-        gameController.getScriptEngine().unregisterScript(genericScript, this);
+        if (genericScript == null)
+            return;
+        gameController.getScriptEngine().unregisterScript(genericScript);
         genericScript.setOwnerObject(null);
-        miscScripts.remove(genericScript);
+        componentScripts.remove(genericScript);
     }
 
-    public List<GenericScript> getMiscScripts() {
-        return Collections.unmodifiableList(miscScripts);
+    public List<GenericScript> getComponentScripts() {
+        return Collections.unmodifiableList(componentScripts);
     }
 
     @Override

@@ -21,6 +21,14 @@ public class InfoPassive {
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
     private ScriptModel scriptModel;
 
+    public InfoPassive() {
+    }
+
+    public InfoPassive(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
     public String getName() {
         return name;
     }
@@ -35,14 +43,6 @@ public class InfoPassive {
 
     public void setScriptModel(ScriptModel scriptModel) {
         this.scriptModel = scriptModel;
-    }
-
-    public InfoPassive() {
-    }
-
-    public InfoPassive(String name, String description) {
-        this.name = name;
-        this.description = description;
     }
 
     @Override

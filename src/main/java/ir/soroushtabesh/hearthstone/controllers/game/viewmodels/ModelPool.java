@@ -13,33 +13,42 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class ModelPool {
     private final GameController gameController;
     private final SceneData sceneData;
-    private final PlayerData playerDataA, playerDataB;
+    private final List<PlayerData> playerDataList = new ArrayList<>(2);
+    private int idCounter = 2;
 
     public ModelPool(GameController gameController) {
         this.gameController = gameController;
         this.sceneData = new SceneData(gameController);
-        this.playerDataA = new PlayerData(0, gameController);
-        this.playerDataB = new PlayerData(1, gameController);
     }
 
     public SceneData getSceneData() {
         return sceneData;
     }
 
-    public PlayerData getPlayerData(int id) {
-        if (playerDataA.getPlayerId() == id)
-            return playerDataA;
-        else if (playerDataB.getPlayerId() == id)
-            return playerDataB;
+    public PlayerData getPlayerDataById(int id) {
+        if (id >= 0 && id < playerDataList.size())
+            return playerDataList.get(id);
         else
             return null;
     }
 
-    public PlayerData[] getAllPlayerData() {
-        return new PlayerData[]{playerDataA, playerDataB};
+    public List<PlayerData> getPlayerDataList() {
+        return playerDataList;
+    }
+
+    public void addPlayerData(PlayerData playerData) {
+        playerDataList.add(playerData.getPlayerId(), playerData);
+    }
+
+    public int generateID(GameObject gameObject) {
+        return idCounter++;
     }
 
     public static class SceneData {
@@ -58,12 +67,14 @@ public class ModelPool {
     public static class PlayerData {
         private final int playerId;
         private final GameController gameController;
+        //cards
         private final ObservableList<CardObject> deckCard = FXCollections.observableArrayList();
         private final ObservableList<CardObject> handCard = FXCollections.observableArrayList();
-        private final ObservableList<CardObject> groundCard = FXCollections.observableArrayList();
-        private final ObservableList<CardObject> deadCard = FXCollections.observableArrayList();
+        private final ObservableList<MinionObject> groundCard = FXCollections.observableArrayList();
+        private final ObservableList<MinionObject> deadCard = FXCollections.observableArrayList();
         private final ObservableList<CardObject> burnedCard = FXCollections.observableArrayList();
-        private final ObservableList<CardObject> changeCard = FXCollections.observableArrayList();
+        private final ObservableList<Boolean> changeCardFlag = FXCollections.observableArrayList();
+        //flags and counters
         private final IntegerProperty mana = new SimpleIntegerProperty();
         private final IntegerProperty manaMax = new SimpleIntegerProperty();
         private final BooleanProperty myTurn = new SimpleBooleanProperty();
@@ -71,12 +82,22 @@ public class ModelPool {
         private Hero heroModel;
         private Deck deckModel;
         private InfoPassive infoPassiveModel;
+        //objects
         private HeroObject hero;
         private GenericScript infoPassive;
 
-        public PlayerData(int playerId, GameController gameController) {
+        public PlayerData(int playerId, GameController gameController
+                , Hero heroModel, Deck deckModel, InfoPassive infoPassiveModel) {
+            this(playerId, gameController, heroModel, deckModel, infoPassiveModel, true);
+        }
+
+        public PlayerData(int playerId, GameController gameController
+                , Hero heroModel, Deck deckModel, InfoPassive infoPassiveModel, boolean shuffleDeck) {
             this.playerId = playerId;
             this.gameController = gameController;
+            setHeroModel(heroModel);
+            setDeckModel(deckModel, shuffleDeck);
+            setInfoPassiveModel(infoPassiveModel);
         }
 
         public int getPlayerId() {
@@ -87,20 +108,32 @@ public class ModelPool {
             return hero;
         }
 
-        public void setHero(HeroObject hero) {
-            this.hero = hero;
-        }
-
         public Deck getDeckModel() {
             return deckModel;
+        }
+
+        private void setDeckModel(Deck deckModel, boolean shuffleDeck) {
+            this.deckModel = deckModel;
+            deckModel.getFullDeck().forEach(card -> deckCard.add(CardObject.build(playerId, gameController, card)));
+            if (shuffleDeck)
+                Collections.shuffle(deckCard);
         }
 
         public Hero getHeroModel() {
             return heroModel;
         }
 
+        private void setHeroModel(Hero heroModel) {
+            this.heroModel = heroModel;
+            hero = new HeroObject(playerId, gameController, heroModel);
+        }
+
         public InfoPassive getInfoPassiveModel() {
             return infoPassiveModel;
+        }
+
+        private void setInfoPassiveModel(InfoPassive infoPassiveModel) {
+            this.infoPassiveModel = infoPassiveModel;
         }
 
         public GenericScript getInfoPassive() {
@@ -120,11 +153,11 @@ public class ModelPool {
             return handCard;
         }
 
-        public ObservableList<CardObject> getGroundCard() {
+        public ObservableList<MinionObject> getGroundCard() {
             return groundCard;
         }
 
-        public ObservableList<CardObject> getDeadCard() {
+        public ObservableList<MinionObject> getDeadCard() {
             return deadCard;
         }
 
@@ -132,12 +165,16 @@ public class ModelPool {
             return burnedCard;
         }
 
-        public ObservableList<CardObject> getChangeCard() {
-            return changeCard;
+        public ObservableList<Boolean> getChangeCardFlag() {
+            return changeCardFlag;
         }
 
         public int getMana() {
             return mana.get();
+        }
+
+        public void setMana(int mana) {
+            this.mana.set(mana);
         }
 
         public IntegerProperty manaProperty() {
@@ -148,6 +185,10 @@ public class ModelPool {
             return manaMax.get();
         }
 
+        public void setManaMax(int manaMax) {
+            this.manaMax.set(manaMax);
+        }
+
         public IntegerProperty manaMaxProperty() {
             return manaMax;
         }
@@ -156,12 +197,20 @@ public class ModelPool {
             return myTurn.get();
         }
 
+        public void setMyTurn(boolean myTurn) {
+            this.myTurn.set(myTurn);
+        }
+
         public BooleanProperty myTurnProperty() {
             return myTurn;
         }
 
         public boolean isReady() {
             return ready.get();
+        }
+
+        public void setReady(boolean ready) {
+            this.ready.set(ready);
         }
 
         public BooleanProperty readyProperty() {

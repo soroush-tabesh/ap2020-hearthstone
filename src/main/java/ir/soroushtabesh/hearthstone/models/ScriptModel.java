@@ -35,6 +35,8 @@ public class ScriptModel {
     }
 
     public GenericScript getScript(GameController gameController) {
+        if (scriptClass == null || scriptData == null || scriptData.isEmpty())
+            return null;
         GenericScript genericScript = new GsonBuilder().create().fromJson(scriptData, scriptClass);
         genericScript.setGameController(gameController);
         return genericScript;
