@@ -318,6 +318,8 @@ public class LocalGameController extends GameController {
     private Message forceUseWeapon(HeroObject source, GameObject target, int playerId, int token) {
         if (!checkPlayerValidity(playerId, token) || !isStarted())
             return Message.ERROR;
+        if (source == target)
+            return Message.IMPOSSIBLE;
         WeaponObject weapon = source.getCurrentWeapon();
         if (weapon == null)
             return Message.ERROR;
@@ -328,7 +330,7 @@ public class LocalGameController extends GameController {
             singleDirectionWeapon(source, target, playerId, token);
             singleDirectionWeapon((HeroObject) target, source, playerId, token);
         } else {
-            return Message.ERROR;
+            return Message.IMPOSSIBLE;
         }
         weapon.setDurability(weapon.getDurability() - 1);
         if (weapon.getDurability() <= 0) {
