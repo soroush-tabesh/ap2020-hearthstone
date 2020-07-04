@@ -46,9 +46,10 @@ public class DeckReader {
     }
 
     public static Card getCardFromName(String name) {
-        if (name.toLowerCase().equals("spell"))
+        name = name.toLowerCase();
+        if (name.equals("spell"))
             return getRandomSpell();
-        if (name.toLowerCase().equals("minion"))
+        if (name.equals("minion"))
             return getRandomMinion();
         String[] split = name.split("->");
         Card card = DBUtil.doInJPA(session -> session
