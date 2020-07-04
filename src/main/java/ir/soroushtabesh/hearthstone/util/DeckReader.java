@@ -34,12 +34,14 @@ public class DeckReader {
     public static DeckReaderModel read(String string) {
         Gson gson = new GsonBuilder().create();
         DeckReaderModel model = gson.fromJson(string, DeckReaderModel.class);
+
         Deck friendly = new Deck();
         model.getFriendlyCardNames().forEach(s -> friendly.addCard(getCardFromName(s)));
         Deck enemy = new Deck();
-        model.getFriendlyCardNames().forEach(s -> enemy.addCard(getCardFromName(s)));
-        model.setFriendly(friendly);
-        model.setEnemy(enemy);
+        model.getEnemyCardNames().forEach(s -> enemy.addCard(getCardFromName(s)));
+
+        model.setFriendlyDeck(friendly);
+        model.setEnemyDeck(enemy);
         return model;
     }
 

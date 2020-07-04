@@ -4,33 +4,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DeckReaderModel {
-    private final List<String> friendlyCardNames = new ArrayList<>();
-    private final List<String> enemyCardNames = new ArrayList<>();
-    private transient Deck friendly, enemy;
+    private final List<String> friendly = new ArrayList<>();
+    private final List<String> enemy = new ArrayList<>();
+    private transient Deck friendlyDeck, enemyDeck;
 
     public List<String> getFriendlyCardNames() {
-        return friendlyCardNames;
-    }
-
-    public List<String> getEnemyCardNames() {
-        return enemyCardNames;
-    }
-
-    public Deck getFriendly() {
         return friendly;
     }
 
-    public void setFriendly(Deck friendly) {
-        this.friendly = friendly;
-        friendly.getFullDeck().forEach(card -> friendlyCardNames.add(card.getName()));
-    }
-
-    public Deck getEnemy() {
+    public List<String> getEnemyCardNames() {
         return enemy;
     }
 
-    public void setEnemy(Deck enemy) {
-        this.enemy = enemy;
-        enemy.getFullDeck().forEach(card -> enemyCardNames.add(card.getName()));
+    public Deck getFriendlyDeck() {
+        return friendlyDeck;
+    }
+
+    public void setFriendlyDeck(Deck friendlyDeck) {
+        this.friendlyDeck = friendlyDeck;
+        friendlyDeck.getFullDeck().forEach(card -> friendly.add(card.getName()));
+    }
+
+    public Deck getEnemyDeck() {
+        return enemyDeck;
+    }
+
+    public void setEnemyDeck(Deck enemyDeck) {
+        this.enemyDeck = enemyDeck;
+        enemyDeck.getFullDeck().forEach(card -> enemy.add(card.getName()));
     }
 }
