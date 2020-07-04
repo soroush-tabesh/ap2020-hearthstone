@@ -152,6 +152,21 @@
     -fx-effect: dropshadow(three-pass-box, gainsboro, 25, 0.5, 0, 0);
 }
 
+#practiceButton {
+    -fx-text-fill: gainsboro;
+    -fx-effect: dropshadow(three-pass-box, #363636, 4, 0.5, 0, 0);
+}
+
+#practiceButton:hover {
+    -fx-text-fill: #363636;
+    -fx-effect: dropshadow(three-pass-box, gainsboro, 15, 0.5, 0, 0);
+}
+
+#practiceButton:pressed {
+    -fx-text-fill: gold;
+    -fx-effect: dropshadow(three-pass-box, gainsboro, 25, 0.5, 0, 0);
+}
+
 #shopButton {
     -fx-shape: "M 100 300 A 50 50 0 1 1 700 300 A 50 50 0 1 1 100 300";
 }

@@ -9,7 +9,11 @@ import ir.soroushtabesh.hearthstone.controllers.game.LocalGameController;
 import ir.soroushtabesh.hearthstone.controllers.game.PlayerController;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.*;
 import ir.soroushtabesh.hearthstone.models.Card;
+import ir.soroushtabesh.hearthstone.models.DeckReaderModel;
+import ir.soroushtabesh.hearthstone.models.Hero;
+import ir.soroushtabesh.hearthstone.models.InfoPassive;
 import ir.soroushtabesh.hearthstone.util.AnimationUtil;
+import ir.soroushtabesh.hearthstone.util.DeckReader;
 import ir.soroushtabesh.hearthstone.util.FXUtil;
 import ir.soroushtabesh.hearthstone.views.gui.controls.*;
 import javafx.animation.KeyFrame;
@@ -35,8 +39,10 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
+import java.io.File;
 import java.net.URL;
 import java.util.*;
 import java.util.function.Function;
@@ -93,35 +99,66 @@ public class BoardSceneController extends AbstractSceneController {
     private boolean askTargetMode = false;
     private Function<GameObject, ?> targetFunction;
     private final Map<CardObject, CardView> cardCache = new HashMap<>();
+    private PlayMode playMode = PlayMode.NORMAL;
+
+    @Override
+    public void onStart(Object message) {
+        super.onStart(message);
+        if (message instanceof PlayMode)
+            playMode = ((PlayMode) message);
+        initUI();
+        switch (playMode) {
+            case AI:
+                if (!initGameControllerAI()) {
+                    super.backPressed(null);
+                    return;
+                }
+                break;
+            case DECK_READER:
+                if (!initGameControllerDeckReader()) {
+                    super.backPressed(null);
+                    return;
+                }
+                break;
+            case NORMAL:
+                if (!initGameControllerDuel()) {
+                    super.backPressed(null);
+                    return;
+                }
+        }
+        bindUI();
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         super.initialize(url, resourceBundle);
     }
 
-    @Override
-    public void onStart(Object message) {
-        super.onStart(message);
-        //todo handle message for deck-reader mode
-        initUI();
-        if (!initGameController())
-            return;
-        bindUI();
+    private boolean initGameControllerAI() {
+        //todo AI
+        return false;
     }
 
-    private PlayerInfoGetter getPlayerInfo(int playerId) {
-        SelectHeroDeckDialog dialog = new SelectHeroDeckDialog(getPane(), playerId);
-        Optional<ButtonType> msg = dialog.showAndWait();
-        if (msg.isEmpty() || msg.get() == ButtonType.CANCEL) {
-            super.backPressed(null);
-            return null;
-        } else if (msg.get() == ButtonType.APPLY) {
-            return null;
-        }
-        return dialog;
+    private boolean initGameControllerDeckReader() {
+        FileChooser fileChooser = new FileChooser();
+        File file = fileChooser.showOpenDialog(getPane().getScene().getWindow());
+        DeckReaderModel deckReaderModel = DeckReader.read(file);
+        if (deckReaderModel == null)
+            return false;
+        pc0 = gameController.registerPlayer(
+                DeckReader.getHeroByClass(Hero.HeroClass.MAGE.toString()),
+                deckReaderModel.getFriendly(),
+                new InfoPassive());
+        pc1 = gameController.registerPlayer(
+                DeckReader.getHeroByClass(Hero.HeroClass.MAGE.toString()),
+                deckReaderModel.getFriendly(),
+                new InfoPassive());
+        playerData0 = gameController.getModelPool().getPlayerDataById(pc0.getId());
+        playerData1 = gameController.getModelPool().getPlayerDataById(pc1.getId());
+        return true;
     }
 
-    private boolean initGameController() {
+    private boolean initGameControllerDuel() {
         gameController = new LocalGameController();
         PlayerInfoGetter p0 = getPlayerInfo(0);
         PlayerInfoGetter p1 = getPlayerInfo(1);
@@ -138,6 +175,22 @@ public class BoardSceneController extends AbstractSceneController {
         playerData0 = gameController.getModelPool().getPlayerDataById(pc0.getId());
         playerData1 = gameController.getModelPool().getPlayerDataById(pc1.getId());
         return true;
+    }
+
+    private PlayerInfoGetter getPlayerInfo(int playerId) {
+        SelectHeroDeckDialog dialog = new SelectHeroDeckDialog(getPane(), playerId);
+        Optional<ButtonType> msg = dialog.showAndWait();
+        if (msg.isEmpty() || msg.get() == ButtonType.CANCEL) {
+            super.backPressed(null);
+            return null;
+        } else if (msg.get() == ButtonType.APPLY) {
+            return null;
+        }
+        return dialog;
+    }
+
+    public enum PlayMode {
+        NORMAL, DECK_READER, AI
     }
 
     private void initUI() {

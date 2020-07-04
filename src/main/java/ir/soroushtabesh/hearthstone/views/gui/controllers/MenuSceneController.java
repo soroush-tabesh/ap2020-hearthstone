@@ -11,6 +11,10 @@ import javafx.scene.control.Label;
 public class MenuSceneController extends AbstractSceneController {
 
     @FXML
+    private Button deckReaderMode;
+    @FXML
+    private Button practiceButton;
+    @FXML
     private Label coins;
     @FXML
     private Button playButton;
@@ -23,9 +27,16 @@ public class MenuSceneController extends AbstractSceneController {
     @FXML
     private Button settingButton;
 
+    @Override
+    public void onStart(Object message) {
+        super.onStart(message);
+        Player player = PlayerManager.getInstance().getPlayer();
+        coins.setText(player.getCoin() + "");
+    }
+
     @FXML
     private void playButtonAction(ActionEvent event) {
-        SceneManager.getInstance().showScene(BoardScene.class);
+        SceneManager.getInstance().showScene(BoardScene.class, BoardSceneController.PlayMode.NORMAL);
     }
 
     @FXML
@@ -48,10 +59,13 @@ public class MenuSceneController extends AbstractSceneController {
         SceneManager.getInstance().showScene(SettingScene.class);
     }
 
-    @Override
-    public void onStart(Object message) {
-        super.onStart(message);
-        Player player = PlayerManager.getInstance().getPlayer();
-        coins.setText(player.getCoin() + "");
+    @FXML
+    private void deckReaderButtonAction(ActionEvent event) {
+        SceneManager.getInstance().showScene(BoardScene.class, BoardSceneController.PlayMode.DECK_READER);
+    }
+
+    @FXML
+    private void practiceButtonAction(ActionEvent event) {
+        SceneManager.getInstance().showScene(BoardScene.class, BoardSceneController.PlayMode.AI);
     }
 }
