@@ -22,6 +22,7 @@ public class ScriptModel {
     private String scriptData;
 
     public ScriptModel() {
+        this(new GenericScript());
     }
 
     public ScriptModel(GenericScript genericScript) {

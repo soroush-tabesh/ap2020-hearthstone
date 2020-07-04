@@ -4,9 +4,11 @@ import ir.soroushtabesh.hearthstone.controllers.game.GameController;
 import ir.soroushtabesh.hearthstone.controllers.game.PlayerController;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.GameObject;
 
-public abstract class GenericScript {
+public class GenericScript {
     public static final String GAME_START = "onScriptAdded";
     public static final String REMOVE_SCRIPT = "onScriptRemoved";
+    public static final String TURN_START = "onTurnStart";
+    public static final String TURN_END = "onTurnEnd";
     private transient int id;
     private transient GameObject ownerObject;
     private transient GameController gameController;

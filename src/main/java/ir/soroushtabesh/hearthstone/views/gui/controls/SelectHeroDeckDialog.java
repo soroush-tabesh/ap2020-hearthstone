@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
 
-public class SelectHeroDeckDialog extends Dialog<ButtonType> implements Initializable {
+public class SelectHeroDeckDialog extends Dialog<ButtonType> implements Initializable, PlayerInfoGetter {
 
     @FXML
     private ComboBox<InfoPassive> passiveCombo;
@@ -45,11 +45,11 @@ public class SelectHeroDeckDialog extends Dialog<ButtonType> implements Initiali
     private ObjectProperty<Predicate<Deck>> categoryFilter;
 
 
-    public SelectHeroDeckDialog(Node owner) {
+    public SelectHeroDeckDialog(Node owner, int playerId) {
         Logger.log("Dialog", getClass().getSimpleName());
         initOwner(owner.getScene().getWindow());
         setTitle("Play");
-        setHeaderText("Select Hero and Deck");
+        setHeaderText("Select Hero and Deck for Player #" + (playerId + 1));
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setControllerFactory(theClass -> this);
         fxmlLoader.setLocation(getClass().getResource(getClass().getSimpleName() + ".fxml"));
@@ -80,18 +80,33 @@ public class SelectHeroDeckDialog extends Dialog<ButtonType> implements Initiali
             event.consume();
             FXUtil.showAlertInfo("Play", "Deck", "Passive can't be empty.");
         }
-        updatePlayer();
+//        updatePlayer();
     }
 
     private void updatePlayer() {
         Player player = PlayerManager.getInstance().getPlayer();
-        player.setCurrentDeck(deckCombo.getValue());
-        player.setCurrentHero(heroCombo.getValue());
-        player.setCurrentPassive(passiveCombo.getValue());
+        player.setCurrentDeck(getSelectedDeck());
+        player.setCurrentHero(getSelectedHero());
+        player.setCurrentPassive(getSelectedInfoPassive());
         Logger.log("PlayerManager", String.format("update player:%s , deck:%s , hero:%s , passive:%s",
                 player.getUsername(), player.getCurrentDeck().getName(), player.getCurrentHero().getName()
                 , player.getCurrentPassive()));
         PlayerManager.getInstance().updatePlayer(player);
+    }
+
+    @Override
+    public Deck getSelectedDeck() {
+        return deckCombo.getValue();
+    }
+
+    @Override
+    public Hero getSelectedHero() {
+        return heroCombo.getValue();
+    }
+
+    @Override
+    public InfoPassive getSelectedInfoPassive() {
+        return passiveCombo.getValue();
     }
 
     @Override
@@ -105,12 +120,14 @@ public class SelectHeroDeckDialog extends Dialog<ButtonType> implements Initiali
     private void initHeroCombo(Player player) {
         heroCombo.getItems().addAll(player.getOpenHeroes());
         heroCombo.setValue(player.getCurrentHero());
+        heroCombo.getSelectionModel().select(0);
     }
 
     private void initPassiveCombo() {
         List<InfoPassive> passives = CardManager.getInstance().getAllPassives();
         Collections.shuffle(passives);
         passiveCombo.getItems().addAll(passives.subList(0, 3));
+        passiveCombo.getSelectionModel().select(0);
     }
 
     private void initDeckCombo(Player player) {
@@ -125,6 +142,7 @@ public class SelectHeroDeckDialog extends Dialog<ButtonType> implements Initiali
         if (player.getCurrentDeck() != null)
             deckCombo.setValue(player.getCurrentDeck());
         Bindings.bindContent(deckCombo.getItems(), filteredItems);
+        deckCombo.getSelectionModel().select(0);
     }
 
     public void goCollection(ActionEvent event) {

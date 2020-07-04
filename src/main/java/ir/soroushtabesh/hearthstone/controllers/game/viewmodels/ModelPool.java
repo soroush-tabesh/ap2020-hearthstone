@@ -22,6 +22,7 @@ public class ModelPool {
     private final SceneData sceneData;
     private final List<PlayerData> playerDataList = new ArrayList<>(2);
     private int idCounter = 2;
+    private final List<GameObject> gameObjects = new ArrayList<>();
 
     public ModelPool(GameController gameController) {
         this.gameController = gameController;
@@ -48,7 +49,14 @@ public class ModelPool {
     }
 
     public int generateID(GameObject gameObject) {
-        return idCounter++;
+        gameObjects.add(gameObject);
+        return gameObjects.size() - 1;
+    }
+
+    public GameObject getGameObjectById(int id) {
+        if (id < 0 || id >= gameObjects.size())
+            return null;
+        return gameObjects.get(id);
     }
 
     public static class SceneData {

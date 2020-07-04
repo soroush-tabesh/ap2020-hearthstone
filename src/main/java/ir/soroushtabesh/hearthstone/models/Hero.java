@@ -1,5 +1,6 @@
 package ir.soroushtabesh.hearthstone.models;
 
+import ir.soroushtabesh.hearthstone.controllers.game.scripts.HeroBehavior;
 import ir.soroushtabesh.hearthstone.models.cards.HeroPower;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
@@ -28,7 +29,7 @@ public class Hero {
 
     @ManyToOne
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
-    private ScriptModel specialPower = new ScriptModel();
+    private ScriptModel specialPower = new ScriptModel(new HeroBehavior());
 
     public Hero(String name, HeroClass heroClass, int hp, HeroPower heroPower) {
         this.name = name;

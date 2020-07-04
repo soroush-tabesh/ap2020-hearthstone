@@ -12,7 +12,7 @@ public class MinionObject extends CardObject {
     private final IntegerProperty hp = new SimpleIntegerProperty();
     private final IntegerProperty attackPower = new SimpleIntegerProperty();
 
-    private final BooleanProperty sleep = new SimpleBooleanProperty(true);
+    private final BooleanProperty sleep = new SimpleBooleanProperty(false);
     private final BooleanProperty dead = new SimpleBooleanProperty(false);
 
     private final BooleanProperty superHP = new SimpleBooleanProperty(false);

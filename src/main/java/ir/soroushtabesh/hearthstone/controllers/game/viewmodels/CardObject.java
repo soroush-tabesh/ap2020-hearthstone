@@ -57,4 +57,21 @@ public abstract class CardObject extends GameObject {
         }
         return cardObject;
     }
+
+    public CardState getCardState() {
+        ModelPool.PlayerData playerData = getGameController().getModelPool().getPlayerDataById(getPlayerId());
+        if (playerData.getDeckCard().contains(this))
+            return CardState.DECK;
+        else if (playerData.getHandCard().contains(this))
+            return CardState.HAND;
+        else if (playerData.getGroundCard().contains(this))
+            return CardState.GROUND;
+        else
+            return CardState.DEAD;
+    }
+
+    public enum CardState {
+        DECK, HAND, GROUND, DEAD
+    }
+
 }

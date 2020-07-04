@@ -1,5 +1,6 @@
 package ir.soroushtabesh.hearthstone.controllers.game;
 
+import ir.soroushtabesh.hearthstone.controllers.game.scripts.GenericScript;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.HeroBehavior;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.MinionBehavior;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.SpellBehavior;
@@ -48,7 +49,7 @@ public class LocalGameController extends GameController {
 
     @Override
     protected Message changeCard(int cardNumberInList, int playerId, int token) {
-        if (!checkPlayerValidity(playerId, token) || !isGameReady() || isStarted())
+        if (!checkPlayerValidityAndTurn(playerId, token) || !isGameReady() || isStarted())
             return Message.ERROR;
         ModelPool.PlayerData playerData = getModelPool().getPlayerDataById(playerId);
         if (playerData.getChangeCardFlag().size() <= cardNumberInList || cardNumberInList < 0)
@@ -92,26 +93,32 @@ public class LocalGameController extends GameController {
         getModelPool().addPlayerData(playerData);
     }
 
-    private boolean checkPlayerValidity(int playerId, int token) {
+    private boolean checkPlayerValidityAndTurn(int playerId, int token) {
         return tokens[playerId] == token && getTurn() == playerId;
     }
 
+    private boolean checkPlayerValidity(int playerId, int token) {
+        return tokens[playerId] == token;
+    }
+
+
     @Override
     protected boolean endTurn(int playerId, int token) {
-        if (!checkPlayerValidity(playerId, token) || !isStarted())
+        if (!checkPlayerValidityAndTurn(playerId, token) || !isStarted())
             return false;
         List<ModelPool.PlayerData> playerDataList = getModelPool().getPlayerDataList();
         if (!playerDataList.get(playerId).isReady())
             return false;
         logEvent(new GameAction.EndTurn(playerId));
+        getScriptEngine().broadcastEventOnPlayer(GenericScript.TURN_END, playerId);
         turnStartRoutine(1 - playerId);
         return false;
     }
 
     @Override
-    protected void startGame(int playerId, int token) {
+    protected Message startGame(int playerId, int token) {
         if (!checkPlayerValidity(playerId, token))
-            return;
+            return Message.ERROR;
         getModelPool().getPlayerDataById(playerId).setReady(true);
         List<ModelPool.PlayerData> playerDataList = getModelPool().getPlayerDataList();
         if (playerDataList.size() == 2 && playerDataList.get(0).isReady() && playerDataList.get(1).isReady()) {
@@ -119,6 +126,7 @@ public class LocalGameController extends GameController {
             turnStartRoutine(0);
             logEvent(new GameAction.GameStart());
         }
+        return Message.SUCCESS;
     }
 
     private void turnStartRoutine(int playerId) {
@@ -129,6 +137,7 @@ public class LocalGameController extends GameController {
         playerDataList.get(1 - playerId).setMyTurn(false);
         resetMana(playerData);
         drawToHand(playerData);
+        getScriptEngine().broadcastEventOnPlayer(GenericScript.TURN_START, playerId);
     }
 
     private void resetMana(ModelPool.PlayerData playerData) {
@@ -138,7 +147,7 @@ public class LocalGameController extends GameController {
 
     @Override
     protected Message playCard(CardObject cardObject, int groundIndex, GameObject optionalTarget, int playerId, int token) {
-        if (!checkPlayerValidity(playerId, token) || !isStarted())
+        if (!checkPlayerValidityAndTurn(playerId, token) || !isStarted())
             return Message.ERROR;
         //check validity of parameters
         if (cardObject.getPlayerId() != playerId)
@@ -148,28 +157,33 @@ public class LocalGameController extends GameController {
         ModelPool.PlayerData playerData = getModelPool().getPlayerDataById(playerId);
         if (groundIndex > playerData.getGroundCard().size() || groundIndex < 0)
             return Message.ERROR;
-        if (!playerData.getDeckCard().contains(cardObject))
+        if (!playerData.getHandCard().contains(cardObject))
             return Message.ERROR;
         if (playerData.getMana() < cardObject.getCardModel().getMana())
             return Message.INSUFFICIENT;
 
         playerData.setMana(playerData.getMana() - cardObject.getCardModel().getMana());
-        playerData.getDeckCard().remove(cardObject);
+        playerData.getHandCard().remove(cardObject);
 
         if (cardObject instanceof MinionObject) {
             if (playerData.getGroundCard().size() >= 7)
                 return Message.FULL;
             playerData.getGroundCard().add(groundIndex, (MinionObject) cardObject);
             ((MinionObject) cardObject).setSleep(true);
-            if (cardObject.getCardModel().getActionType() == Card.ActionType.GLOBAL)
+            if (cardObject.getCardModel().getActionType() == Card.ActionType.GLOBAL) {
                 getScriptEngine().broadcastEventOnObject(cardObject, MinionBehavior.BATTLE_CRY);
-            else
+            } else {
                 getScriptEngine().broadcastEventOnObject(cardObject, MinionBehavior.BATTLE_CRY, optionalTarget);
+            }
+            logEvent(new GameAction.MinionPlay((MinionObject) cardObject));
         } else if (cardObject instanceof SpellObject) {
-            if (cardObject.getCardModel().getActionType() == Card.ActionType.GLOBAL)
+            if (cardObject.getCardModel().getActionType() == Card.ActionType.GLOBAL) {
                 getScriptEngine().broadcastEventOnObject(cardObject, SpellBehavior.SPELL_EFFECT);
-            else
+                logEvent(new GameAction.SpellGlobal((SpellObject) cardObject));
+            } else {
                 getScriptEngine().broadcastEventOnObject(cardObject, SpellBehavior.SPELL_EFFECT, optionalTarget);
+                logEvent(new GameAction.TargetedAttack(cardObject, optionalTarget));
+            }
             getScriptEngine().broadcastEventOnObject(cardObject, SpellBehavior.SPELL_DONE, optionalTarget);
         } else if (cardObject instanceof WeaponObject) {
             playerData.getHero().setCurrentWeapon((WeaponObject) cardObject);
@@ -193,7 +207,7 @@ public class LocalGameController extends GameController {
      */
     @Override
     protected Message playMinion(MinionObject source, GameObject target, int playerId, int token) {
-        if (!checkPlayerValidity(playerId, token) || !isStarted())
+        if (!checkPlayerValidityAndTurn(playerId, token) || !isStarted())
             return Message.ERROR;
         if (source.getPlayerId() != playerId)
             return Message.ERROR;
@@ -203,16 +217,21 @@ public class LocalGameController extends GameController {
         if (target.getPlayerId() == playerId)
             return Message.IMPOSSIBLE;
         if (hasTaunt(1 - playerId) &&
-                ((target instanceof MinionObject && !((MinionObject) target).isTaunt()) || target instanceof HeroObject))
+                ((target instanceof MinionObject
+                        && !((MinionObject) target).isTaunt())
+                        || target instanceof HeroObject))
             return Message.IMPOSSIBLE;
         if (target instanceof MinionObject) {
             singleDirectionMinionAttack(source, target, playerId, token);
             singleDirectionMinionAttack((MinionObject) target, source, playerId, token);
+            logEvent(new GameAction.MinionAttack(source, (MinionObject) target));
         } else if (target instanceof HeroObject) {
-            useWeapon(((HeroObject) target), source, playerId, token);
+            forceUseWeapon(((HeroObject) target), source, playerId, token);
+            logEvent(new GameAction.MinionAttack(source, (HeroObject) target));
         } else {
             return Message.ERROR;
         }
+        source.setSleep(true);
         return Message.SUCCESS;
     }
 
@@ -224,7 +243,7 @@ public class LocalGameController extends GameController {
             return Message.ERROR;
         if (amount <= 0)
             return Message.ERROR;
-        ModelPool.PlayerData playerData = getModelPool().getPlayerDataById(playerId);
+        ModelPool.PlayerData playerData = getModelPool().getPlayerDataById(target.getPlayerId());
         if (!playerData.getGroundCard().contains(target))
             return Message.IMPOSSIBLE;
         target.setHp(target.getHp() - amount);
@@ -246,7 +265,6 @@ public class LocalGameController extends GameController {
             return Message.ERROR;
         if (amount <= 0)
             return Message.ERROR;
-        ModelPool.PlayerData playerData = getModelPool().getPlayerDataById(playerId);
         target.setHp(target.getHp() - Math.max(amount - target.getShield(), 0));
         target.setShield(Math.max(target.getShield() - amount, 0));
         getScriptEngine().broadcastEventOnObject(target, HeroBehavior.DAMAGE_TAKEN);
@@ -271,6 +289,28 @@ public class LocalGameController extends GameController {
      */
     @Override
     protected Message useWeapon(HeroObject source, GameObject target, int playerId, int token) {
+        if (!checkPlayerValidityAndTurn(playerId, token) || !isStarted())
+            return Message.ERROR;
+        return forceUseWeapon(source, target, playerId, token);
+    }
+
+    @Override
+    protected Message useHeroPower(HeroObject source, GameObject target, int playerId, int token) {
+        if (!checkPlayerValidityAndTurn(playerId, token) || !isStarted())
+            return Message.ERROR;
+        HeroPowerObject cardObject = source.getHeroPower();
+        if (cardObject.getCardModel().getActionType() == Card.ActionType.GLOBAL) {
+            getScriptEngine().broadcastEventOnObject(cardObject, SpellBehavior.SPELL_EFFECT);
+            logEvent(new GameAction.HeroPower(cardObject));
+        } else {
+            getScriptEngine().broadcastEventOnObject(cardObject, SpellBehavior.SPELL_EFFECT, target);
+            logEvent(new GameAction.TargetedAttack(cardObject, target));
+        }
+        getScriptEngine().broadcastEventOnObject(cardObject, SpellBehavior.SPELL_DONE, target);
+        return null;
+    }
+
+    private Message forceUseWeapon(HeroObject source, GameObject target, int playerId, int token) {
         if (!checkPlayerValidity(playerId, token) || !isStarted())
             return Message.ERROR;
         WeaponObject weapon = source.getCurrentWeapon();

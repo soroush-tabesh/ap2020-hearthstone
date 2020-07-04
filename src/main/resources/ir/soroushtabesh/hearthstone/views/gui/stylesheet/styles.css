@@ -227,7 +227,11 @@
 
 /*Board*/
 #boardPane {
-    -fx-background-image: url("../image/board.jpg");
+    /*-fx-background-image: url("../image/board.jpg");*/
+}
+
+#chert {
+    -fx-image: url("../image/board.jpg");
 }
 
 #endTurn {
@@ -243,6 +247,13 @@
 
 #endTurn:pressed {
     -fx-opacity: 0.5;
+}
+
+.changeStand {
+    -fx-border-style: dashed;
+    -fx-border-radius: 5;
+    -fx-border-width: 3;
+    -fx-border-color: black;
 }
 
 /*****************************************************************************************/

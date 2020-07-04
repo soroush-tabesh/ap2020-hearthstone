@@ -66,6 +66,13 @@ public class ScriptEngine {
         scripts.values().forEach((e) -> e.forEach((e1) -> broadcastEventOnScript(e1, event, params)));
     }
 
+    public void broadcastEventOnPlayer(String event, int playerId, Object... params) {
+        scripts.values().forEach((e) -> e.forEach((e1) -> {
+            if (e1.getOwnerObject().getPlayerId() == playerId)
+                broadcastEventOnScript(e1, event, params);
+        }));
+    }
+
     public void broadcastEventOnObject(GameObject gameObject, String event, Object... params) {
         scripts.getOrDefault(gameObject, Collections.emptyList())
                 .forEach((e1) -> broadcastEventOnScript(e1, event, params));
@@ -73,11 +80,12 @@ public class ScriptEngine {
 
     public void broadcastEventOnScript(GenericScript e1, String event, Object... params) {
         try {
-            Method declaredMethod = e1.getClass().getDeclaredMethod(event, getClassList(params));
+            Method declaredMethod = e1.getClass().getMethod(event, getClassList(params));
             declaredMethod.setAccessible(true);
             declaredMethod.invoke(e1, params);
         } catch (NoSuchMethodException ignored) {
-            System.err.println("No such method");
+            System.err.println("No such method:");
+            System.err.println("    e1 = " + e1 + ", event = " + event + ", params = " + Arrays.deepToString(params));
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.StackPane?>
 <fx:root xmlns:fx="http://javafx.com/fxml/1" prefHeight="280.0" prefWidth="210.0"
          type="StackPane" xmlns="http://javafx.com/javafx/11.0.1"
@@ -9,17 +9,47 @@
     <Label fx:id="countLabel" styleClass="label_small" text="0" translateX="92.0" translateY="50.0" visible="false"/>
     <Label fx:id="classLabel" rotate="90.0" styleClass="label_xsmall" text="ALL" translateX="-92.0" translateY="-30.0"
            visible="false"/>
+    <ImageView fx:id="tauntEffect" fitHeight="280.0" fitWidth="210.0" pickOnBounds="true" preserveRatio="true"
+               scaleX="1.2" translateY="-35.0" visible="false">
+        <image>
+            <!--                        <Image url="@../image/taunt.png" />-->
+        </image>
+    </ImageView>
     <ImageView fx:id="bgImage" fitHeight="280.0" fitWidth="210.0" pickOnBounds="true" preserveRatio="true">
         <image>
-            <!--            <Image url="@../image/card/Dreadscale.png"/>-->
+            <!--                        <Image url="@../image/card/Voodoo Doctor.png" />-->
         </image>
     </ImageView>
     <ImageView fx:id="maskImage" fitHeight="280.0" fitWidth="210.0" pickOnBounds="true" preserveRatio="true">
         <image>
-            <!--            <Image url="@../image/card/mask/minionMask.png"/>-->
+            <!--                        <Image url="@../image/card/mask/minionMask.png" />-->
         </image>
     </ImageView>
     <Label fx:id="attackLabel" styleClass="label_big" text="0" translateX="-72.0" translateY="115.0"/>
     <Label fx:id="hpLabel" styleClass="label_big" text="0" translateX="73.0" translateY="115.0"/>
     <Label fx:id="manaLabel" styleClass="label_big" text="0" translateX="-72.0" translateY="-100.0"/>
+    <ImageView fx:id="immuneEffect" fitHeight="280.0" fitWidth="210.0" pickOnBounds="true" preserveRatio="true"
+               scaleX="0.7" scaleY="0.7" translateY="-45.0" visible="false">
+        <image>
+            <!--                        <Image url="@../image/inplay_minion_immune.png" />-->
+        </image>
+    </ImageView>
+    <ImageView fx:id="stealthEffect" fitHeight="280.0" fitWidth="210.0" pickOnBounds="true" preserveRatio="true"
+               scaleY="0.9" translateY="-40.0" visible="false">
+        <image>
+            <!--                        <Image url="@../image/inplay_minion_stealth.png" />-->
+        </image>
+    </ImageView>
+    <ImageView fx:id="sleepEffect" fitHeight="280.0" fitWidth="210.0" pickOnBounds="true" preserveRatio="true"
+               translateX="25.0" translateY="-18.0" visible="false">
+        <image>
+            <!--                        <Image url="@../image/effect_sleep.png" />-->
+        </image>
+    </ImageView>
+    <ImageView fx:id="buffedEffect" fitHeight="280.0" fitWidth="210.0" pickOnBounds="true" preserveRatio="true"
+               visible="false">
+        <image>
+            <!--                        <Image url="@../image/inplay_minion_buffed.png" />-->
+        </image>
+    </ImageView>
 </fx:root>

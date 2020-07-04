@@ -16,14 +16,24 @@ public abstract class GameAction {
 
     static class MinionAttack extends GameAction {
         private final MinionObject source;
-        private final MinionObject target;
+        private final GameObject target;
 
         public MinionAttack(MinionObject source, MinionObject target) {
             super(String.format("'%s(Pl.%d)' attacked '%s(Pl.%d)'"
                     , source.getCardModel().getName()
                     , source.getPlayerId()
                     , target.getCardModel().getName()
-                    , source.getPlayerId()));
+                    , target.getPlayerId()));
+            this.source = source;
+            this.target = target;
+        }
+
+        public MinionAttack(MinionObject source, HeroObject target) {
+            super(String.format("'%s(Pl.%d)' attacked '%s(Pl.%d)'"
+                    , source.getCardModel().getName()
+                    , source.getPlayerId()
+                    , target.getHeroModel().getName()
+                    , target.getPlayerId()));
             this.source = source;
             this.target = target;
         }
@@ -32,8 +42,23 @@ public abstract class GameAction {
             return source;
         }
 
-        public MinionObject getTarget() {
+        public GameObject getTarget() {
             return target;
+        }
+    }
+
+    static class MinionPlay extends GameAction {
+        private final MinionObject source;
+
+        public MinionPlay(MinionObject source) {
+            super(String.format("Minion '%s(Pl.%d)' played"
+                    , source.getCardModel().getName()
+                    , source.getPlayerId()));
+            this.source = source;
+        }
+
+        public MinionObject getSource() {
+            return source;
         }
     }
 
@@ -77,4 +102,11 @@ public abstract class GameAction {
         }
     }
 
+    static class HeroPower extends GameAction {
+        public HeroPower(HeroPowerObject cardObject) {
+            super(String.format("Hero Power '%s(Pl.%d)' used."
+                    , cardObject.getCardModel().getName()
+                    , cardObject.getPlayerId()));
+        }
+    }
 }

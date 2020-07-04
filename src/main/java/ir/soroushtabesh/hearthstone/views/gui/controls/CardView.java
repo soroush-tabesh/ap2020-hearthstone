@@ -1,12 +1,14 @@
 package ir.soroushtabesh.hearthstone.views.gui.controls;
 
 import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
+import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.*;
 import ir.soroushtabesh.hearthstone.models.BriefCard;
 import ir.soroushtabesh.hearthstone.models.Card;
 import ir.soroushtabesh.hearthstone.models.cards.Minion;
 import ir.soroushtabesh.hearthstone.models.cards.Spell;
 import ir.soroushtabesh.hearthstone.models.cards.Weapon;
 import ir.soroushtabesh.hearthstone.util.FXUtil;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -22,7 +24,8 @@ import java.util.Collection;
 import java.util.ResourceBundle;
 
 public abstract class CardView extends StackPane implements Initializable {
-    private final BriefCard briefCard;
+    private BriefCard briefCard;
+    private CardObject cardObject;
     @FXML
     private Label attackLabel;
     @FXML
@@ -43,6 +46,12 @@ public abstract class CardView extends StackPane implements Initializable {
         FXUtil.loadFXMLasRoot(this);
     }
 
+    public CardView(CardObject cardObject) {
+        this.cardObject = cardObject;
+        briefCard = BriefCard.build(cardObject.getCardModel());
+        FXUtil.loadFXMLasRoot(this);
+    }
+
     public static CardView build(Card card) {
         CardView cardView = null;
         if (card instanceof Minion) {
@@ -55,10 +64,28 @@ public abstract class CardView extends StackPane implements Initializable {
         return cardView;
     }
 
+    public static CardView build(CardObject cardObject) {
+        CardView cardView = null;
+        if (cardObject instanceof MinionObject) {
+            cardView = new MinionCardView(cardObject);
+        } else if (cardObject instanceof WeaponObject) {
+            cardView = new WeaponCardView(cardObject);
+        } else if (cardObject instanceof SpellObject) {
+            cardView = new SpellCardView(cardObject);
+        } else if (cardObject instanceof HeroPowerObject) {
+            cardView = new HeroPowerCardView(cardObject);
+        }
+        return cardView;
+    }
+
     public static ObservableList<CardView> buildAll(Collection<Card> cards) {
         ObservableList<CardView> result = FXCollections.observableArrayList();
         cards.forEach(card -> result.add(build(card)));
         return result;
+    }
+
+    public final CardObject getCardObject() {
+        return cardObject;
     }
 
     @Override
@@ -66,6 +93,14 @@ public abstract class CardView extends StackPane implements Initializable {
         loadImages();
         bindDimensions();
         initViews();
+        if (getCardObject() != null)
+            bindView();
+    }
+
+    protected void bindView() {
+        manaLabel.textProperty().bind(
+                Bindings.createStringBinding(
+                        () -> getCardObject().getManaCost() + "", getCardObject().manaCostProperty()));
     }
 
     private void initViews() {
@@ -76,7 +111,7 @@ public abstract class CardView extends StackPane implements Initializable {
         classLabel.setText(briefCard.getCard().getHeroClass().toString());
     }
 
-    private void loadImages() {
+    protected void loadImages() {
         try {
             bgImage.setImage(new Image(getClass().getResourceAsStream(String.format("../image/card/%s.png"
                     , briefCard.getCard().getName()))));

@@ -1,7 +1,9 @@
 package ir.soroushtabesh.hearthstone.models.cards;
 
+import ir.soroushtabesh.hearthstone.controllers.game.scripts.MinionBehavior;
 import ir.soroushtabesh.hearthstone.models.Card;
 import ir.soroushtabesh.hearthstone.models.Hero;
+import ir.soroushtabesh.hearthstone.models.ScriptModel;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.Entity;
@@ -17,6 +19,7 @@ public class Minion extends Card {
     private MinionClass minionClass = MinionClass.GENERAL;
 
     public Minion() {
+        setScriptModel(new ScriptModel(new MinionBehavior()));
     }
 
     public Minion(String card_name, String description, Integer mana, Hero.HeroClass heroClass, Integer price, Rarity rarity, Integer hp, Integer attackPower, MinionClass minionClass) {
@@ -24,6 +27,7 @@ public class Minion extends Card {
         this.hp = hp;
         this.attackPower = attackPower;
         this.minionClass = minionClass;
+        setScriptModel(new ScriptModel(new MinionBehavior()));
     }
 
     public Integer getHp() {

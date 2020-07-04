@@ -2,7 +2,7 @@ package ir.soroushtabesh.hearthstone.controllers.game.scripts;
 
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.GameObject;
 
-public abstract class HeroBehavior extends GenericScript {
+public class HeroBehavior extends GenericScript {
 
     public static final String DAMAGE_TAKEN = "onDamageTaken";
     public static final String ATTACK_DONE = "onAttackDone";

@@ -3,34 +3,71 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Rectangle?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" id="boardPane" fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity"
             minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0"
             stylesheets="@../stylesheet/styles.css" xmlns="http://javafx.com/javafx/11.0.1"
             fx:controller="ir.soroushtabesh.hearthstone.views.gui.controllers.BoardSceneController">
-    <StackPane fx:id="heroStand" layoutX="534.0" layoutY="522.0"/>
-    <ScrollPane hbarPolicy="ALWAYS" layoutX="-57.0" layoutY="518.0" prefHeight="308.0" prefWidth="528.0" scaleX="0.7"
-                scaleY="0.7" styleClass="card-image" vbarPolicy="NEVER">
-        <HBox fx:id="handCardBox" alignment="TOP_CENTER" maxHeight="-Infinity" minHeight="-Infinity"
-              prefHeight="110.0"/>
-    </ScrollPane>
-    <Label layoutX="886.0" layoutY="729.0" styleClass="label_small" text="Mana"/>
-    <Label fx:id="manaLabel" contentDisplay="CENTER" layoutX="820.0" layoutY="728.0" styleClass="label_small"
-           text="10/10"/>
-    <Button id="endTurn" layoutX="1002.0" layoutY="308.0" mnemonicParsing="false" onAction="#endTurn" prefHeight="78.0"
-            prefWidth="131.0"/>
-    <ScrollPane layoutX="22.0" layoutY="235.0" prefHeight="272.0" prefWidth="103.0">
-        <VBox fx:id="logBox"/>
-    </ScrollPane>
-    <Label fx:id="deckRemLabel" contentDisplay="CENTER" layoutX="1106.0" layoutY="450.0" rotate="90.0"
-           styleClass="label_small" text="30"/>
+    <ImageView id="chert" fx:id="chert" fitHeight="-Infinity" fitWidth="-Infinity"/>
+    <Button id="endTurn" layoutX="1002.0" layoutY="308.0" mnemonicParsing="false" onAction="#endTurnButton"
+            prefHeight="78.0" prefWidth="131.0"/>
     <Button fx:id="backButton" layoutX="1050.0" layoutY="761.0" mnemonicParsing="false" onAction="#backPressed"
             prefHeight="38.0" prefWidth="84.0" styleClass="button-native" text="Back" AnchorPane.rightAnchor="64.0"
             AnchorPane.topAnchor="761.0"/>
-    <HBox fx:id="groundBox" alignment="CENTER" layoutX="-100.0" layoutY="296.0" prefHeight="245.0" prefWidth="1414.0"
+    <Region fx:id="globalDragReceiver" layoutX="250.0" layoutY="54.0" prefHeight="654.0" prefWidth="739.0"/>
+    <ScrollPane layoutX="22.0" layoutY="235.0" prefHeight="272.0" prefWidth="103.0">
+        <VBox fx:id="logBox"/>
+    </ScrollPane>
+    <Label layoutX="886.0" layoutY="729.0" styleClass="label_small" text="Mana"/>
+    <Label fx:id="manaLabel0" contentDisplay="CENTER" layoutX="820.0" layoutY="728.0" styleClass="label_small"
+           text="10/10"/>
+    <Label fx:id="deckRemLabel0" contentDisplay="CENTER" layoutX="1106.0" layoutY="450.0" rotate="90.0"
+           styleClass="label_small" text="30"/>
+    <StackPane fx:id="heroStand0" layoutX="534.0" layoutY="522.0"/>
+    <HBox fx:id="groundBox0" alignment="CENTER" layoutX="-100.0" layoutY="300.0" prefHeight="245.0" prefWidth="1414.0"
           scaleX="0.5" scaleY="0.5"/>
-    <ImageView fx:id="heroPowerImage" fitHeight="124.0" fitWidth="103.0" layoutX="700.0" layoutY="522.0"
-               pickOnBounds="true" preserveRatio="true"/>
-    <StackPane fx:id="weaponStand" layoutX="636.0" layoutY="600.0" prefHeight="230.0" prefWidth="190.0" scaleX="0.5"
+    <StackPane fx:id="weaponStand0" layoutX="653.0" layoutY="507.0" prefHeight="230.0" prefWidth="190.0" scaleX="0.5"
                scaleY="0.5"/>
-    <StackPane fx:id="burnedCardStand" layoutX="500.0" layoutY="282.0" prefHeight="150.0" prefWidth="200.0"/>
+    <StackPane fx:id="heroPowerStand0" layoutX="372.0" layoutY="507.0" prefHeight="230.0" prefWidth="190.0" scaleX="0.5"
+               scaleY="0.5"/>
+    <Label layoutX="731.0" layoutY="25.0" styleClass="label_small" text="Mana"/>
+    <Label fx:id="manaLabel1" contentDisplay="CENTER" layoutX="789.0" layoutY="4.0" styleClass="label_small"
+           text="10/10"/>
+    <Label fx:id="deckRemLabel1" contentDisplay="CENTER" layoutX="1100.0" layoutY="225.0" rotate="90.0"
+           styleClass="label_small" text="30"/>
+    <StackPane fx:id="heroStand1" layoutX="540.0" layoutY="34.0"/>
+    <HBox fx:id="groundBox1" alignment="CENTER" layoutX="-100.0" layoutY="160.0" prefHeight="245.0" prefWidth="1414.0"
+          scaleX="0.5" scaleY="0.5"/>
+    <StackPane fx:id="weaponStand1" layoutX="663.0" layoutY="17.0" prefHeight="230.0" prefWidth="190.0" scaleX="0.5"
+               scaleY="0.5"/>
+    <StackPane fx:id="heroPowerStand1" layoutX="382.0" layoutY="17.0" prefHeight="230.0" prefWidth="190.0" scaleX="0.5"
+               scaleY="0.5"/>
+    <StackPane fx:id="hoverCardStand" disable="true" layoutX="500.0" layoutY="282.0" prefHeight="150.0"
+               prefWidth="200.0"/>
+    <AnchorPane fx:id="dimPane" visible="false" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <children>
+            <Rectangle fill="#00000069" height="800.0" stroke="BLACK" strokeType="INSIDE" width="1200.0"/>
+            <Button fx:id="readyButton0" disable="true" layoutX="410.0" layoutY="535.0" mnemonicParsing="false"
+                    onAction="#readyButton0" prefHeight="45.0" prefWidth="95.0" styleClass="button-native"
+                    text="Ready"/>
+            <Button fx:id="readyButton1" disable="true" layoutX="410.0" layoutY="190.0" mnemonicParsing="false"
+                    onAction="#readyButton1" prefHeight="45.0" prefWidth="95.0" styleClass="button-native"
+                    text="Ready"/>
+            <AnchorPane fx:id="changeStand" layoutX="109.0" layoutY="300.0" maxHeight="200.0" maxWidth="200.0"
+                        prefHeight="200.0" prefWidth="200.0" styleClass="changeStand">
+                <Label layoutX="14.0" layoutY="83.0" text="Drag  Here To Change Card" textAlignment="CENTER"
+                       textFill="#dadada"/>
+            </AnchorPane>
+        </children>
+    </AnchorPane>
+    <ScrollPane hbarPolicy="ALWAYS" layoutX="-57.0" layoutY="518.0" prefHeight="308.0" prefWidth="528.0" scaleX="0.7"
+                scaleY="0.7" styleClass="card-image" vbarPolicy="NEVER">
+        <HBox fx:id="handCardBox0" alignment="TOP_CENTER" maxHeight="-Infinity" minHeight="-Infinity"
+              prefHeight="110.0"/>
+    </ScrollPane>
+    <ScrollPane hbarPolicy="ALWAYS" layoutX="-57.0" layoutY="-42.0" prefHeight="308.0" prefWidth="528.0" scaleX="0.7"
+                scaleY="0.7" styleClass="card-image" vbarPolicy="NEVER">
+        <HBox fx:id="handCardBox1" alignment="TOP_CENTER" maxHeight="-Infinity" minHeight="-Infinity"
+              prefHeight="110.0"/>
+    </ScrollPane>
 </AnchorPane>

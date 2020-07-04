@@ -28,8 +28,8 @@ public class PlayerController {
         return gameController.endTurn(id, token);
     }
 
-    public void startGame() {
-        gameController.startGame(id, token);
+    public GameController.Message startGame() {
+        return gameController.startGame(id, token);
     }
 
     public GameController.Message playCard(CardObject cardObject, int groundIndex, GameObject target) {
@@ -47,6 +47,11 @@ public class PlayerController {
     public GameController.Message useWeapon(GameObject target) {
         return gameController.useWeapon(
                 getGameController().getModelPool().getPlayerDataById(id).getHero(), target, id, token);
+    }
+
+    public GameController.Message useHeroPower(GameObject optionalTarget) {
+        return gameController.useHeroPower(
+                getGameController().getModelPool().getPlayerDataById(id).getHero(), optionalTarget, id, token);
     }
 
     public GameController.Message changeCard(int cardNumberInList) {

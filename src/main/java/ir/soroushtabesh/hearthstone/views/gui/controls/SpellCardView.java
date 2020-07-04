@@ -1,5 +1,6 @@
 package ir.soroushtabesh.hearthstone.views.gui.controls;
 
+import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.CardObject;
 import ir.soroushtabesh.hearthstone.models.Card;
 
 import java.net.URL;
@@ -9,6 +10,10 @@ public class SpellCardView extends CardView {
 
     public SpellCardView(Card card) {
         super(card);
+    }
+
+    public SpellCardView(CardObject cardObject) {
+        super(cardObject);
     }
 
     @Override

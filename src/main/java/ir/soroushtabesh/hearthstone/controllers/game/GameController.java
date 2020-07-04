@@ -12,7 +12,7 @@ public abstract class GameController {
     private final ScriptEngine scriptEngine;
     private final BooleanProperty started = new SimpleBooleanProperty(false);
     private final BooleanProperty gameReady = new SimpleBooleanProperty(false);
-    private final IntegerProperty turn = new SimpleIntegerProperty();
+    private final IntegerProperty turn = new SimpleIntegerProperty(-1);
     private final IntegerProperty winner = new SimpleIntegerProperty(-1);
 
     public GameController() {
@@ -82,7 +82,7 @@ public abstract class GameController {
 
     protected abstract boolean endTurn(int playerId, int token);
 
-    protected abstract void startGame(int playerId, int token);
+    protected abstract Message startGame(int playerId, int token);
 
     protected abstract Message playCard(CardObject cardObject, int groundIndex, GameObject optionalTarget, int playerId, int token);
 
@@ -91,6 +91,8 @@ public abstract class GameController {
     protected abstract Message playMinion(MinionObject source, GameObject target, int playerId, int token);
 
     protected abstract Message useWeapon(HeroObject source, GameObject target, int playerId, int token);
+
+    protected abstract Message useHeroPower(HeroObject source, GameObject target, int playerId, int token);
 
     protected abstract void logEvent(GameAction gameAction);
 

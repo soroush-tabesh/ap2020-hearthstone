@@ -3,20 +3,28 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.StackPane?>
-<fx:root xmlns:fx="http://javafx.com/fxml/1" type="StackPane"
+<fx:root xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="221.0"
+         prefWidth="150.0" type="StackPane"
          xmlns="http://javafx.com/javafx/11.0.1"
-         fx:controller="ir.soroushtabesh.hearthstone.views.gui.controls.HeroView" maxHeight="-Infinity"
-         maxWidth="-Infinity" prefHeight="221.0" prefWidth="150.0">
+         fx:controller="ir.soroushtabesh.hearthstone.views.gui.controls.HeroView">
     <ImageView fx:id="bgImage" fitHeight="250.0" fitWidth="155.0" pickOnBounds="true" preserveRatio="true">
         <image>
-            <!--            <Image url="@../image/hero/Anduin Wrynn.png"/>-->
+            <!--                        <Image url="@../image/hero/Anduin Wrynn.png" />-->
         </image>
     </ImageView>
     <ImageView fx:id="maskImage" fitHeight="250.0" fitWidth="155.0" pickOnBounds="true" preserveRatio="true">
         <image>
-            <!--            <Image url="@../image/hero/mask/heroMask.png"/>-->
+            <!--                        <Image url="@../image/hero/mask/heroMask.png" />-->
         </image>
     </ImageView>
-    <Label fx:id="hpLabel" contentDisplay="CENTER" styleClass="label_big" text="30" translateX="55.0"
-           translateY="33.0"/>
+    <ImageView fx:id="heroShield" fitHeight="250.0" fitWidth="155.0" pickOnBounds="true" preserveRatio="true"
+               translateX="-110.0" translateY="10.0">
+        <image>
+            <!--                        <Image url="@../image/hero_armor.png" />-->
+        </image>
+    </ImageView>
+    <Label fx:id="hpLabel" contentDisplay="CENTER" styleClass="label_big" text="30" translateX="56.0"
+           translateY="30.0"/>
+    <Label fx:id="shieldLabel" contentDisplay="CENTER" layoutX="74.0" layoutY="104.0" styleClass="label_big" text="3"
+           translateX="-57.0" translateY="30.0"/>
 </fx:root>

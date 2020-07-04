@@ -3,7 +3,7 @@ package ir.soroushtabesh.hearthstone.controllers.game.scripts;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.GameObject;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.MinionObject;
 
-public abstract class MinionBehavior extends GenericScript {
+public class MinionBehavior extends GenericScript {
 
     public static final String BATTLE_CRY = "battleCry";
     public static final String DEATH_RATTLE = "deathRattle";
@@ -38,5 +38,6 @@ public abstract class MinionBehavior extends GenericScript {
     @Override
     public void onTurnEnd() {
         ((MinionObject) getOwnerObject()).setSleep(false);
+        System.out.println("MinionBehavior.onTurnEnd");
     }
 }
