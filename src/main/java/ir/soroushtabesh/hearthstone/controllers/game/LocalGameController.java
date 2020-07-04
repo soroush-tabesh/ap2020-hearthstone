@@ -149,6 +149,9 @@ public class LocalGameController extends GameController {
     protected Message playCard(CardObject cardObject, int groundIndex, GameObject optionalTarget, int playerId, int token) {
         if (!checkPlayerValidityAndTurn(playerId, token) || !isStarted())
             return Message.ERROR;
+        if (cardObject instanceof HeroPowerObject)
+            return useHeroPower(getModelPool().getPlayerDataById(cardObject.getPlayerId()).getHero()
+                    , optionalTarget, playerId, token);
         //check validity of parameters
         if (cardObject.getPlayerId() != playerId)
             return Message.ERROR;
@@ -299,6 +302,8 @@ public class LocalGameController extends GameController {
         if (!checkPlayerValidityAndTurn(playerId, token) || !isStarted())
             return Message.ERROR;
         HeroPowerObject cardObject = source.getHeroPower();
+        ModelPool.PlayerData playerData = getModelPool().getPlayerDataById(playerId);
+        playerData.setMana(playerData.getMana() - cardObject.getCardModel().getMana());
         if (cardObject.getCardModel().getActionType() == Card.ActionType.GLOBAL) {
             getScriptEngine().broadcastEventOnObject(cardObject, SpellBehavior.SPELL_EFFECT);
             logEvent(new GameAction.HeroPower(cardObject));
@@ -307,7 +312,7 @@ public class LocalGameController extends GameController {
             logEvent(new GameAction.TargetedAttack(cardObject, target));
         }
         getScriptEngine().broadcastEventOnObject(cardObject, SpellBehavior.SPELL_DONE, target);
-        return null;
+        return Message.SUCCESS;
     }
 
     private Message forceUseWeapon(HeroObject source, GameObject target, int playerId, int token) {
@@ -333,6 +338,8 @@ public class LocalGameController extends GameController {
     }
 
     private void singleDirectionWeapon(HeroObject source, GameObject target, int playerId, int token) {
+        if (source.getCurrentWeapon() == null)
+            return;
         if (target instanceof MinionObject) {
             performDamageOnMinion((MinionObject) target, source.getCurrentWeapon().getAttackPower(), playerId, token);
             getScriptEngine().broadcastEventOnObject(source, MinionBehavior.ATTACK_EFFECT, target);

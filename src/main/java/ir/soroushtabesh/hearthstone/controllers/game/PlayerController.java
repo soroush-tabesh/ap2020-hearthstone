@@ -40,10 +40,6 @@ public class PlayerController {
         return gameController.playMinion(source, target, id, token);
     }
 
-    public GameController.Message summonMinion(MinionObject source) {
-        return gameController.summonMinion(source, id, token);
-    }
-
     public GameController.Message useWeapon(GameObject target) {
         return gameController.useWeapon(
                 getGameController().getModelPool().getPlayerDataById(id).getHero(), target, id, token);

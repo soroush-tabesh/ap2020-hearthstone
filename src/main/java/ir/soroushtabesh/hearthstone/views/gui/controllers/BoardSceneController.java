@@ -498,15 +498,14 @@ public class BoardSceneController extends AbstractSceneController {
         handCardBox1.setOnDragOver(Event::consume);
 
         groundBox0.setOnDragOver(event -> {
-            event.acceptTransferModes(TransferMode.COPY);
-            if (event.getAcceptedTransferMode() == TransferMode.COPY)
+            event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+            if (event.getAcceptedTransferMode() == TransferMode.COPY || event.getAcceptedTransferMode() == TransferMode.MOVE)
                 event.consume();
         });
         applyDragDropEffect(groundBox0);
         groundBox0.setOnDragDropped(event -> {
-            if (event.getAcceptedTransferMode() != TransferMode.COPY)
+            if (event.getAcceptedTransferMode() != TransferMode.COPY && event.getAcceptedTransferMode() != TransferMode.MOVE)
                 return;
-            System.out.println("BoardSceneController.initBoardDragDetection0");
             CardObject cardObject = (CardObject) gameController.getModelPool()
                     .getGameObjectById(Integer.parseInt(event.getDragboard().getString()));
             int index = getGroundPosition(groundBox0, new Point2D(event.getSceneX(), event.getSceneY()));
@@ -522,15 +521,14 @@ public class BoardSceneController extends AbstractSceneController {
 
 
         groundBox1.setOnDragOver(event -> {
-            event.acceptTransferModes(TransferMode.COPY);
-            if (event.getAcceptedTransferMode() == TransferMode.COPY)
+            event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+            if (event.getAcceptedTransferMode() == TransferMode.COPY || event.getAcceptedTransferMode() == TransferMode.MOVE)
                 event.consume();
         });
         applyDragDropEffect(groundBox1);
         groundBox1.setOnDragDropped(event -> {
-            if (event.getAcceptedTransferMode() != TransferMode.COPY)
+            if (event.getAcceptedTransferMode() != TransferMode.COPY && event.getAcceptedTransferMode() != TransferMode.MOVE)
                 return;
-            System.out.println("BoardSceneController.initBoardDragDetection0");
             CardObject cardObject = (CardObject) gameController.getModelPool()
                     .getGameObjectById(Integer.parseInt(event.getDragboard().getString()));
             int index = getGroundPosition(groundBox1, new Point2D(event.getSceneX(), event.getSceneY()));
@@ -630,10 +628,6 @@ public class BoardSceneController extends AbstractSceneController {
     }
 
     public void endTurnButton(ActionEvent event) {
-        startAskForTarget((gameObject -> {
-            System.out.println(gameObject);
-            return 0;
-        }));
         if (gameController.getTurn() == 0)
             pc0.endTurn();
         else
