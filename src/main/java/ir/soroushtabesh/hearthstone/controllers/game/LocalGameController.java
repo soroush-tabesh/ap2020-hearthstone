@@ -229,7 +229,8 @@ public class LocalGameController extends GameController {
             singleDirectionMinionAttack((MinionObject) target, source, playerId, token);
             logEvent(new GameAction.MinionAttack(source, (MinionObject) target));
         } else if (target instanceof HeroObject) {
-            forceUseWeapon(((HeroObject) target), source, playerId, token);
+//            forceUseWeapon(((HeroObject) target), source, playerId, token);
+            singleDirectionMinionAttack(source, target, playerId, token);
             logEvent(new GameAction.MinionAttack(source, (HeroObject) target));
         } else {
             return Message.ERROR;
@@ -344,7 +345,7 @@ public class LocalGameController extends GameController {
             return;
         if (target instanceof MinionObject) {
             performDamageOnMinion((MinionObject) target, source.getCurrentWeapon().getAttackPower(), playerId, token);
-            getScriptEngine().broadcastEventOnObject(source, MinionBehavior.ATTACK_EFFECT, target);
+            getScriptEngine().broadcastEventOnObject(source, HeroBehavior.ATTACK_EFFECT, target);
         } else if (target instanceof HeroObject) {
             performDamageOnHero((HeroObject) target, source.getCurrentWeapon().getAttackPower(), playerId, token);
             getScriptEngine().broadcastEventOnObject(source, HeroBehavior.ATTACK_EFFECT, target);
@@ -357,7 +358,7 @@ public class LocalGameController extends GameController {
             getScriptEngine().broadcastEventOnObject(source, MinionBehavior.ATTACK_EFFECT, target);
         } else if (target instanceof HeroObject) {
             performDamageOnHero((HeroObject) target, source.getAttackPower(), playerId, token);
-            getScriptEngine().broadcastEventOnObject(source, HeroBehavior.ATTACK_EFFECT, target);
+            getScriptEngine().broadcastEventOnObject(source, MinionBehavior.ATTACK_EFFECT, target);
         }
     }
 
