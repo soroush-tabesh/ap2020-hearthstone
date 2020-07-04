@@ -245,7 +245,7 @@
     /*-fx-background-image: url("../image/board.jpg");*/
 }
 
-#chert {
+#bgImage {
     -fx-image: url("../image/board.jpg");
 }
 

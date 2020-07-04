@@ -3,6 +3,7 @@ package ir.soroushtabesh.hearthstone.views.gui.controllers;
 import animatefx.animation.AnimateFXInterpolator;
 import animatefx.animation.FadeOut;
 import animatefx.animation.Hinge;
+import ir.soroushtabesh.hearthstone.controllers.AudioManager;
 import ir.soroushtabesh.hearthstone.controllers.game.GameAction;
 import ir.soroushtabesh.hearthstone.controllers.game.GameController;
 import ir.soroushtabesh.hearthstone.controllers.game.LocalGameController;
@@ -15,6 +16,7 @@ import ir.soroushtabesh.hearthstone.models.InfoPassive;
 import ir.soroushtabesh.hearthstone.util.AnimationUtil;
 import ir.soroushtabesh.hearthstone.util.DeckReader;
 import ir.soroushtabesh.hearthstone.util.FXUtil;
+import ir.soroushtabesh.hearthstone.util.TimerUnit;
 import ir.soroushtabesh.hearthstone.views.gui.controls.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -48,8 +50,9 @@ import java.util.*;
 import java.util.function.Function;
 
 public class BoardSceneController extends AbstractSceneController {
+    private final TimerUnit timerUnit = new TimerUnit();
     @FXML
-    private ImageView chert;
+    private Label timerLabel;
     @FXML
     private Region globalDragReceiver;
     @FXML
@@ -100,6 +103,8 @@ public class BoardSceneController extends AbstractSceneController {
     private Function<GameObject, ?> targetFunction;
     private final Map<CardObject, CardView> cardCache = new HashMap<>();
     private PlayMode playMode = PlayMode.NORMAL;
+    @FXML
+    private ImageView bgImage;
 
     @Override
     public void onStart(Object message) {
@@ -229,7 +234,27 @@ public class BoardSceneController extends AbstractSceneController {
         bindMana();
         bindBurnedCard();
         bindDimPane();
+        bindTimer();
         initBoardDragDetection();
+    }
+
+    private void bindTimer() {
+        gameController.turnProperty().addListener((observable, oldValue, newValue) -> {
+            timerUnit.startTimer(60, 15);
+            timerLabel.setTextFill(Color.GAINSBORO);
+        });
+        timerLabel.textProperty().bind(Bindings
+                .createStringBinding(() ->
+                                String.format("%d\"", timerUnit.getRemTime())
+                        , timerUnit.remTimeProperty()));
+        timerUnit.setOnTimerEnd(() -> {
+            timerLabel.setTextFill(Color.GAINSBORO);
+            endTurnButton(null);
+        });
+        timerUnit.setOnTimerPreEnd(() -> {
+            AudioManager.getInstance().playAlarm();
+            timerLabel.setTextFill(Color.ORANGERED);
+        });
     }
 
     private void bindDimPane() {
@@ -660,12 +685,17 @@ public class BoardSceneController extends AbstractSceneController {
         targetFunction = function;
         ColorAdjust desaturate = new ColorAdjust();
         desaturate.setSaturation(-0.8);
-        chert.setEffect(desaturate);
+        bgImage.setEffect(desaturate);
+    }
+
+    private void interruptAskForTarget() {
+        askTargetMode = false;
+        bgImage.setEffect(null);
     }
 
     private void endAskForTarget(GameObject gameObject) {
         askTargetMode = false;
-        chert.setEffect(null);
+        bgImage.setEffect(null);
         System.out.println(targetFunction.apply(gameObject));
     }
 
@@ -706,6 +736,7 @@ public class BoardSceneController extends AbstractSceneController {
     }
 
     public void endTurnButton(ActionEvent event) {
+        interruptAskForTarget();
         if (gameController.getTurn() == 0)
             pc0.endTurn();
         else
