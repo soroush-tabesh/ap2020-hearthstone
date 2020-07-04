@@ -9,6 +9,7 @@ import ir.soroushtabesh.hearthstone.models.Card;
 import ir.soroushtabesh.hearthstone.models.Deck;
 import ir.soroushtabesh.hearthstone.models.Hero;
 import ir.soroushtabesh.hearthstone.models.InfoPassive;
+import ir.soroushtabesh.hearthstone.util.Logger;
 
 import java.security.SecureRandom;
 import java.util.List;
@@ -49,7 +50,7 @@ public class LocalGameController extends GameController {
 
     @Override
     protected Message changeCard(int cardNumberInList, int playerId, int token) {
-        if (!checkPlayerValidityAndTurn(playerId, token) || !isGameReady() || isStarted())
+        if (!checkPlayerValidity(playerId, token) || !isGameReady() || isStarted())
             return Message.ERROR;
         ModelPool.PlayerData playerData = getModelPool().getPlayerDataById(playerId);
         if (playerData.getChangeCardFlag().size() <= cardNumberInList || cardNumberInList < 0)
@@ -364,6 +365,7 @@ public class LocalGameController extends GameController {
 
     @Override
     protected void logEvent(GameAction gameAction) {
+        Logger.log("game board", gameAction.getMessage());
         getModelPool().getSceneData().getLog().add(gameAction);
     }
 }

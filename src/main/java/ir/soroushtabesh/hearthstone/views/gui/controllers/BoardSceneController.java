@@ -42,7 +42,6 @@ import java.util.*;
 import java.util.function.Function;
 
 public class BoardSceneController extends AbstractSceneController {
-    private final Map<CardObject, CardView> cardCache = new HashMap<>();
     @FXML
     private ImageView chert;
     @FXML
@@ -87,11 +86,13 @@ public class BoardSceneController extends AbstractSceneController {
     private StackPane heroPowerStand1;
     @FXML
     private VBox logBox;
+
     private GameController gameController;
     private PlayerController pc0, pc1;
     private ModelPool.PlayerData playerData0, playerData1;
     private boolean askTargetMode = false;
     private Function<GameObject, ?> targetFunction;
+    private final Map<CardObject, CardView> cardCache = new HashMap<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -517,6 +518,7 @@ public class BoardSceneController extends AbstractSceneController {
                 );
             }
             event.setDropCompleted(true);
+            event.consume();
         });
 
 
@@ -540,6 +542,7 @@ public class BoardSceneController extends AbstractSceneController {
                 );
             }
             event.setDropCompleted(true);
+            event.consume();
         });
 
         globalDragReceiver.setOnDragOver(event -> {
@@ -560,6 +563,26 @@ public class BoardSceneController extends AbstractSceneController {
                 );
             }
             event.setDropCompleted(true);
+            event.consume();
+        });
+
+        changeStand.setOnDragOver(event -> {
+            event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+            if (event.getAcceptedTransferMode() == TransferMode.COPY || event.getAcceptedTransferMode() == TransferMode.MOVE)
+                event.consume();
+        });
+        applyDragDropEffect(changeStand);
+        changeStand.setOnDragDropped(event -> {
+            if (event.getAcceptedTransferMode() != TransferMode.COPY && event.getAcceptedTransferMode() != TransferMode.MOVE)
+                return;
+            CardObject cardObject = (CardObject) gameController.getModelPool()
+                    .getGameObjectById(Integer.parseInt(event.getDragboard().getString()));
+            GameController.Message message = (cardObject.getPlayerId() == 0 ? pc0 : pc1)
+                    .changeCard((cardObject.getPlayerId() == 0 ? playerData0 : playerData1)
+                            .getHandCard().indexOf(cardObject));
+            System.out.println(message);
+            event.setDropCompleted(true);
+            event.consume();
         });
     }
 
