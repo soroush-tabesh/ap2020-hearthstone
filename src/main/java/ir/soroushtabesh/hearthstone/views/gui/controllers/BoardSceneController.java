@@ -142,6 +142,8 @@ public class BoardSceneController extends AbstractSceneController {
     private boolean initGameControllerDeckReader() {
         FileChooser fileChooser = new FileChooser();
         File file = fileChooser.showOpenDialog(getPane().getScene().getWindow());
+        if (file == null)
+            return false;
         DeckReaderModel deckReaderModel = DeckReader.read(file);
         if (deckReaderModel == null)
             return false;
