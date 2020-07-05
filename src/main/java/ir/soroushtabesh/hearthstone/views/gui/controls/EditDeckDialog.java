@@ -2,8 +2,8 @@ package ir.soroushtabesh.hearthstone.views.gui.controls;
 
 import ir.soroushtabesh.hearthstone.models.Deck;
 import ir.soroushtabesh.hearthstone.models.Hero;
-import ir.soroushtabesh.hearthstone.util.FXUtil;
 import ir.soroushtabesh.hearthstone.util.Logger;
+import ir.soroushtabesh.hearthstone.util.gui.FXUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

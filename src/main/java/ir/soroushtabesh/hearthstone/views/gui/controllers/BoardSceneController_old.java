@@ -8,7 +8,7 @@ import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
 import ir.soroushtabesh.hearthstone.controllers.game.GameController_old;
 import ir.soroushtabesh.hearthstone.models.Card;
 import ir.soroushtabesh.hearthstone.models.Player;
-import ir.soroushtabesh.hearthstone.util.FXUtil;
+import ir.soroushtabesh.hearthstone.util.gui.FXUtil;
 import ir.soroushtabesh.hearthstone.views.gui.controls.CardView;
 import ir.soroushtabesh.hearthstone.views.gui.controls.HeroView;
 import ir.soroushtabesh.hearthstone.views.gui.controls.SelectHeroDeckDialog;

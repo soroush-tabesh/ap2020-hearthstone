@@ -1,40 +1,47 @@
 package ir.soroushtabesh.hearthstone.util;
 
+import ir.soroushtabesh.hearthstone.util.gui.FXUtil;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class TimerUnit {
-    private IntegerProperty remTime = new SimpleIntegerProperty();
+    private final IntegerProperty remTime = new SimpleIntegerProperty();
     private Runnable onTimerEnd;
     private Runnable onTimerPreEnd;
     private Thread thread;
-    private int counter;
+    private final AtomicInteger counter = new AtomicInteger(0);
 
     public void startTimer(int value, int preEnd) {
         if (thread != null)
             thread.interrupt();
-        counter = value;
+        counter.set(value);
         thread = new Thread(() -> {
             boolean flag = true;
             while (flag) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    break;
-                }
-                FXUtil.runLater(() -> remTime.set(--counter), 0);
-                if (counter == preEnd && onTimerPreEnd != null)
+                FXUtil.runLater(() -> remTime.set(counter.decrementAndGet()), 0);
+                if (counter.get() == preEnd && onTimerPreEnd != null)
                     FXUtil.runLater(onTimerPreEnd, 0);
-                if (counter == 0) {
+                if (counter.get() == 0) {
                     if (onTimerEnd != null)
                         FXUtil.runLater(onTimerEnd, 0);
                     flag = false;
+                    break;
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    break;
                 }
             }
         });
         thread.start();
+    }
+
+    public void stop() {
+        thread.interrupt();
     }
 
     public int getRemTime() {

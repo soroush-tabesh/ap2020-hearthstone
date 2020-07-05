@@ -1,6 +1,5 @@
 package ir.soroushtabesh.hearthstone.views.gui.controllers;
 
-import animatefx.animation.AnimateFXInterpolator;
 import animatefx.animation.FadeOut;
 import animatefx.animation.Hinge;
 import ir.soroushtabesh.hearthstone.controllers.AudioManager;
@@ -13,15 +12,14 @@ import ir.soroushtabesh.hearthstone.models.Card;
 import ir.soroushtabesh.hearthstone.models.DeckReaderModel;
 import ir.soroushtabesh.hearthstone.models.Hero;
 import ir.soroushtabesh.hearthstone.models.InfoPassive;
-import ir.soroushtabesh.hearthstone.util.AnimationUtil;
 import ir.soroushtabesh.hearthstone.util.DeckReader;
-import ir.soroushtabesh.hearthstone.util.FXUtil;
 import ir.soroushtabesh.hearthstone.util.TimerUnit;
+import ir.soroushtabesh.hearthstone.util.gui.AnimationPool;
+import ir.soroushtabesh.hearthstone.util.gui.AnimationUtil;
+import ir.soroushtabesh.hearthstone.util.gui.FXUtil;
 import ir.soroushtabesh.hearthstone.views.gui.controls.*;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -37,12 +35,12 @@ import javafx.scene.control.Label;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
-import javafx.util.Duration;
 
 import java.io.File;
 import java.net.URL;
@@ -50,7 +48,6 @@ import java.util.*;
 import java.util.function.Function;
 
 public class BoardSceneController extends AbstractSceneController {
-    private final TimerUnit timerUnit = new TimerUnit();
     @FXML
     private Label timerLabel;
     @FXML
@@ -95,6 +92,7 @@ public class BoardSceneController extends AbstractSceneController {
     private StackPane heroPowerStand1;
     @FXML
     private VBox logBox;
+    private final Map<HeroObject, HeroView> heroCache = new HashMap<>();
 
     private GameController gameController;
     private PlayerController pc0, pc1;
@@ -102,9 +100,11 @@ public class BoardSceneController extends AbstractSceneController {
     private boolean askTargetMode = false;
     private Function<GameObject, ?> targetFunction;
     private final Map<CardObject, CardView> cardCache = new HashMap<>();
+    private final AnimationPool animationPool = new AnimationPool();
     private PlayMode playMode = PlayMode.NORMAL;
+    private final TimerUnit timerUnit = new TimerUnit();
     @FXML
-    private ImageView bgImage;
+    private ImageView boardBgImage;
 
     @Override
     public void onStart(Object message) {
@@ -235,7 +235,37 @@ public class BoardSceneController extends AbstractSceneController {
         bindBurnedCard();
         bindDimPane();
         bindTimer();
+        bindCommonAnimation();
         initBoardDragDetection();
+    }
+
+    private void showSpell(CardObject cardObject) {
+        CardView cardView = getCardView(cardObject);
+        hoverCardStand.getChildren().clear();
+        hoverCardStand.getChildren().add(cardView);
+        cardView.setOpacity(0);
+        AnimationUtil.getSpellAppearance(cardView).play();
+    }
+
+    private void bindCommonAnimation() {
+        gameController.getModelPool().getSceneData().getLog().addListener((ListChangeListener<GameAction>) c -> {
+            c.next();
+            c.getAddedSubList().forEach(gameAction -> {
+                if (gameAction instanceof GameAction.MinionAttack) {
+                    GameAction.MinionAttack minionAttack = (GameAction.MinionAttack) gameAction;
+                    AnimationUtil.getAttackAnimation(getView(minionAttack.getSource())).play();
+                    AnimationUtil.getAttackAnimation(getView(minionAttack.getTarget())).play();
+                } else if (gameAction instanceof GameAction.TargetedAttack) {
+                    GameAction.TargetedAttack targetedAttack = (GameAction.TargetedAttack) gameAction;
+                    AnimationUtil.getAttackAnimation(getView(targetedAttack.getTarget())).play();
+                    if (targetedAttack.getSource() instanceof WeaponObject) {
+                        AnimationUtil.getAttackAnimation(getView(targetedAttack.getSource())).play();
+                    }
+                } else if (gameAction instanceof GameAction.SpellGlobal) {
+                    showSpell(((GameAction.SpellGlobal) gameAction).getSource());
+                }
+            });
+        });
     }
 
     private void bindTimer() {
@@ -313,14 +343,7 @@ public class BoardSceneController extends AbstractSceneController {
 
     private CardView getCardViewAnimated(CardObject cardObject) {
         CardView cardView = getCardView(cardObject);
-        new Timeline(
-                new KeyFrame(Duration.millis(0),
-                        new KeyValue(cardView.scaleXProperty(), 0, AnimateFXInterpolator.EASE)
-                ),
-                new KeyFrame(Duration.millis(500),
-                        new KeyValue(cardView.scaleXProperty(), 1, AnimateFXInterpolator.EASE)
-                )
-        ).play();
+        AnimationUtil.getMinionAppearance(cardView).play();
         return cardView;
     }
 
@@ -332,16 +355,17 @@ public class BoardSceneController extends AbstractSceneController {
     }
 
     private void bindWeapons() {
-        playerData0.getHero().currentWeaponProperty().addListener((observable, oldValue, newValue) -> {
-            weaponStand0.getChildren().clear();
-            if (newValue != null)
-                weaponStand0.getChildren().add(getCardView(newValue));
-        });
-        playerData1.getHero().currentWeaponProperty().addListener((observable, oldValue, newValue) -> {
-            weaponStand1.getChildren().clear();
-            if (newValue != null)
-                weaponStand1.getChildren().add(getCardView(newValue));
-        });
+        ChangeListener<WeaponObject> changeListener = (observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                CardView cardView = getCardView(newValue);
+                (newValue.getPlayerId() == 0 ? weaponStand0 : weaponStand1).getChildren().add(cardView);
+                AnimationUtil.getWeaponAppearance(cardView).play();
+            } else {
+                (oldValue.getPlayerId() == 0 ? weaponStand0 : weaponStand1).getChildren().clear();
+            }
+        };
+        playerData0.getHero().currentWeaponProperty().addListener(changeListener);
+        playerData1.getHero().currentWeaponProperty().addListener(changeListener);
     }
 
     private void bindDeckRemLabels() {
@@ -357,9 +381,9 @@ public class BoardSceneController extends AbstractSceneController {
     }
 
     private void bindHeroStands() {
-        HeroView heroView0 = HeroView.build(playerData0.getHero());
+        HeroView heroView0 = getHeroView(playerData0.getHero());
         heroStand0.getChildren().add(heroView0);
-        HeroView heroView1 = HeroView.build(playerData1.getHero());
+        HeroView heroView1 = getHeroView(playerData1.getHero());
         heroStand1.getChildren().add(heroView1);
 
         heroView0.setOnMouseClicked(event -> {
@@ -419,6 +443,25 @@ public class BoardSceneController extends AbstractSceneController {
                 event.consume();
             }
         });
+    }
+
+    private Node getView(GameObject gameObject) {
+        if (gameObject instanceof CardObject)
+            return getCardView((CardObject) gameObject);
+        else if (gameObject instanceof HeroObject)
+            return getHeroView(((HeroObject) gameObject));
+        return null;
+    }
+
+    private HeroView getHeroView(HeroObject heroObject) {
+        if (heroObject == null)
+            return null;
+        HeroView heroView = heroCache.get(heroObject);
+        if (heroView == null) {
+            heroView = HeroView.build(heroObject);
+            heroCache.put(heroObject, heroView);
+        }
+        return heroView;
     }
 
     private CardView getCardView(CardObject cardObject) {
@@ -685,31 +728,32 @@ public class BoardSceneController extends AbstractSceneController {
         targetFunction = function;
         ColorAdjust desaturate = new ColorAdjust();
         desaturate.setSaturation(-0.8);
-        bgImage.setEffect(desaturate);
+        boardBgImage.setEffect(desaturate);
     }
 
     private void interruptAskForTarget() {
         askTargetMode = false;
-        bgImage.setEffect(null);
+        boardBgImage.setEffect(null);
     }
 
     private void endAskForTarget(GameObject gameObject) {
         askTargetMode = false;
-        bgImage.setEffect(null);
+        boardBgImage.setEffect(null);
         System.out.println(targetFunction.apply(gameObject));
     }
 
     private void applyDragDropEffect(Node node) {
-        node.setOnDragEntered(event -> applyDragEnterEffect((Node) event.getSource()));
-        node.setOnDragExited(event -> applyDragExitEffect((Node) event.getSource()));
+        node.setOnDragEntered(event -> applyDragEnterEffect((Node) event.getSource(), event));
+        node.setOnDragExited(event -> applyDragExitEffect((Node) event.getSource(), event));
     }
 
-    private void applyDragEnterEffect(Node node) {
-        //todo graphics
+    private void applyDragEnterEffect(Node node, DragEvent event) {
+        if (event.isAccepted())
+            animationPool.startAnimation(node, AnimationUtil.getDragHover(node));
     }
 
-    private void applyDragExitEffect(Node node) {
-        //todo graphics
+    private void applyDragExitEffect(Node node, DragEvent event) {
+        animationPool.stopAnimation(node);
     }
 
     @Override
@@ -725,6 +769,8 @@ public class BoardSceneController extends AbstractSceneController {
 
     private void unbindUI() {
         //todo
+        animationPool.clearAll();
+        timerUnit.stop();
     }
 
     @Override

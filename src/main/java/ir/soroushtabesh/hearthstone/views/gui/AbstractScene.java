@@ -1,7 +1,7 @@
 package ir.soroushtabesh.hearthstone.views.gui;
 
-import ir.soroushtabesh.hearthstone.util.AnimationUtil;
-import ir.soroushtabesh.hearthstone.util.FXUtil;
+import ir.soroushtabesh.hearthstone.util.gui.AnimationUtil;
+import ir.soroushtabesh.hearthstone.util.gui.FXUtil;
 import ir.soroushtabesh.hearthstone.views.gui.controllers.AbstractSceneController;
 import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;

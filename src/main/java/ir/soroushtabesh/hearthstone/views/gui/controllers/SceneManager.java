@@ -1,7 +1,7 @@
 package ir.soroushtabesh.hearthstone.views.gui.controllers;
 
-import ir.soroushtabesh.hearthstone.util.FXUtil;
 import ir.soroushtabesh.hearthstone.util.Logger;
+import ir.soroushtabesh.hearthstone.util.gui.FXUtil;
 import ir.soroushtabesh.hearthstone.views.gui.AbstractScene;
 import ir.soroushtabesh.hearthstone.views.gui.GameWindow;
 import javafx.scene.layout.StackPane;

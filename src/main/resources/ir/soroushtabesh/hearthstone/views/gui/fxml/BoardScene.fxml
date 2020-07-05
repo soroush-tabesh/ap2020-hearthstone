@@ -8,7 +8,7 @@
             minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0"
             stylesheets="@../stylesheet/styles.css" xmlns="http://javafx.com/javafx/11.0.1"
             fx:controller="ir.soroushtabesh.hearthstone.views.gui.controllers.BoardSceneController">
-    <ImageView id="bgImage" fx:id="bgImage" fitHeight="-Infinity" fitWidth="-Infinity"/>
+    <ImageView id="boardBgImage" fx:id="boardBgImage" fitHeight="-Infinity" fitWidth="-Infinity"/>
     <Button id="endTurn" layoutX="1002.0" layoutY="308.0" mnemonicParsing="false" onAction="#endTurnButton"
             prefHeight="78.0" prefWidth="131.0"/>
     <Button fx:id="backButton" layoutX="1050.0" layoutY="761.0" mnemonicParsing="false" onAction="#backPressed"
@@ -42,7 +42,7 @@
                scaleY="0.5"/>
     <StackPane fx:id="heroPowerStand1" layoutX="382.0" layoutY="17.0" prefHeight="230.0" prefWidth="190.0" scaleX="0.5"
                scaleY="0.5"/>
-    <StackPane fx:id="hoverCardStand" disable="true" layoutX="500.0" layoutY="282.0" prefHeight="150.0"
+    <StackPane fx:id="hoverCardStand" disable="true" layoutX="500.0" layoutY="252.0" prefHeight="150.0"
                prefWidth="200.0"/>
     <AnchorPane fx:id="dimPane" visible="false" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
         <children>

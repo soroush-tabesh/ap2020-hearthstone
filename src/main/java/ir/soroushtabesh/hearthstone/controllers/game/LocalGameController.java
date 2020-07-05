@@ -338,6 +338,7 @@ public class LocalGameController extends GameController {
         if (weapon.getDurability() <= 0) {
             source.setCurrentWeapon(null);
         }
+        logEvent(new GameAction.TargetedAttack(weapon, target));
         return Message.SUCCESS;
     }
 

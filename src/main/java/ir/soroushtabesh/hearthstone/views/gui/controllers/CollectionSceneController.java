@@ -4,7 +4,7 @@ import ir.soroushtabesh.hearthstone.controllers.CardManager;
 import ir.soroushtabesh.hearthstone.controllers.DeckManager;
 import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
 import ir.soroushtabesh.hearthstone.models.*;
-import ir.soroushtabesh.hearthstone.util.FXUtil;
+import ir.soroushtabesh.hearthstone.util.gui.FXUtil;
 import ir.soroushtabesh.hearthstone.views.gui.ShopScene;
 import ir.soroushtabesh.hearthstone.views.gui.controls.CardTextView;
 import ir.soroushtabesh.hearthstone.views.gui.controls.CardView;

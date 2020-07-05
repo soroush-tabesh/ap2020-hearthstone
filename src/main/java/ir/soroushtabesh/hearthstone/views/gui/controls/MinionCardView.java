@@ -2,9 +2,11 @@ package ir.soroushtabesh.hearthstone.views.gui.controls;
 
 import animatefx.animation.AnimationFX;
 import animatefx.animation.FadeOut;
+import animatefx.animation.Pulse;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.CardObject;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.MinionObject;
 import ir.soroushtabesh.hearthstone.models.Card;
+import ir.soroushtabesh.hearthstone.util.gui.AnimationUtil;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -43,62 +45,76 @@ public class MinionCardView extends CardView {
     @Override
     protected void bindView() {
         super.bindView();
-        //todo animations
-        AnimationFX animationFX1 = new FadeOut(immuneEffect).setCycleCount(-1);
-        animationFX1.getTimeline().setAutoReverse(true);
-        animationFX1.play();
-        AnimationFX animationFX2 = new FadeOut(stealthEffect).setCycleCount(-1);
-        animationFX2.getTimeline().setAutoReverse(true);
-        animationFX2.play();
-        AnimationFX animationFX3 = new FadeOut(buffedEffect).setCycleCount(-1);
-        animationFX3.getTimeline().setAutoReverse(true);
-        animationFX3.play();
+        AnimationFX fadeOutAnim = new FadeOut(immuneEffect).setCycleCount(-1);
+        fadeOutAnim.getTimeline().setAutoReverse(true);
+        fadeOutAnim.play();
+
+        AnimationFX StealthAnim = new FadeOut(stealthEffect).setCycleCount(-1);
+        StealthAnim.getTimeline().setAutoReverse(true);
+        StealthAnim.play();
+
+        AnimationFX buffedAnim = new FadeOut(buffedEffect).setCycleCount(-1);
+        buffedAnim.getTimeline().setAutoReverse(true);
+        buffedAnim.play();
+        AnimationUtil.getPassiveBounce(sleepEffect).play();
+
+        AnimationFX superAttackAnim = new Pulse(getAttackLabel()).setCycleCount(-1);
+        superAttackAnim.setResetOnFinished(true);
+        superAttackAnim.getTimeline().setAutoReverse(true);
+        superAttackAnim.setCycleCount(-1);
+
+        AnimationFX superHpAnim = new Pulse(getHpLabel()).setCycleCount(-1);
+        superAttackAnim.setResetOnFinished(true);
+        superAttackAnim.getTimeline().setAutoReverse(true);
+        superAttackAnim.setCycleCount(-1);
+
         // bind other properties
-        ((MinionObject) getCardObject()).hpProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    getHpLabel().setText(newValue + "");
-                });
-        ((MinionObject) getCardObject()).attackPowerProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    getAttackLabel().setText(newValue + "");
-                });
-        ((MinionObject) getCardObject()).sleepProperty()
+        MinionObject minionObject = (MinionObject) getCardObject();
+
+        minionObject.hpProperty().addListener(AnimationUtil.numberChangeListener(getHpLabel()));
+        minionObject.attackPowerProperty().addListener(AnimationUtil.numberChangeListener(getAttackLabel()));
+
+        minionObject.sleepProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     sleepEffect.setVisible(newValue);
                 });
-        ((MinionObject) getCardObject()).superAttackPowerProperty()
+        minionObject.superAttackPowerProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (newValue) {
+                        superAttackAnim.play();
                         getAttackLabel().setStyle("-fx-text-fill: greenyellow");
                     } else {
+                        superAttackAnim.stop();
                         getAttackLabel().setStyle("-fx-text-fill: gainsboro");
                     }
                 });
-        ((MinionObject) getCardObject()).superHPProperty()
+        minionObject.superHPProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (newValue) {
+                        superHpAnim.play();
                         getHpLabel().setStyle("-fx-text-fill: greenyellow");
                     } else {
+                        superHpAnim.stop();
                         getHpLabel().setStyle("-fx-text-fill: gainsboro");
                     }
                 });
-        ((MinionObject) getCardObject()).tauntProperty()
+        minionObject.tauntProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     tauntEffect.setVisible(newValue);
                 });
-        ((MinionObject) getCardObject()).halo1Property()
+        minionObject.halo1Property()
                 .addListener((observable, oldValue, newValue) -> {
                     immuneEffect.setVisible(newValue);
                 });
-        ((MinionObject) getCardObject()).halo2Property()
+        minionObject.halo2Property()
                 .addListener((observable, oldValue, newValue) -> {
                     stealthEffect.setVisible(newValue);
                 });
-        ((MinionObject) getCardObject()).halo3Property()
+        minionObject.halo3Property()
                 .addListener((observable, oldValue, newValue) -> {
                     buffedEffect.setVisible(newValue);
                 });
-        ((MinionObject) getCardObject()).halo4Property()
+        minionObject.halo4Property()
                 .addListener((observable, oldValue, newValue) -> {
                 });
     }

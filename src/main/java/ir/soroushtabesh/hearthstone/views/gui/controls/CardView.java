@@ -7,7 +7,7 @@ import ir.soroushtabesh.hearthstone.models.Card;
 import ir.soroushtabesh.hearthstone.models.cards.Minion;
 import ir.soroushtabesh.hearthstone.models.cards.Spell;
 import ir.soroushtabesh.hearthstone.models.cards.Weapon;
-import ir.soroushtabesh.hearthstone.util.FXUtil;
+import ir.soroushtabesh.hearthstone.util.gui.FXUtil;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

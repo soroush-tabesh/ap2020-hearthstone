@@ -3,6 +3,7 @@ package ir.soroushtabesh.hearthstone.views.gui.controls;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.CardObject;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.WeaponObject;
 import ir.soroushtabesh.hearthstone.models.Card;
+import ir.soroushtabesh.hearthstone.util.gui.AnimationUtil;
 
 public class WeaponCardView extends CardView {
 
@@ -17,14 +18,11 @@ public class WeaponCardView extends CardView {
     @Override
     protected void bindView() {
         super.bindView();
-        ((WeaponObject) getCardObject()).attackPowerProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    getAttackLabel().setText(newValue + "");
-                });
-        ((WeaponObject) getCardObject()).durabilityProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    getHpLabel().setText(newValue + "");
-                });
+        WeaponObject weaponObject = (WeaponObject) getCardObject();
+        weaponObject.durabilityProperty()
+                .addListener(AnimationUtil.numberChangeListener(getAttackLabel()));
+        weaponObject.durabilityProperty()
+                .addListener(AnimationUtil.numberChangeListener(getHpLabel()));
     }
 
     @Override

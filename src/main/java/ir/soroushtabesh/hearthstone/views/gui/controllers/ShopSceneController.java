@@ -4,7 +4,7 @@ import ir.soroushtabesh.hearthstone.controllers.CardManager;
 import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
 import ir.soroushtabesh.hearthstone.models.Card;
 import ir.soroushtabesh.hearthstone.models.Player;
-import ir.soroushtabesh.hearthstone.util.FXUtil;
+import ir.soroushtabesh.hearthstone.util.gui.FXUtil;
 import ir.soroushtabesh.hearthstone.views.gui.CollectionScene;
 import ir.soroushtabesh.hearthstone.views.gui.controls.CardView;
 import javafx.beans.binding.Bindings;

@@ -3,9 +3,8 @@ package ir.soroushtabesh.hearthstone.views.gui.controls;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.HeroObject;
 import ir.soroushtabesh.hearthstone.models.BriefHero;
 import ir.soroushtabesh.hearthstone.models.Hero;
-import ir.soroushtabesh.hearthstone.util.AnimationUtil;
-import ir.soroushtabesh.hearthstone.util.FXUtil;
-import javafx.beans.binding.Bindings;
+import ir.soroushtabesh.hearthstone.util.gui.AnimationUtil;
+import ir.soroushtabesh.hearthstone.util.gui.FXUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -76,12 +75,8 @@ public class HeroView extends StackPane implements Initializable {
     }
 
     private void bindViews() {
-        hpLabel.textProperty().bind(
-                Bindings.createStringBinding(
-                        () -> heroObject.getHp() + "", heroObject.hpProperty()));
-        shieldLabel.textProperty().bind(
-                Bindings.createStringBinding(
-                        () -> heroObject.getShield() + "", heroObject.shieldProperty()));
+        heroObject.shieldProperty().addListener(AnimationUtil.numberChangeListener(shieldLabel));
+        heroObject.hpProperty().addListener(AnimationUtil.numberChangeListener(hpLabel));
         shieldLabel.visibleProperty().bind(heroObject.shieldProperty().greaterThan(0));
         heroShield.visibleProperty().bind(heroObject.shieldProperty().greaterThan(0));
     }

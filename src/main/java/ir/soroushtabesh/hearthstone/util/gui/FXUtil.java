@@ -1,4 +1,4 @@
-package ir.soroushtabesh.hearthstone.util;
+package ir.soroushtabesh.hearthstone.util.gui;
 
 import javafx.application.Platform;
 import javafx.beans.WeakListener;

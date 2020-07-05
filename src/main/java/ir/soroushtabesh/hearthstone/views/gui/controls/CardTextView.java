@@ -4,7 +4,7 @@ import ir.soroushtabesh.hearthstone.models.BriefCard;
 import ir.soroushtabesh.hearthstone.models.BriefDeck;
 import ir.soroushtabesh.hearthstone.models.Card;
 import ir.soroushtabesh.hearthstone.models.Deck;
-import ir.soroushtabesh.hearthstone.util.FXUtil;
+import ir.soroushtabesh.hearthstone.util.gui.FXUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

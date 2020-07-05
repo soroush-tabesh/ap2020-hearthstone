@@ -1,7 +1,7 @@
 package ir.soroushtabesh.hearthstone.views.gui;
 
-import ir.soroushtabesh.hearthstone.util.FXUtil;
 import ir.soroushtabesh.hearthstone.util.Messages;
+import ir.soroushtabesh.hearthstone.util.gui.FXUtil;
 
 public class LoginScene extends AbstractScene {
     public void showError() {
