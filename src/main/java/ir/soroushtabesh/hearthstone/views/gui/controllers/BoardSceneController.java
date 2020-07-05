@@ -92,15 +92,18 @@ public class BoardSceneController extends AbstractSceneController {
     private StackPane heroPowerStand1;
     @FXML
     private VBox logBox;
+
     private final DnDHelper dnDHelper;
     private final AnimationPool animationPool;
     private final Map<HeroObject, HeroView> heroCache = new HashMap<>();
+    private final Map<CardObject, CardView> cardCache = new HashMap<>();
+    private final TimerUnit timerUnit = new TimerUnit();
     private GameController gameController;
     private PlayerController pc0, pc1;
     private ModelPool.PlayerData playerData0, playerData1;
     private boolean askTargetMode = false;
     private Function<GameObject, ?> targetFunction;
-    private final Map<CardObject, CardView> cardCache = new HashMap<>();
+
     @FXML
     private ImageView boardBgImage;
 
@@ -108,9 +111,7 @@ public class BoardSceneController extends AbstractSceneController {
         animationPool = new AnimationPool();
         dnDHelper = new DnDHelper(animationPool);
     }
-
     private PlayMode playMode = PlayMode.NORMAL;
-    private final TimerUnit timerUnit = new TimerUnit();
 
     @Override
     public void onStart(Object message) {
@@ -243,6 +244,25 @@ public class BoardSceneController extends AbstractSceneController {
         bindTimer();
         bindCommonAnimation();
         initBoardDragDetection();
+    }
+
+    private void unbindUI() {
+        animationPool.clearAll();
+        timerUnit.stop();
+        cardCache.clear();
+        heroCache.clear();
+        gameController = null;
+        pc0 = null;
+        pc1 = null;
+        playerData0 = null;
+        playerData1 = null;
+        askTargetMode = false;
+        targetFunction = null;
+        deckRemLabel0.textProperty().unbind();
+        deckRemLabel1.textProperty().unbind();
+        readyButton0.disableProperty().unbind();
+        readyButton1.disableProperty().unbind();
+        timerLabel.textProperty().unbind();
     }
 
     private void showSpell(CardObject cardObject) {
@@ -609,12 +629,6 @@ public class BoardSceneController extends AbstractSceneController {
         gameController = null;
         pc0 = null;
         pc1 = null;
-    }
-
-    private void unbindUI() {
-        //todo
-        animationPool.clearAll();
-        timerUnit.stop();
     }
 
     @Override
