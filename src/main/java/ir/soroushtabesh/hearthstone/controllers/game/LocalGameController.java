@@ -53,6 +53,8 @@ public class LocalGameController extends GameController {
         if (!checkPlayerValidity(playerId, token) || !isGameReady() || isStarted())
             return Message.ERROR;
         ModelPool.PlayerData playerData = getModelPool().getPlayerDataById(playerId);
+        if (playerData.isReady())
+            return Message.ERROR;
         if (playerData.getChangeCardFlag().size() <= cardNumberInList || cardNumberInList < 0)
             return Message.ERROR;
         if (playerData.getChangeCardFlag().get(cardNumberInList)) {
