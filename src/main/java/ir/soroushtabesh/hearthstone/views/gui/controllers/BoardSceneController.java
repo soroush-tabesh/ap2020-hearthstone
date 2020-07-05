@@ -16,6 +16,7 @@ import ir.soroushtabesh.hearthstone.util.DeckReader;
 import ir.soroushtabesh.hearthstone.util.TimerUnit;
 import ir.soroushtabesh.hearthstone.util.gui.AnimationPool;
 import ir.soroushtabesh.hearthstone.util.gui.AnimationUtil;
+import ir.soroushtabesh.hearthstone.util.gui.DnDHelper;
 import ir.soroushtabesh.hearthstone.util.gui.FXUtil;
 import ir.soroushtabesh.hearthstone.views.gui.controls.*;
 import javafx.beans.binding.Bindings;
@@ -24,19 +25,15 @@ import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
-import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -44,7 +41,10 @@ import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.net.URL;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.function.Function;
 
 public class BoardSceneController extends AbstractSceneController {
@@ -90,10 +90,11 @@ public class BoardSceneController extends AbstractSceneController {
     private StackPane weaponStand1;
     @FXML
     private StackPane heroPowerStand1;
+    private final DnDHelper dnDHelper = new DnDHelper(animationPool);
     @FXML
     private VBox logBox;
-    private final Map<HeroObject, HeroView> heroCache = new HashMap<>();
 
+    private final Map<HeroObject, HeroView> heroCache = new HashMap<>();
     private GameController gameController;
     private PlayerController pc0, pc1;
     private ModelPool.PlayerData playerData0, playerData1;
@@ -101,10 +102,10 @@ public class BoardSceneController extends AbstractSceneController {
     private Function<GameObject, ?> targetFunction;
     private final Map<CardObject, CardView> cardCache = new HashMap<>();
     private final AnimationPool animationPool = new AnimationPool();
-    private PlayMode playMode = PlayMode.NORMAL;
-    private final TimerUnit timerUnit = new TimerUnit();
     @FXML
     private ImageView boardBgImage;
+    private PlayMode playMode = PlayMode.NORMAL;
+    private final TimerUnit timerUnit = new TimerUnit();
 
     @Override
     public void onStart(Object message) {
@@ -299,14 +300,13 @@ public class BoardSceneController extends AbstractSceneController {
 
     private void bindBurnedCard() {
         ListChangeListener<? super CardObject> changeListener = c -> {
-            while (c.next()) {
-                c.getAddedSubList().forEach(cardObject -> {
-                    hoverCardStand.getChildren().clear();
-                    CardView cardView = getCardView(cardObject);
-                    hoverCardStand.getChildren().add(cardView);
-                    new Hinge(cardView).play();
-                });
-            }
+            c.next();
+            c.getAddedSubList().forEach(cardObject -> {
+                hoverCardStand.getChildren().clear();
+                CardView cardView = getCardView(cardObject);
+                hoverCardStand.getChildren().add(cardView);
+                new Hinge(cardView).play();
+            });
         };
         playerData0.getBurnedCard().addListener(changeListener);
         playerData1.getBurnedCard().addListener(changeListener);
@@ -358,6 +358,7 @@ public class BoardSceneController extends AbstractSceneController {
         ChangeListener<WeaponObject> changeListener = (observable, oldValue, newValue) -> {
             if (newValue != null) {
                 CardView cardView = getCardView(newValue);
+                (newValue.getPlayerId() == 0 ? weaponStand0 : weaponStand1).getChildren().clear();
                 (newValue.getPlayerId() == 0 ? weaponStand0 : weaponStand1).getChildren().add(cardView);
                 AnimationUtil.getWeaponAppearance(cardView).play();
             } else {
@@ -391,58 +392,32 @@ public class BoardSceneController extends AbstractSceneController {
                 return;
             endAskForTarget(heroView0.getHeroObject());
         });
-        heroView0.setOnDragOver(event -> {
-            event.acceptTransferModes(TransferMode.LINK);
-            event.consume();
-        });
-        applyDragDropEffect(heroView0, TransferMode.LINK);
-        heroView0.setOnDragDropped(event -> {
-            if (event.getAcceptedTransferMode() != TransferMode.LINK)
-                return;
-            CardObject cardObject = (CardObject) gameController.getModelPool()
-                    .getGameObjectById(Integer.parseInt(event.getDragboard().getString()));
-            if (cardObject instanceof MinionObject) {
-                if (cardObject.getPlayerId() == 0)
-                    System.out.println(pc0.playMinion((MinionObject) cardObject, heroView0.getHeroObject()));
-                else
-                    System.out.println(pc1.playMinion((MinionObject) cardObject, heroView0.getHeroObject()));
-                event.setDropCompleted(true);
-                event.consume();
-            } else if (cardObject instanceof WeaponObject) {
-                System.out.println((cardObject.getPlayerId() == 0 ? pc0 : pc1).useWeapon(heroView0.getHeroObject()));
-                event.setDropCompleted(true);
-                event.consume();
-            }
-        });
+        dnDHelper.addDropDetector(heroView0, getHeroViewDnDHandler(heroView0), TransferMode.LINK);
 
         heroView1.setOnMouseClicked(event -> {
             if (!askTargetMode)
                 return;
             endAskForTarget(heroView1.getHeroObject());
         });
-        heroView1.setOnDragOver(event -> {
-            event.acceptTransferModes(TransferMode.LINK);
-            event.consume();
-        });
-        applyDragDropEffect(heroView1, TransferMode.LINK);
-        heroView1.setOnDragDropped(event -> {
-            if (event.getAcceptedTransferMode() != TransferMode.LINK)
-                return;
+        dnDHelper.addDropDetector(heroView1, getHeroViewDnDHandler(heroView1), TransferMode.LINK);
+    }
+
+    private Function<DragEvent, Boolean> getHeroViewDnDHandler(HeroView heroView) {
+        return event -> {
             CardObject cardObject = (CardObject) gameController.getModelPool()
                     .getGameObjectById(Integer.parseInt(event.getDragboard().getString()));
             if (cardObject instanceof MinionObject) {
                 if (cardObject.getPlayerId() == 0)
-                    System.out.println(pc0.playMinion((MinionObject) cardObject, heroView1.getHeroObject()));
+                    System.out.println(pc0.playMinion((MinionObject) cardObject, heroView.getHeroObject()));
                 else
-                    System.out.println(pc1.playMinion((MinionObject) cardObject, heroView1.getHeroObject()));
-                event.setDropCompleted(true);
-                event.consume();
+                    System.out.println(pc1.playMinion((MinionObject) cardObject, heroView.getHeroObject()));
+                return true;
             } else if (cardObject instanceof WeaponObject) {
-                System.out.println((cardObject.getPlayerId() == 0 ? pc0 : pc1).useWeapon(heroView1.getHeroObject()));
-                event.setDropCompleted(true);
-                event.consume();
+                System.out.println((cardObject.getPlayerId() == 0 ? pc0 : pc1).useWeapon(heroView.getHeroObject()));
+                return true;
             }
-        });
+            return false;
+        };
     }
 
     private Node getView(GameObject gameObject) {
@@ -470,13 +445,13 @@ public class BoardSceneController extends AbstractSceneController {
         CardView cardView = cardCache.get(cardObject);
         if (cardView == null) {
             cardView = CardView.build(cardObject);
-            addDragDetection(cardView);
+            addCardDragDetection(cardView);
             cardCache.put(cardObject, cardView);
         }
         return cardView;
     }
 
-    private void addDragDetection(CardView cardView) {
+    private void addCardDragDetection(CardView cardView) {
         if (cardView instanceof MinionCardView) {
             addDragDetectionMinion((MinionCardView) cardView);
         } else if (cardView instanceof SpellCardView) {
@@ -494,40 +469,19 @@ public class BoardSceneController extends AbstractSceneController {
                 return;
             endAskForTarget(cardView.getCardObject());
         });
-        cardView.setOnDragDetected(event -> {
-            if (askTargetMode)
-                return;
-            SnapshotParameters sp = new SnapshotParameters();
-            sp.setFill(Color.TRANSPARENT);
 
-            Dragboard dragboard;
+        dnDHelper.addCardDragDetector(cardView, cardView.getCardObject().getId(), () -> {
+            if (askTargetMode)
+                return null;
             CardObject.CardState cardState = cardView.getCardObject().getCardState();
             if (cardState == CardObject.CardState.HAND)
-                dragboard = cardView.startDragAndDrop(TransferMode.COPY);
+                return TransferMode.COPY;
             else if (cardState == CardObject.CardState.GROUND)
-                dragboard = cardView.startDragAndDrop(TransferMode.LINK);
-            else
-                return;
-
-            ClipboardContent content = new ClipboardContent();
-            content.putImage(cardView.snapshot(sp, null));
-            content.putString(cardView.getCardObject().getId() + "");
-
-            dragboard.setContent(content);
-            event.consume();
+                return TransferMode.LINK;
+            return null;
         });
 
-        cardView.setOnDragOver(event -> {
-            if (cardView.getCardObject().getCardState() == CardObject.CardState.GROUND) {
-                event.acceptTransferModes(TransferMode.LINK);
-                if (event.getAcceptedTransferMode() == TransferMode.LINK)
-                    event.consume();
-            }
-        });
-        applyDragDropEffect(cardView, TransferMode.LINK);
-        cardView.setOnDragDropped(event -> {
-            if (event.getAcceptedTransferMode() != TransferMode.LINK)
-                return;
+        dnDHelper.addDropDetector(cardView, event -> {
             CardObject cardObject = (CardObject) gameController.getModelPool()
                     .getGameObjectById(Integer.parseInt(event.getDragboard().getString()));
             if (cardObject instanceof MinionObject) {
@@ -539,70 +493,39 @@ public class BoardSceneController extends AbstractSceneController {
                 event.setDropCompleted(true);
                 event.consume();
             }
-        });
+            return true;
+        }, TransferMode.LINK);
+
     }
 
     private void addDragDetectionSpell(SpellCardView cardView) {
-        cardView.setOnDragDetected(event -> {
+        dnDHelper.addCardDragDetector(cardView, cardView.getCardObject().getId(), () -> {
             if (askTargetMode)
-                return;
-            SnapshotParameters sp = new SnapshotParameters();
-            sp.setFill(Color.TRANSPARENT);
-
-            Dragboard dragboard;
-            CardObject.CardState cardState = cardView.getCardObject().getCardState();
-            if (cardState == CardObject.CardState.HAND)
-                dragboard = cardView.startDragAndDrop(TransferMode.MOVE);
+                return null;
+            if (cardView.getCardObject().getCardState() == CardObject.CardState.HAND)
+                return TransferMode.MOVE;
             else
-                return;
-
-            ClipboardContent content = new ClipboardContent();
-            content.putImage(cardView.snapshot(sp, null));
-            content.putString(cardView.getCardObject().getId() + "");
-
-            dragboard.setContent(content);
-            event.consume();
+                return null;
         });
     }
 
     private void addDragDetectionHeroPower(HeroPowerCardView cardView) {
-        cardView.setOnDragDetected(event -> {
+        dnDHelper.addCardDragDetector(cardView, cardView.getCardObject().getId(), () -> {
             if (askTargetMode)
-                return;
-            SnapshotParameters sp = new SnapshotParameters();
-            sp.setFill(Color.TRANSPARENT);
-
-            Dragboard dragboard = cardView.startDragAndDrop(TransferMode.MOVE);
-
-            ClipboardContent content = new ClipboardContent();
-            content.putImage(cardView.snapshot(sp, null));
-            content.putString(cardView.getCardObject().getId() + "");
-
-            dragboard.setContent(content);
-            event.consume();
+                return null;
+            return TransferMode.MOVE;
         });
     }
 
     private void addDragDetectionWeapon(WeaponCardView cardView) {
-        cardView.setOnDragDetected(event -> {
+        dnDHelper.addCardDragDetector(cardView, cardView.getCardObject().getId(), () -> {
             if (askTargetMode)
-                return;
-            SnapshotParameters sp = new SnapshotParameters();
-            sp.setFill(Color.TRANSPARENT);
-
-            Dragboard dragboard;
+                return null;
             CardObject.CardState cardState = cardView.getCardObject().getCardState();
             if (cardState == CardObject.CardState.HAND)
-                dragboard = cardView.startDragAndDrop(TransferMode.MOVE);
+                return TransferMode.MOVE;
             else
-                dragboard = cardView.startDragAndDrop(TransferMode.LINK);
-
-            ClipboardContent content = new ClipboardContent();
-            content.putImage(cardView.snapshot(sp, null));
-            content.putString(cardView.getCardObject().getId() + "");
-
-            dragboard.setContent(content);
-            event.consume();
+                return TransferMode.LINK;
         });
     }
 
@@ -611,61 +534,10 @@ public class BoardSceneController extends AbstractSceneController {
         handCardBox0.setOnDragOver(Event::consume);
         handCardBox1.setOnDragOver(Event::consume);
 
-        groundBox0.setOnDragOver(event -> {
-            event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-            if (event.getAcceptedTransferMode() == TransferMode.COPY || event.getAcceptedTransferMode() == TransferMode.MOVE)
-                event.consume();
-        });
-        applyDragDropEffect(groundBox0, TransferMode.COPY_OR_MOVE);
-        groundBox0.setOnDragDropped(event -> {
-            if (event.getAcceptedTransferMode() != TransferMode.COPY && event.getAcceptedTransferMode() != TransferMode.MOVE)
-                return;
-            CardObject cardObject = (CardObject) gameController.getModelPool()
-                    .getGameObjectById(Integer.parseInt(event.getDragboard().getString()));
-            int index = getGroundPosition(groundBox0, new Point2D(event.getSceneX(), event.getSceneY()));
-            if (cardObject.getCardModel().getActionType() == Card.ActionType.GLOBAL) {
-                System.out.println((cardObject.getPlayerId() == 0 ? pc0 : pc1).playCard(cardObject, index, null));
-            } else {
-                startAskForTarget((target) ->
-                        (cardObject.getPlayerId() == 0 ? pc0 : pc1).playCard(cardObject, index, target)
-                );
-            }
-            event.setDropCompleted(true);
-            event.consume();
-        });
+        dnDHelper.addDropDetector(groundBox0, getGroundBoxDnDHandler(groundBox0), TransferMode.COPY_OR_MOVE);
+        dnDHelper.addDropDetector(groundBox1, getGroundBoxDnDHandler(groundBox1), TransferMode.COPY_OR_MOVE);
 
-
-        groundBox1.setOnDragOver(event -> {
-            event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-            if (event.getAcceptedTransferMode() == TransferMode.COPY || event.getAcceptedTransferMode() == TransferMode.MOVE)
-                event.consume();
-        });
-        applyDragDropEffect(groundBox1, TransferMode.COPY_OR_MOVE);
-        groundBox1.setOnDragDropped(event -> {
-            if (event.getAcceptedTransferMode() != TransferMode.COPY && event.getAcceptedTransferMode() != TransferMode.MOVE)
-                return;
-            CardObject cardObject = (CardObject) gameController.getModelPool()
-                    .getGameObjectById(Integer.parseInt(event.getDragboard().getString()));
-            int index = getGroundPosition(groundBox1, new Point2D(event.getSceneX(), event.getSceneY()));
-            if (cardObject.getCardModel().getActionType() == Card.ActionType.GLOBAL) {
-                System.out.println((cardObject.getPlayerId() == 0 ? pc0 : pc1).playCard(cardObject, index, null));
-            } else {
-                startAskForTarget((target) ->
-                        (cardObject.getPlayerId() == 0 ? pc0 : pc1).playCard(cardObject, index, target)
-                );
-            }
-            event.setDropCompleted(true);
-            event.consume();
-        });
-
-        globalDragReceiver.setOnDragOver(event -> {
-            event.acceptTransferModes(TransferMode.MOVE);
-            event.consume();
-        });
-        applyDragDropEffect(globalDragReceiver, TransferMode.MOVE);
-        globalDragReceiver.setOnDragDropped(event -> {
-            if (event.getAcceptedTransferMode() != TransferMode.MOVE)
-                return;
+        dnDHelper.addDropDetector(globalDragReceiver, event -> {
             CardObject cardObject = (CardObject) gameController.getModelPool()
                     .getGameObjectById(Integer.parseInt(event.getDragboard().getString()));
             if (cardObject.getCardModel().getActionType() == Card.ActionType.GLOBAL) {
@@ -675,42 +547,33 @@ public class BoardSceneController extends AbstractSceneController {
                         (cardObject.getPlayerId() == 0 ? pc0 : pc1).playCard(cardObject, 0, target)
                 );
             }
-            event.setDropCompleted(true);
-            event.consume();
-        });
+            return true;
+        }, TransferMode.MOVE);
 
-        changeStand.setOnDragOver(event -> {
-            event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-            if (event.getAcceptedTransferMode() == TransferMode.COPY || event.getAcceptedTransferMode() == TransferMode.MOVE)
-                event.consume();
-        });
-        applyDragDropEffect(changeStand, TransferMode.COPY_OR_MOVE);
-        changeStand.setOnDragDropped(event -> {
-            if (event.getAcceptedTransferMode() != TransferMode.COPY && event.getAcceptedTransferMode() != TransferMode.MOVE)
-                return;
+        dnDHelper.addDropDetector(changeStand, (event) -> {
             CardObject cardObject = (CardObject) gameController.getModelPool()
                     .getGameObjectById(Integer.parseInt(event.getDragboard().getString()));
             GameController.Message message = (cardObject.getPlayerId() == 0 ? pc0 : pc1)
                     .changeCard((cardObject.getPlayerId() == 0 ? playerData0 : playerData1)
                             .getHandCard().indexOf(cardObject));
             System.out.println(message);
-            event.setDropCompleted(true);
-            event.consume();
-        });
+            return true;
+        }, TransferMode.COPY_OR_MOVE);
     }
 
-    private int getGroundPosition(HBox groundBox, Point2D pos) {
-        if (groundBox.getChildren().isEmpty())
-            return 0;
-        List<Point2D> anchors = new ArrayList<>();
-        groundBox.getChildren().forEach(node -> {
-            Bounds bounds = node.getParent().localToScene(node.getBoundsInParent());
-            anchors.add(new Point2D(bounds.getMinX(), 0));
-        });
-        Bounds bounds = groundBox.localToScene(groundBox.getChildren().get(0).getBoundsInParent());
-        anchors.add(new Point2D(bounds.getMaxX(), 0));
-        Point2D point2D = anchors.stream().min((o1, o2) -> (int) (o1.distance(pos) - o2.distance(pos))).get();
-        return anchors.indexOf(point2D);
+    private Function<DragEvent, Boolean> getGroundBoxDnDHandler(HBox groundBox) {
+        return event -> {
+            CardObject cardObject = (CardObject) gameController.getModelPool()
+                    .getGameObjectById(Integer.parseInt(event.getDragboard().getString()));
+            int index = FXUtil.getNearestGap(groundBox, new Point2D(event.getSceneX(), event.getSceneY()));
+            if (cardObject.getCardModel().getActionType() == Card.ActionType.GLOBAL) {
+                System.out.println((cardObject.getPlayerId() == 0 ? pc0 : pc1).playCard(cardObject, index, null));
+            } else {
+                startAskForTarget((target) ->
+                        (cardObject.getPlayerId() == 0 ? pc0 : pc1).playCard(cardObject, index, target));
+            }
+            return true;
+        };
     }
 
     private void startAskForTarget(Function<GameObject, ?> function) {
@@ -730,21 +593,6 @@ public class BoardSceneController extends AbstractSceneController {
         askTargetMode = false;
         boardBgImage.setEffect(null);
         System.out.println(targetFunction.apply(gameObject));
-    }
-
-    private void applyDragDropEffect(Node node, TransferMode... transferModes) {
-        node.setOnDragEntered(event -> applyDragEnterEffect((Node) event.getSource(), event, transferModes));
-        node.setOnDragExited(event -> applyDragExitEffect((Node) event.getSource(), event));
-    }
-
-    private void applyDragEnterEffect(Node node, DragEvent event, TransferMode... transferModes) {
-        event.acceptTransferModes(transferModes);
-        if (Arrays.asList(transferModes).contains(event.getAcceptedTransferMode()))
-            animationPool.startAnimation(node, AnimationUtil.getDragHover(node, 1.1));
-    }
-
-    private void applyDragExitEffect(Node node, DragEvent event) {
-        animationPool.stopAnimation(node);
     }
 
     @Override

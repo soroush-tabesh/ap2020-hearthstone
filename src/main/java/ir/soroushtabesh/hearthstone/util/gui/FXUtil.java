@@ -5,13 +5,17 @@ import javafx.beans.WeakListener;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.layout.HBox;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -20,6 +24,20 @@ import static java.util.stream.Collectors.toList;
 
 public class FXUtil {
     private FXUtil() {
+    }
+
+    public static int getNearestGap(HBox groundBox, Point2D pos) {
+        if (groundBox.getChildren().isEmpty())
+            return 0;
+        List<Point2D> anchors = new ArrayList<>();
+        groundBox.getChildren().forEach(node -> {
+            Bounds bounds = node.getParent().localToScene(node.getBoundsInParent());
+            anchors.add(new Point2D(bounds.getMinX(), 0));
+        });
+        Bounds bounds = groundBox.localToScene(groundBox.getChildren().get(0).getBoundsInParent());
+        anchors.add(new Point2D(bounds.getMaxX(), 0));
+        Point2D point2D = anchors.stream().min((o1, o2) -> (int) (o1.distance(pos) - o2.distance(pos))).get();
+        return anchors.indexOf(point2D);
     }
 
     public static void runLater(Runnable runnable, long millis) {
