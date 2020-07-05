@@ -50,6 +50,11 @@ public class Deck {
         this.cardsInDeck = cardsInDeck;
     }
 
+    public void setCardsInDeck(Map<Card, Integer> cardsInDeck) {
+        this.cardsInDeck = cardsInDeck;
+    }
+
+
     public Integer getId() {
         return id;
     }

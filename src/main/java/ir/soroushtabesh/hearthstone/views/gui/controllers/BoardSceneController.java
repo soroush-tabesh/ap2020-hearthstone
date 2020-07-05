@@ -111,6 +111,7 @@ public class BoardSceneController extends AbstractSceneController {
         animationPool = new AnimationPool();
         dnDHelper = new DnDHelper(animationPool);
     }
+
     private PlayMode playMode = PlayMode.NORMAL;
 
     @Override
@@ -159,12 +160,13 @@ public class BoardSceneController extends AbstractSceneController {
         DeckReaderModel deckReaderModel = DeckReader.read(file);
         if (deckReaderModel == null)
             return false;
+        gameController = new LocalGameController();
         pc0 = gameController.registerPlayer(
-                DeckReader.getHeroByClass(Hero.HeroClass.MAGE.toString()),
+                DeckReader.getHeroByClass(Hero.HeroClass.MAGE),
                 deckReaderModel.getFriendlyDeck(),
                 new InfoPassive());
         pc1 = gameController.registerPlayer(
-                DeckReader.getHeroByClass(Hero.HeroClass.MAGE.toString()),
+                DeckReader.getHeroByClass(Hero.HeroClass.MAGE),
                 deckReaderModel.getEnemyDeck(),
                 new InfoPassive());
         playerData0 = gameController.getModelPool().getPlayerDataById(pc0.getId());
@@ -175,9 +177,15 @@ public class BoardSceneController extends AbstractSceneController {
     private boolean initGameControllerDuel() {
         gameController = new LocalGameController();
         PlayerInfoGetter p0 = getPlayerInfo(0);
-        PlayerInfoGetter p1 = getPlayerInfo(1);
-        if (p1 == null || p0 == null)
+        if (p0 == null) {
+            super.backPressed(null);
             return false;
+        }
+        PlayerInfoGetter p1 = getPlayerInfo(1);
+        if (p1 == null) {
+            super.backPressed(null);
+            return false;
+        }
         pc0 = gameController.registerPlayer(
                 p0.getSelectedHero(),
                 p0.getSelectedDeck(),
@@ -188,18 +196,20 @@ public class BoardSceneController extends AbstractSceneController {
                 p1.getSelectedInfoPassive());
         playerData0 = gameController.getModelPool().getPlayerDataById(pc0.getId());
         playerData1 = gameController.getModelPool().getPlayerDataById(pc1.getId());
+//        DeckReaderModel deckReaderModel = new DeckReaderModel();
+//        deckReaderModel.setFriendlyDeck(playerData0.getDeckModel());
+//        deckReaderModel.setEnemyDeck(playerData1.getDeckModel());
+//        System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(deckReaderModel));
         return true;
     }
 
     private PlayerInfoGetter getPlayerInfo(int playerId) {
         SelectHeroDeckDialog dialog = new SelectHeroDeckDialog(getPane(), playerId);
         Optional<ButtonType> msg = dialog.showAndWait();
-        if (msg.isEmpty() || msg.get() == ButtonType.CANCEL) {
-            super.backPressed(null);
+        if (msg.isEmpty() || msg.get() == ButtonType.CANCEL)
             return null;
-        } else if (msg.get() == ButtonType.APPLY) {
+        else if (msg.get() == ButtonType.APPLY)
             return null;
-        }
         return dialog;
     }
 
