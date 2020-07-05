@@ -169,8 +169,6 @@ public class BoardSceneController extends AbstractSceneController {
                 DeckReader.getHeroByClass(Hero.HeroClass.MAGE),
                 deckReaderModel.getEnemyDeck(),
                 new InfoPassive(), deckReaderModel.getEnemyDeckList());
-        System.out.println(deckReaderModel.getFriendlyDeckList());
-        System.out.println(deckReaderModel.getEnemyDeckList());
         playerData0 = gameController.getModelPool().getPlayerDataById(pc0.getId());
         playerData1 = gameController.getModelPool().getPlayerDataById(pc1.getId());
         return true;

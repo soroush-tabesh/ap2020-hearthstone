@@ -11,10 +11,6 @@ public class MinionBehavior extends GenericScript {
     public static final String ATTACK_DONE = "onAttackDone";
     public static final String ATTACK_EFFECT = "onAttackEffect";
 
-    public void battleCry() {
-
-    }
-
     public void battleCry(GameObject gameObject) {
 
     }

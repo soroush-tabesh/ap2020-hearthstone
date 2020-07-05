@@ -1,6 +1,6 @@
 package ir.soroushtabesh.hearthstone.models;
 
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import ir.soroushtabesh.hearthstone.controllers.game.GameController;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.GenericScript;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.lang.reflect.Type;
 
 @Entity
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -38,7 +39,9 @@ public class ScriptModel {
     public GenericScript getScript(GameController gameController) {
         if (scriptClass == null || scriptData == null || scriptData.isEmpty())
             return null;
-        GenericScript genericScript = new GsonBuilder().create().fromJson(scriptData, scriptClass);
+        GenericScript genericScript = new GsonBuilder()
+                .registerTypeAdapter(GenericScript.class, new JsonDeserializerWithInheritance<GenericScript>())
+                .create().fromJson(scriptData, scriptClass);
         genericScript.setGameController(gameController);
         return genericScript;
     }
@@ -81,5 +84,25 @@ public class ScriptModel {
     @Override
     public int hashCode() {
         return getId();
+    }
+
+    private static class JsonDeserializerWithInheritance<T> implements JsonDeserializer<T> {
+        @Override
+        public T deserialize(
+                JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                throws JsonParseException {
+            JsonObject jsonObject = json.getAsJsonObject();
+            JsonPrimitive classNamePrimitive = (JsonPrimitive) jsonObject.get("type");
+
+            String className = classNamePrimitive.getAsString();
+
+            Class<?> clazz;
+            try {
+                clazz = Class.forName(className);
+            } catch (ClassNotFoundException e) {
+                throw new JsonParseException(e.getMessage());
+            }
+            return context.deserialize(jsonObject, clazz);
+        }
     }
 }
