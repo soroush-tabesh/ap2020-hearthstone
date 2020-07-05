@@ -134,24 +134,31 @@ public class AnimationUtil {
     }
 
     public static Timeline getDragHover(Node node) {
+        return getDragHover(node, 1.3);
+    }
+
+    public static Timeline getDragHover(Node node, double scale) {
+        double scaleX = node.getScaleX();
+        double scaleY = node.getScaleY();
+        double opacity = node.getOpacity();
         Timeline pulse = new Timeline(
                 new KeyFrame(Duration.millis(0),
-                        new KeyValue(node.scaleXProperty(), 1, AnimateFXInterpolator.EASE),
-                        new KeyValue(node.scaleYProperty(), 1, AnimateFXInterpolator.EASE),
-                        new KeyValue(node.opacityProperty(), 1, AnimateFXInterpolator.EASE)
+                        new KeyValue(node.scaleXProperty(), scaleX, AnimateFXInterpolator.EASE),
+                        new KeyValue(node.scaleYProperty(), scaleY, AnimateFXInterpolator.EASE),
+                        new KeyValue(node.opacityProperty(), opacity, AnimateFXInterpolator.EASE)
                 ),
                 new KeyFrame(Duration.millis(500),
-                        new KeyValue(node.scaleXProperty(), 1.3, AnimateFXInterpolator.EASE),
-                        new KeyValue(node.scaleYProperty(), 1.3, AnimateFXInterpolator.EASE),
-                        new KeyValue(node.opacityProperty(), 0.7, AnimateFXInterpolator.EASE)
+                        new KeyValue(node.scaleXProperty(), scaleX * scale, AnimateFXInterpolator.EASE),
+                        new KeyValue(node.scaleYProperty(), scaleY * scale, AnimateFXInterpolator.EASE),
+                        new KeyValue(node.opacityProperty(), opacity * 0.7, AnimateFXInterpolator.EASE)
                 )
         );
         pulse.setCycleCount(-1);
         pulse.setAutoReverse(true);
         pulse.setOnFinished(event -> {
-            node.setScaleX(1);
-            node.setScaleY(1);
-            node.setOpacity(1);
+            node.setScaleX(scaleX);
+            node.setScaleY(scaleY);
+            node.setOpacity(opacity);
         });
         return pulse;
     }

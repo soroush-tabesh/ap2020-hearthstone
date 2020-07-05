@@ -395,7 +395,7 @@ public class BoardSceneController extends AbstractSceneController {
             event.acceptTransferModes(TransferMode.LINK);
             event.consume();
         });
-        applyDragDropEffect(heroView0);
+        applyDragDropEffect(heroView0, TransferMode.LINK);
         heroView0.setOnDragDropped(event -> {
             if (event.getAcceptedTransferMode() != TransferMode.LINK)
                 return;
@@ -424,7 +424,7 @@ public class BoardSceneController extends AbstractSceneController {
             event.acceptTransferModes(TransferMode.LINK);
             event.consume();
         });
-        applyDragDropEffect(heroView1);
+        applyDragDropEffect(heroView1, TransferMode.LINK);
         heroView1.setOnDragDropped(event -> {
             if (event.getAcceptedTransferMode() != TransferMode.LINK)
                 return;
@@ -476,16 +476,6 @@ public class BoardSceneController extends AbstractSceneController {
         return cardView;
     }
 
-    /*
-     * minions accept link-drag
-     * board accepts copy-drag
-     * handBoxes accepts move-drag
-     * minions on the ground start link-drag
-     * cards in hand start move-drag for minions and copy-drag for others
-     * for targeted cards, board halts and asks for another minion
-     * then we wait for server return code. showing error in case of failure.
-     * */
-
     private void addDragDetection(CardView cardView) {
         if (cardView instanceof MinionCardView) {
             addDragDetectionMinion((MinionCardView) cardView);
@@ -534,7 +524,7 @@ public class BoardSceneController extends AbstractSceneController {
                     event.consume();
             }
         });
-        applyDragDropEffect(cardView);
+        applyDragDropEffect(cardView, TransferMode.LINK);
         cardView.setOnDragDropped(event -> {
             if (event.getAcceptedTransferMode() != TransferMode.LINK)
                 return;
@@ -626,7 +616,7 @@ public class BoardSceneController extends AbstractSceneController {
             if (event.getAcceptedTransferMode() == TransferMode.COPY || event.getAcceptedTransferMode() == TransferMode.MOVE)
                 event.consume();
         });
-        applyDragDropEffect(groundBox0);
+        applyDragDropEffect(groundBox0, TransferMode.COPY_OR_MOVE);
         groundBox0.setOnDragDropped(event -> {
             if (event.getAcceptedTransferMode() != TransferMode.COPY && event.getAcceptedTransferMode() != TransferMode.MOVE)
                 return;
@@ -650,7 +640,7 @@ public class BoardSceneController extends AbstractSceneController {
             if (event.getAcceptedTransferMode() == TransferMode.COPY || event.getAcceptedTransferMode() == TransferMode.MOVE)
                 event.consume();
         });
-        applyDragDropEffect(groundBox1);
+        applyDragDropEffect(groundBox1, TransferMode.COPY_OR_MOVE);
         groundBox1.setOnDragDropped(event -> {
             if (event.getAcceptedTransferMode() != TransferMode.COPY && event.getAcceptedTransferMode() != TransferMode.MOVE)
                 return;
@@ -672,7 +662,7 @@ public class BoardSceneController extends AbstractSceneController {
             event.acceptTransferModes(TransferMode.MOVE);
             event.consume();
         });
-        applyDragDropEffect(globalDragReceiver);
+        applyDragDropEffect(globalDragReceiver, TransferMode.MOVE);
         globalDragReceiver.setOnDragDropped(event -> {
             if (event.getAcceptedTransferMode() != TransferMode.MOVE)
                 return;
@@ -694,7 +684,7 @@ public class BoardSceneController extends AbstractSceneController {
             if (event.getAcceptedTransferMode() == TransferMode.COPY || event.getAcceptedTransferMode() == TransferMode.MOVE)
                 event.consume();
         });
-        applyDragDropEffect(changeStand);
+        applyDragDropEffect(changeStand, TransferMode.COPY_OR_MOVE);
         changeStand.setOnDragDropped(event -> {
             if (event.getAcceptedTransferMode() != TransferMode.COPY && event.getAcceptedTransferMode() != TransferMode.MOVE)
                 return;
@@ -742,14 +732,15 @@ public class BoardSceneController extends AbstractSceneController {
         System.out.println(targetFunction.apply(gameObject));
     }
 
-    private void applyDragDropEffect(Node node) {
-        node.setOnDragEntered(event -> applyDragEnterEffect((Node) event.getSource(), event));
+    private void applyDragDropEffect(Node node, TransferMode... transferModes) {
+        node.setOnDragEntered(event -> applyDragEnterEffect((Node) event.getSource(), event, transferModes));
         node.setOnDragExited(event -> applyDragExitEffect((Node) event.getSource(), event));
     }
 
-    private void applyDragEnterEffect(Node node, DragEvent event) {
-        if (event.isAccepted())
-            animationPool.startAnimation(node, AnimationUtil.getDragHover(node));
+    private void applyDragEnterEffect(Node node, DragEvent event, TransferMode... transferModes) {
+        event.acceptTransferModes(transferModes);
+        if (Arrays.asList(transferModes).contains(event.getAcceptedTransferMode()))
+            animationPool.startAnimation(node, AnimationUtil.getDragHover(node, 1.1));
     }
 
     private void applyDragExitEffect(Node node, DragEvent event) {

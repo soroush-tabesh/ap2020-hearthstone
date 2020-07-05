@@ -18,8 +18,10 @@ public class AnimationPool {
 
     public void stopAnimation(Node node) {
         Timeline timeline = pool.remove(node);
-        if (timeline != null)
+        if (timeline != null) {
             timeline.stop();
+            timeline.getOnFinished().handle(null);
+        }
     }
 
     public void stopAll() {
