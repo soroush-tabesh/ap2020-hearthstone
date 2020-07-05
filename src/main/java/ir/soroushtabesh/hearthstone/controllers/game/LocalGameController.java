@@ -165,10 +165,9 @@ public class LocalGameController extends GameController {
             return Message.ERROR;
         if (!playerData.getHandCard().contains(cardObject))
             return Message.ERROR;
-        if (playerData.getMana() < cardObject.getCardModel().getMana())
+        if (!withdrawMana(playerData, cardObject.getCardModel().getMana()))
             return Message.INSUFFICIENT;
 
-        playerData.setMana(playerData.getMana() - cardObject.getCardModel().getMana());
         playerData.getHandCard().remove(cardObject);
 
         if (cardObject instanceof MinionObject) {
@@ -307,7 +306,10 @@ public class LocalGameController extends GameController {
             return Message.ERROR;
         HeroPowerObject cardObject = source.getHeroPower();
         ModelPool.PlayerData playerData = getModelPool().getPlayerDataById(playerId);
-        playerData.setMana(playerData.getMana() - cardObject.getCardModel().getMana());
+
+        if (!withdrawMana(playerData, cardObject.getCardModel().getMana()))
+            return Message.INSUFFICIENT;
+
         if (cardObject.getCardModel().getActionType() == Card.ActionType.GLOBAL) {
             getScriptEngine().broadcastEventOnObject(cardObject, SpellBehavior.SPELL_EFFECT);
             logEvent(new GameAction.HeroPower(cardObject));
@@ -317,6 +319,13 @@ public class LocalGameController extends GameController {
         }
         getScriptEngine().broadcastEventOnObject(cardObject, SpellBehavior.SPELL_DONE, target);
         return Message.SUCCESS;
+    }
+
+    private boolean withdrawMana(ModelPool.PlayerData playerData, int amount) {
+        if (playerData.getMana() < amount)
+            return false;
+        playerData.setMana(playerData.getMana() - amount);
+        return true;
     }
 
     private Message forceUseWeapon(HeroObject source, GameObject target, int playerId, int token) {
