@@ -1,10 +1,13 @@
 package ir.soroushtabesh.hearthstone.controllers.game;
 
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.*;
+import ir.soroushtabesh.hearthstone.models.Card;
 import ir.soroushtabesh.hearthstone.models.Deck;
 import ir.soroushtabesh.hearthstone.models.Hero;
 import ir.soroushtabesh.hearthstone.models.InfoPassive;
 import javafx.beans.property.*;
+
+import java.util.List;
 
 public abstract class GameController {
 
@@ -76,7 +79,9 @@ public abstract class GameController {
         return winner;
     }
 
-    public abstract PlayerController registerPlayer(Hero hero, Deck deck, InfoPassive infoPassive);
+    public abstract PlayerController registerPlayer(Hero hero, Deck deck, InfoPassive infoPassive, boolean shuffle);
+
+    public abstract PlayerController registerPlayer(Hero hero, Deck deck, InfoPassive infoPassive, List<Card> cardOrder);
 
     protected abstract PlayerController[] getAllPlayerControllers();
 

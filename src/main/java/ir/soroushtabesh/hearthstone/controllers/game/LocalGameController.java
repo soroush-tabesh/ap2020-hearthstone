@@ -23,25 +23,47 @@ public class LocalGameController extends GameController {
     private int playerIdCounter = 0;
 
     @Override
-    public PlayerController registerPlayer(Hero hero, Deck deck, InfoPassive infoPassive) {
+    public PlayerController registerPlayer(Hero hero, Deck deck, InfoPassive infoPassive, boolean shuffle) {
+        PlayerController playerController = getNewPlayerController();
+        if (playerController == null)
+            return null;
+        seedPlayerData(playerController, hero, deck, infoPassive, shuffle);
+        checkForGameStart();
+        return playerController;
+    }
+
+    @Override
+    public PlayerController registerPlayer(Hero hero, Deck deck, InfoPassive infoPassive, List<Card> cardOrder) {
+        PlayerController playerController = getNewPlayerController();
+        if (playerController == null)
+            return null;
+        seedPlayerData(playerController, hero, deck, infoPassive, false);
+        getModelPool().getPlayerDataById(playerController.getId()).setCardByOrder(cardOrder);
+        checkForGameStart();
+        return playerController;
+    }
+
+    private PlayerController getNewPlayerController() {
         if (playerIdCounter >= 2)
             return null;
         int playerId = playerIdCounter++;
         tokens[playerId] = random.nextInt();
         playerControllers[playerId] = new PlayerController(this
                 , tokens[playerId], playerId);
-        PlayerController playerController = playerControllers[playerId];
-        seedPlayerData(playerController, hero, deck, infoPassive);
+        return playerControllers[playerId];
+    }
+
+    private void checkForGameStart() {
         if (playerIdCounter >= 2) {
             setGameReady(true);
             handInitiation(0);
             handInitiation(1);
         }
-        return playerController;
     }
 
     private void handInitiation(int playerId) {
         ModelPool.PlayerData playerData = getModelPool().getPlayerDataById(playerId);
+        playerData.getHandCard().clear();
         for (int i = 0; i < 3; i++) {
             drawToHand(playerData);
             playerData.getChangeCardFlag().add(true);
@@ -90,9 +112,9 @@ public class LocalGameController extends GameController {
         return playerControllers;
     }
 
-    private void seedPlayerData(PlayerController playerController, Hero hero, Deck deck, InfoPassive infoPassive) {
+    private void seedPlayerData(PlayerController playerController, Hero hero, Deck deck, InfoPassive infoPassive, boolean shuffle) {
         ModelPool.PlayerData playerData = new ModelPool.PlayerData(playerController.getId(),
-                this, hero, deck, infoPassive);
+                this, hero, deck, infoPassive, shuffle);
         getModelPool().addPlayerData(playerData);
     }
 

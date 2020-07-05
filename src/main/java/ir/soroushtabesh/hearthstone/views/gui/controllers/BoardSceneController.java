@@ -164,11 +164,13 @@ public class BoardSceneController extends AbstractSceneController {
         pc0 = gameController.registerPlayer(
                 DeckReader.getHeroByClass(Hero.HeroClass.MAGE),
                 deckReaderModel.getFriendlyDeck(),
-                new InfoPassive());
+                new InfoPassive(), deckReaderModel.getFriendlyDeckList());
         pc1 = gameController.registerPlayer(
                 DeckReader.getHeroByClass(Hero.HeroClass.MAGE),
                 deckReaderModel.getEnemyDeck(),
-                new InfoPassive());
+                new InfoPassive(), deckReaderModel.getEnemyDeckList());
+        System.out.println(deckReaderModel.getFriendlyDeckList());
+        System.out.println(deckReaderModel.getEnemyDeckList());
         playerData0 = gameController.getModelPool().getPlayerDataById(pc0.getId());
         playerData1 = gameController.getModelPool().getPlayerDataById(pc1.getId());
         return true;
@@ -189,11 +191,11 @@ public class BoardSceneController extends AbstractSceneController {
         pc0 = gameController.registerPlayer(
                 p0.getSelectedHero(),
                 p0.getSelectedDeck(),
-                p0.getSelectedInfoPassive());
+                p0.getSelectedInfoPassive(), true);
         pc1 = gameController.registerPlayer(
                 p1.getSelectedHero(),
                 p1.getSelectedDeck(),
-                p1.getSelectedInfoPassive());
+                p1.getSelectedInfoPassive(), true);
         playerData0 = gameController.getModelPool().getPlayerDataById(pc0.getId());
         playerData1 = gameController.getModelPool().getPlayerDataById(pc1.getId());
 //        DeckReaderModel deckReaderModel = new DeckReaderModel();

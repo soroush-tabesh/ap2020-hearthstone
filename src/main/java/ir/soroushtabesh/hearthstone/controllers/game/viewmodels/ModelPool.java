@@ -3,6 +3,7 @@ package ir.soroushtabesh.hearthstone.controllers.game.viewmodels;
 import ir.soroushtabesh.hearthstone.controllers.game.GameAction;
 import ir.soroushtabesh.hearthstone.controllers.game.GameController;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.GenericScript;
+import ir.soroushtabesh.hearthstone.models.Card;
 import ir.soroushtabesh.hearthstone.models.Deck;
 import ir.soroushtabesh.hearthstone.models.Hero;
 import ir.soroushtabesh.hearthstone.models.InfoPassive;
@@ -125,6 +126,11 @@ public class ModelPool {
             deckModel.getFullDeck().forEach(card -> deckCard.add(CardObject.build(playerId, gameController, card)));
             if (shuffleDeck)
                 Collections.shuffle(deckCard);
+        }
+
+        public void setCardByOrder(List<Card> cardOrder) {
+            deckCard.clear();
+            cardOrder.forEach(card -> deckCard.add(CardObject.build(playerId, gameController, card)));
         }
 
         public Hero getHeroModel() {

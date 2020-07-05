@@ -38,13 +38,28 @@ public class DeckReader {
         Gson gson = new GsonBuilder().create();
         DeckReaderModel model = gson.fromJson(string, DeckReaderModel.class);
 
-        Deck friendly = fillDeck(model.getFriendlyCardNames());
-        Deck enemy = fillDeck(model.getEnemyCardNames());
+        List<Card> friendly = fillCardList(model.getFriendlyCardNames());
+        List<Card> enemy = fillCardList(model.getEnemyCardNames());
 
-        model.setFriendlyDeck(friendly);
-        model.setEnemyDeck(enemy);
+        model.setFriendlyDeckList(friendly);
+        model.setEnemyDeckList(enemy);
+
+        model.setFriendlyDeck(list2Deck(friendly));
+        model.setEnemyDeck(list2Deck(enemy));
 
         return model;
+    }
+
+    private static List<Card> fillCardList(List<String> cardNames) {
+        return cardNames.stream().map(DeckReader::getCardFromName).collect(Collectors.toList());
+    }
+
+    private static Deck list2Deck(List<Card> cards) {
+        Deck friendly = new Deck();
+        Map<Card, Integer> cardsInDeck0 = new HashMap<>();
+        cards.forEach(card -> cardsInDeck0.put(card, cardsInDeck0.getOrDefault(card, 0) + 1));
+        friendly.setCardsInDeck(cardsInDeck0);
+        return friendly;
     }
 
     private static Deck fillDeck(List<String> cardNames) {
