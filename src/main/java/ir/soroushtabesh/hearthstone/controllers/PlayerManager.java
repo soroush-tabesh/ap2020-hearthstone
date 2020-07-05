@@ -58,6 +58,7 @@ public class PlayerManager {
             return Message.ERROR;
         }
         Logger.log("PlayerManager", "delete-user" + player.getUsername());
+        player = null;
         return Message.SUCCESS;
     }
 

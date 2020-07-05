@@ -41,7 +41,8 @@ public class TimerUnit {
     }
 
     public void stop() {
-        thread.interrupt();
+        if (thread != null)
+            thread.interrupt();
     }
 
     public int getRemTime() {
