@@ -90,10 +90,10 @@ public class BoardSceneController extends AbstractSceneController {
     private StackPane weaponStand1;
     @FXML
     private StackPane heroPowerStand1;
-    private final DnDHelper dnDHelper = new DnDHelper(animationPool);
     @FXML
     private VBox logBox;
-
+    private final DnDHelper dnDHelper;
+    private final AnimationPool animationPool;
     private final Map<HeroObject, HeroView> heroCache = new HashMap<>();
     private GameController gameController;
     private PlayerController pc0, pc1;
@@ -101,9 +101,14 @@ public class BoardSceneController extends AbstractSceneController {
     private boolean askTargetMode = false;
     private Function<GameObject, ?> targetFunction;
     private final Map<CardObject, CardView> cardCache = new HashMap<>();
-    private final AnimationPool animationPool = new AnimationPool();
     @FXML
     private ImageView boardBgImage;
+
+    {
+        animationPool = new AnimationPool();
+        dnDHelper = new DnDHelper(animationPool);
+    }
+
     private PlayMode playMode = PlayMode.NORMAL;
     private final TimerUnit timerUnit = new TimerUnit();
 
