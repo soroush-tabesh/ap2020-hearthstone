@@ -380,6 +380,55 @@ public class Seeding {
                     Minion.MinionClass.ELEMENTAL);
             minion10.setScriptModel(new ScriptModel(new OnTurnEnd(new Bomb(2))));
 
+            Minion minion11 = new Minion("Cholagh",
+                    "Taunt",
+                    0,
+                    Hero.HeroClass.WARRIOR,
+                    0,
+                    Card.Rarity.RARE,
+                    3,
+                    2,
+                    Minion.MinionClass.MECH);
+            minion11.setTradable(false);
+            minion11.setScriptModel(new ScriptModel(new Taunt()));
+
+            Minion minion12 = new Minion("Locust",
+                    "Rush",
+                    1,
+                    Hero.HeroClass.ALL,
+                    0,
+                    Card.Rarity.COMMON,
+                    1,
+                    1,
+                    Minion.MinionClass.BEAST);
+            minion12.setTradable(false);
+            minion12.setScriptModel(new ScriptModel(new Rush()));
+
+            Minion minion13 = new Minion("Peshgel",
+                    "Taunt",
+                    1,
+                    Hero.HeroClass.ALL,
+                    0,
+                    Card.Rarity.COMMON,
+                    2,
+                    0,
+                    Minion.MinionClass.ALL);
+            minion13.setTradable(false);
+            minion13.setScriptModel(new ScriptModel(new Taunt()));
+
+            Minion minion14 = new Minion("Sheep",
+                    "",
+                    1,
+                    Hero.HeroClass.ALL,
+                    0,
+                    Card.Rarity.COMMON,
+                    1,
+                    1,
+                    Minion.MinionClass.BEAST);
+            minion14.setTradable(false);
+            minion14.setScriptModel(new ScriptModel(new Taunt()));
+
+
             //Quests
             Quest quest1 = new Quest("Strength in Numbers",
                     "Sidequest: Spend 10 Mana on minions.\n" +
@@ -468,6 +517,7 @@ public class Seeding {
                     mage, warlock, rogue, hunter, priest, paladin
                     , spell1, spell2, spell3, spell4, spell5, spell6, spell7, spell8, spell9, spell10
                     , minion1, minion2, minion3, minion4, minion5, minion6, minion7, minion8, minion9, minion10
+                    , minion11, minion12, minion13, minion14
                     , weapon1, weapon2, weapon3, weapon4, weapon5, weapon6
                     , mage_spec, warlock_spec, rogue_spec, hunter_spec, priest_spec, paladin_spec
                     , mage_spec2, warlock_spec2, rogue_spec2, hunter_spec2, priest_spec2, paladin_spec2
