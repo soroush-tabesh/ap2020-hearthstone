@@ -102,15 +102,15 @@ public class MinionCardView extends CardView {
                 .addListener((observable, oldValue, newValue) -> {
                     tauntEffect.setVisible(newValue);
                 });
-        minionObject.halo1Property()
+        minionObject.immuneProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     immuneEffect.setVisible(newValue);
                 });
-        minionObject.halo2Property()
+        minionObject.stealthProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     stealthEffect.setVisible(newValue);
                 });
-        minionObject.halo3Property()
+        minionObject.buffedProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     buffedEffect.setVisible(newValue);
                 });

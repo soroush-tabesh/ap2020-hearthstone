@@ -10,6 +10,7 @@ public class GenericScript {
     public static final String REMOVE_SCRIPT = "onScriptRemoved";
     public static final String TURN_START = "onTurnStart";
     public static final String TURN_END = "onTurnEnd";
+    public static final String CARD_PLAY = "onCardPlay";
     private transient int id;
     private transient GameObject ownerObject;
     private transient GameController gameController;
@@ -64,5 +65,8 @@ public class GenericScript {
     }
 
     public void onTurnEnd() {
+    }
+
+    public void onCardPlay() {
     }
 }

@@ -16,6 +16,9 @@ public class ScriptEngine {
 
     public ScriptEngine(GameController gameController) {
         this.gameController = gameController;
+    }
+
+    public void init() {
         // scripts will be added on game start
         gameController.startedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue)

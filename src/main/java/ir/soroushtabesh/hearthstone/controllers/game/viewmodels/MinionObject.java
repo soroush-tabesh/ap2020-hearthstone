@@ -18,10 +18,11 @@ public class MinionObject extends CardObject {
     private final BooleanProperty superHP = new SimpleBooleanProperty(false);
     private final BooleanProperty superAttackPower = new SimpleBooleanProperty(false);
     private final BooleanProperty taunt = new SimpleBooleanProperty(false);
-    private final BooleanProperty halo1 = new SimpleBooleanProperty(false);
-    private final BooleanProperty halo2 = new SimpleBooleanProperty(false);
-    private final BooleanProperty halo3 = new SimpleBooleanProperty(false);
+    private final BooleanProperty immune = new SimpleBooleanProperty(false);
+    private final BooleanProperty stealth = new SimpleBooleanProperty(false);
+    private final BooleanProperty buffed = new SimpleBooleanProperty(false);
     private final BooleanProperty halo4 = new SimpleBooleanProperty(false);
+    private final BooleanProperty canAttackHero = new SimpleBooleanProperty(true);
 
     public MinionObject(int playerId, GameController gameController, Minion cardModel) {
         super(playerId, gameController, cardModel);
@@ -101,7 +102,7 @@ public class MinionObject extends CardObject {
         return superAttackPower;
     }
 
-    public boolean isTaunt() {
+    public boolean hasTaunt() {
         return taunt.get();
     }
 
@@ -113,40 +114,40 @@ public class MinionObject extends CardObject {
         return taunt;
     }
 
-    public boolean isHalo1() {
-        return halo1.get();
+    public boolean hasImmunity() {
+        return immune.get();
     }
 
-    public void setHalo1(boolean halo1) {
-        this.halo1.set(halo1);
+    public void setImmune(boolean immune) {
+        this.immune.set(immune);
     }
 
-    public BooleanProperty halo1Property() {
-        return halo1;
+    public BooleanProperty immuneProperty() {
+        return immune;
     }
 
-    public boolean isHalo2() {
-        return halo2.get();
+    public boolean hasStealth() {
+        return stealth.get();
     }
 
-    public void setHalo2(boolean halo2) {
-        this.halo2.set(halo2);
+    public void setStealth(boolean stealth) {
+        this.stealth.set(stealth);
     }
 
-    public BooleanProperty halo2Property() {
-        return halo2;
+    public BooleanProperty stealthProperty() {
+        return stealth;
     }
 
-    public boolean isHalo3() {
-        return halo3.get();
+    public boolean isBuffed() {
+        return buffed.get();
     }
 
-    public void setHalo3(boolean halo3) {
-        this.halo3.set(halo3);
+    public void setBuffed(boolean buffed) {
+        this.buffed.set(buffed);
     }
 
-    public BooleanProperty halo3Property() {
-        return halo3;
+    public BooleanProperty buffedProperty() {
+        return buffed;
     }
 
     public boolean isHalo4() {
@@ -159,5 +160,17 @@ public class MinionObject extends CardObject {
 
     public BooleanProperty halo4Property() {
         return halo4;
+    }
+
+    public boolean getCanAttackHero() {
+        return canAttackHero.get();
+    }
+
+    public void setCanAttackHero(boolean canAttackHero) {
+        this.canAttackHero.set(canAttackHero);
+    }
+
+    public BooleanProperty canAttackHeroProperty() {
+        return canAttackHero;
     }
 }

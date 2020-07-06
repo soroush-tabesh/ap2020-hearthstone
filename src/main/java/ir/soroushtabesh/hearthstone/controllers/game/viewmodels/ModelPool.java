@@ -148,6 +148,9 @@ public class ModelPool {
 
         private void setInfoPassiveModel(InfoPassive infoPassiveModel) {
             this.infoPassiveModel = infoPassiveModel;
+            setInfoPassive(infoPassiveModel.getScriptModel().getScript(gameController));
+            infoPassive.setOwnerObject(hero);
+            gameController.getScriptEngine().registerScript(infoPassive);
         }
 
         public GenericScript getInfoPassive() {

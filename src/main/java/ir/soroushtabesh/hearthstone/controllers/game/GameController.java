@@ -19,8 +19,9 @@ public abstract class GameController {
     private final IntegerProperty winner = new SimpleIntegerProperty(-1);
 
     public GameController() {
-        modelPool = new ModelPool(this);
         scriptEngine = new ScriptEngine(this);
+        modelPool = new ModelPool(this);
+        scriptEngine.init();
     }
 
     public boolean isGameReady() {

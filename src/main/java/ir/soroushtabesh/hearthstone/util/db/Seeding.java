@@ -1,9 +1,9 @@
 package ir.soroushtabesh.hearthstone.util.db;
 
-import ir.soroushtabesh.hearthstone.controllers.game.scripts.custom.*;
 import ir.soroushtabesh.hearthstone.models.*;
 import ir.soroushtabesh.hearthstone.models.cards.*;
 import ir.soroushtabesh.hearthstone.util.Constants;
+import scripts.*;
 
 import java.io.File;
 import java.util.List;
@@ -22,41 +22,69 @@ public class Seeding {
     public static void seed() {
         try {
             //Heroes
+            //todo persist heropowers
+            HeroPower fireblast = new HeroPower("Fireblast", "", 2
+                    , Hero.HeroClass.MAGE, 2, Card.Rarity.FREE);
+            fireblast.setScriptModel(new ScriptModel(new DealDamage(2)));
+            fireblast.setActionType(Card.ActionType.TARGETED);
+
+            HeroPower lifeTap = new HeroPower("Life Tap", "", 2
+                    , Hero.HeroClass.WARLOCK, 2, Card.Rarity.FREE);
+            lifeTap.setScriptModel(new ScriptModel(new MultiSpell().add(new RandomDrawer()).add(new MyHeroPowerUp(-2, 0))));
+
+            HeroPower daggerMastery = new HeroPower("Dagger Mastery", "", 2
+                    , Hero.HeroClass.ROUGE, 2, Card.Rarity.FREE);
+            daggerMastery.setScriptModel(new ScriptModel(new PlayCard("Wicked Knife")));
+
+            HeroPower caltrops = new HeroPower("Caltrops", "", 2
+                    , Hero.HeroClass.HUNTER, 2, Card.Rarity.FREE);
+            caltrops.setScriptModel(new ScriptModel(new OnEnemyDraw(new DealDamage(1))));
+
+            HeroPower theSilverHand = new HeroPower("The Silver Hand", "", 2
+                    , Hero.HeroClass.PALADIN, 2, Card.Rarity.FREE);
+            theSilverHand.setScriptModel(new ScriptModel(new MultiSpell()
+                    .add(new Summoner("Silver Hand Recruit")).add(new Summoner("Silver Hand Recruit"))));
+
+            HeroPower heal = new HeroPower("Heal", "", 2
+                    , Hero.HeroClass.PRIEST, 2, Card.Rarity.FREE);
+            heal.setScriptModel(new ScriptModel(new RestoreHealthMyHero(2)));
+
+            DBUtil.pushObjects(fireblast, lifeTap, daggerMastery, caltrops, theSilverHand, heal);
+
             Hero mage = new Hero("Jaina Proudmoore",
                     Hero.HeroClass.MAGE,
                     30,
-                    new HeroPower("Fireblast", "", 2
-                            , Hero.HeroClass.MAGE, 2, Card.Rarity.FREE));
+                    fireblast);
             mage.setSpecialPower(new ScriptModel(new JainaProudmoore()));
+
             Hero warlock = new Hero("Gul'dan",
                     Hero.HeroClass.WARLOCK,
                     35,
-                    new HeroPower("Life Tap", "", 2
-                            , Hero.HeroClass.WARLOCK, 2, Card.Rarity.FREE));
+                    lifeTap);
             warlock.setSpecialPower(new ScriptModel(new Guldan()));
+
             Hero rogue = new Hero("Valeera Sanguinar",
                     Hero.HeroClass.ROUGE,
                     30,
-                    new HeroPower("Dagger Mastery", "", 2
-                            , Hero.HeroClass.ROUGE, 2, Card.Rarity.FREE));
+                    daggerMastery);
             rogue.setSpecialPower(new ScriptModel(new ValeeraSanguinar()));
+
             Hero hunter = new Hero("Alleria Windrunner",
                     Hero.HeroClass.HUNTER,
                     30,
-                    new HeroPower("Caltrops", "", 2
-                            , Hero.HeroClass.HUNTER, 2, Card.Rarity.FREE));
+                    caltrops);
             hunter.setSpecialPower(new ScriptModel(new AlleriaWindrunner()));
+
             Hero paladin = new Hero("Prince Arthas",
                     Hero.HeroClass.PALADIN,
                     30,
-                    new HeroPower("The Silver Hand", "", 2
-                            , Hero.HeroClass.PALADIN, 2, Card.Rarity.FREE));
+                    theSilverHand);
             paladin.setSpecialPower(new ScriptModel(new PrinceArthas()));
+
             Hero priest = new Hero("Tyrande Whisperwind",
                     Hero.HeroClass.PRIEST,
                     30,
-                    new HeroPower("Heal", "", 2
-                            , Hero.HeroClass.PRIEST, 2, Card.Rarity.FREE));
+                    heal);
             priest.setSpecialPower(new ScriptModel(new TyrandeWhisperwind()));
 
             //Special cards
@@ -67,6 +95,7 @@ public class Seeding {
                     3,
                     Card.Rarity.COMMON);
             mage_spec.setScriptModel(new ScriptModel(new Transformer("Sheep")));
+            mage_spec.setActionType(Card.ActionType.TARGETED);
 
             Spell mage_spec2 = new Spell("Mirror Image",
                     "Summon two 0/2 minions with Taunt.",
@@ -151,6 +180,7 @@ public class Seeding {
             paladin_spec.setScriptModel(new ScriptModel(new TargetAdd()
                     .add(new Charge()).add(new Windfury()).add(new DivineShield()).add(new Lifesteal())
                     .add(new Poisonous()).add(new Taunt()).add(new Stealth()))); // :/
+            paladin_spec.setActionType(Card.ActionType.TARGETED);
 
             Spell paladin_spec2 = new Spell("Blessing of Might",
                     "Give a minion +3 Attack.",
@@ -159,6 +189,7 @@ public class Seeding {
                     3,
                     Card.Rarity.FREE);
             paladin_spec2.setScriptModel(new ScriptModel(new TargetAdd().add(new PowerUpMinion(0, 3))));
+            paladin_spec2.setActionType(Card.ActionType.TARGETED);
 
             Minion priest_spec = new Minion("High Priest Amet",
                     "Whenever you summon a minion, set its Health equal to this minion's.",
@@ -210,6 +241,7 @@ public class Seeding {
                     Card.Rarity.RARE);
             spell3.setScriptModel(new ScriptModel(new TargetAdd()
                     .add(new PowerUpMinion(4, 4)).add(new DivineShield()).add(new Taunt())));
+            spell3.setActionType(Card.ActionType.TARGETED);
 
             Spell spell4 = new Spell("Book of Specters",
                     "Draw 3 cards. Discard any spells drawn.",
@@ -218,8 +250,8 @@ public class Seeding {
                     3,
                     Card.Rarity.EPIC);
             spell4.setScriptModel(new ScriptModel(new MultiSpell()
-                    .add(new RandomDrawer(false)).add(new RandomDrawer(false))
-                    .add(new RandomDrawer(false))));
+                    .add(new RandomDrawer(true)).add(new RandomDrawer(true))
+                    .add(new RandomDrawer(true))));
 
             Spell spell5 = new Spell("Frostbolt",
                     "Deal 3 damage to a character and Freeze it.",
@@ -227,8 +259,9 @@ public class Seeding {
                     Hero.HeroClass.ALL,
                     2,
                     Card.Rarity.COMMON);
-            spell5.setScriptModel(new ScriptModel(new TargetAdd()
-                    .add(new PowerUpMinion(-3, 0)).add(new Freeze())));
+            spell5.setScriptModel(new ScriptModel(new MultiSpell()
+                    .add(new TargetAdd().add(new Freeze())).add(new DealDamage(3))));
+            spell5.setActionType(Card.ActionType.TARGETED);
 
             Spell spell6 = new Spell("Brawl",
                     "Destroy all minions except one. (chosen randomly)",
@@ -245,7 +278,7 @@ public class Seeding {
                     5,
                     Card.Rarity.RARE);
             spell7.setScriptModel(new ScriptModel(new MultiSpell()
-                    .add(new RestoreHealthAllHeroes())
+                    .add(new RestoreHealthAllMinions(5))
                     .add(new RandomDrawer()).add(new RandomDrawer()).add(new RandomDrawer()).add(new RandomDrawer())
                     .add(new RandomDrawer())));
 
@@ -256,6 +289,7 @@ public class Seeding {
                     15,
                     Card.Rarity.COMMON);
             spell8.setScriptModel(new ScriptModel(new TakeControl()));
+            spell8.setActionType(Card.ActionType.TARGETED);
 
             Spell spell9 = new Spell("Slam",
                     "Deal 2 damage to a minion. If it survives, draw a card.",
@@ -264,6 +298,7 @@ public class Seeding {
                     2,
                     Card.Rarity.COMMON);
             spell9.setScriptModel(new ScriptModel(new Slam()));
+            spell9.setActionType(Card.ActionType.TARGETED);
 
             Spell spell10 = new Spell("Deadly Shot",
                     "Destroy a random enemy minion.",
@@ -284,6 +319,7 @@ public class Seeding {
                     5,
                     Minion.MinionClass.DEMON);
             minion1.setScriptModel(new ScriptModel(new Sathrovarr()));
+            minion1.setActionType(Card.ActionType.TARGETED);
 
             Minion minion2 = new Minion("Tomb Warden",
                     "Taunt\n" +
@@ -295,7 +331,8 @@ public class Seeding {
                     6,
                     3,
                     Minion.MinionClass.MECH);
-            minion2.setScriptModel(new ScriptModel(new MinionBehaviorList().add(new Taunt()).add(new TombWarden())));
+            minion2.setScriptModel(new ScriptModel(new MinionBehaviorList()
+                    .add(new Taunt()).add(new BattleCry(new Summoner("Tomb Warden")))));
 
             Minion minion3 = new Minion("Security Rover",
                     "Whenever this minion takes damage, summon a 2/3 Mech with Taunt.",
@@ -349,7 +386,8 @@ public class Seeding {
                     1,
                     2,
                     Minion.MinionClass.ALL);
-            minion7.setScriptModel(new ScriptModel(new BattleCry(new RestoreHealthMyHero(2))));
+            minion7.setScriptModel(new ScriptModel(new BattleCry(new RestoreHealthTarget(2))));
+            minion7.setActionType(Card.ActionType.TARGETED);
 
             Minion minion8 = new Minion("Waterboy",
                     "Battlecry: Your next Hero Power this turn costs (0).",
@@ -432,7 +470,17 @@ public class Seeding {
                     1,
                     Minion.MinionClass.BEAST);
             minion14.setTradable(false);
-            minion14.setScriptModel(new ScriptModel(new Taunt()));
+
+            Minion minion15 = new Minion("Silver Hand Recruit",
+                    "",
+                    1,
+                    Hero.HeroClass.ALL,
+                    0,
+                    Card.Rarity.COMMON,
+                    1,
+                    1,
+                    Minion.MinionClass.ALL);
+            minion15.setTradable(false);
 
 
             //Quests
@@ -523,7 +571,7 @@ public class Seeding {
                     mage, warlock, rogue, hunter, priest, paladin
                     , spell1, spell2, spell3, spell4, spell5, spell6, spell7, spell8, spell9, spell10
                     , minion1, minion2, minion3, minion4, minion5, minion6, minion7, minion8, minion9, minion10
-                    , minion11, minion12, minion13, minion14
+                    , minion11, minion12, minion13, minion14, minion15
                     , weapon1, weapon2, weapon3, weapon4, weapon5, weapon6
                     , mage_spec, warlock_spec, rogue_spec, hunter_spec, priest_spec, paladin_spec
                     , mage_spec2, warlock_spec2, rogue_spec2, hunter_spec2, priest_spec2, paladin_spec2

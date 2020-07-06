@@ -5,10 +5,7 @@ import ir.soroushtabesh.hearthstone.controllers.game.GameController;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.GenericScript;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.lang.reflect.Type;
 
 @Entity
@@ -20,6 +17,8 @@ public class ScriptModel {
     private Integer id;
 
     private Class<? extends GenericScript> scriptClass;
+
+    @Column(columnDefinition = "text")
     private String scriptData;
 
     public ScriptModel() {

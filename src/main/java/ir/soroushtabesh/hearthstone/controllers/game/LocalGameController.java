@@ -215,6 +215,7 @@ public class LocalGameController extends GameController {
         } else if (cardObject instanceof WeaponObject) {
             playerData.getHero().setCurrentWeapon((WeaponObject) cardObject);
         }
+        getScriptEngine().broadcastEventOnObject(cardObject, GenericScript.CARD_PLAY);
         return Message.SUCCESS;
     }
 
@@ -245,14 +246,18 @@ public class LocalGameController extends GameController {
             return Message.IMPOSSIBLE;
         if (hasTaunt(1 - playerId) &&
                 ((target instanceof MinionObject
-                        && !((MinionObject) target).isTaunt())
+                        && !((MinionObject) target).hasTaunt())
                         || target instanceof HeroObject))
             return Message.IMPOSSIBLE;
         if (target instanceof MinionObject) {
+            if (((MinionObject) target).hasStealth() && target.getPlayerId() != playerId)
+                return Message.IMPOSSIBLE;
             singleDirectionMinionAttack(source, target, playerId, token);
             singleDirectionMinionAttack((MinionObject) target, source, playerId, token);
             logEvent(new GameAction.MinionAttack(source, (MinionObject) target));
         } else if (target instanceof HeroObject) {
+            if (!source.getCanAttackHero())
+                return Message.IMPOSSIBLE;
 //            forceUseWeapon(((HeroObject) target), source, playerId, token);
             singleDirectionMinionAttack(source, target, playerId, token);
             logEvent(new GameAction.MinionAttack(source, (HeroObject) target));
@@ -307,7 +312,7 @@ public class LocalGameController extends GameController {
         ModelPool.PlayerData playerData = getModelPool().getPlayerDataById(playerId);
         boolean flag = false;
         for (MinionObject minionObject : playerData.getGroundCard()) {
-            flag |= minionObject.isTaunt();
+            flag |= minionObject.hasTaunt() && !minionObject.hasStealth();
         }
         return flag;
     }
@@ -359,6 +364,8 @@ public class LocalGameController extends GameController {
         if (weapon == null)
             return Message.ERROR;
         if (target instanceof MinionObject) {
+            if (((MinionObject) target).hasStealth() && target.getPlayerId() != playerId)
+                return Message.IMPOSSIBLE;
             singleDirectionWeapon(source, target, playerId, token);
             singleDirectionMinionAttack((MinionObject) target, source, playerId, token);
         } else if (target instanceof HeroObject) {
