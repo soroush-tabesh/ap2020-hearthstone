@@ -27,31 +27,37 @@ public class Seeding {
                     30,
                     new HeroPower("Fireblast", "", 2
                             , Hero.HeroClass.MAGE, 2, Card.Rarity.FREE));
+            mage.setSpecialPower(new ScriptModel(new JainaProudmoore()));
             Hero warlock = new Hero("Gul'dan",
                     Hero.HeroClass.WARLOCK,
                     35,
                     new HeroPower("Life Tap", "", 2
                             , Hero.HeroClass.WARLOCK, 2, Card.Rarity.FREE));
+            warlock.setSpecialPower(new ScriptModel(new Guldan()));
             Hero rogue = new Hero("Valeera Sanguinar",
                     Hero.HeroClass.ROUGE,
                     30,
                     new HeroPower("Dagger Mastery", "", 2
                             , Hero.HeroClass.ROUGE, 2, Card.Rarity.FREE));
+            rogue.setSpecialPower(new ScriptModel(new ValeeraSanguinar()));
             Hero hunter = new Hero("Alleria Windrunner",
                     Hero.HeroClass.HUNTER,
                     30,
                     new HeroPower("Caltrops", "", 2
                             , Hero.HeroClass.HUNTER, 2, Card.Rarity.FREE));
+            hunter.setSpecialPower(new ScriptModel(new AlleriaWindrunner()));
             Hero paladin = new Hero("Prince Arthas",
                     Hero.HeroClass.PALADIN,
                     30,
                     new HeroPower("The Silver Hand", "", 2
                             , Hero.HeroClass.PALADIN, 2, Card.Rarity.FREE));
+            paladin.setSpecialPower(new ScriptModel(new PrinceArthas()));
             Hero priest = new Hero("Tyrande Whisperwind",
                     Hero.HeroClass.PRIEST,
                     30,
                     new HeroPower("Heal", "", 2
                             , Hero.HeroClass.PRIEST, 2, Card.Rarity.FREE));
+            priest.setSpecialPower(new ScriptModel(new TyrandeWhisperwind()));
 
             //Special cards
             Spell mage_spec = new Spell("Polymorph",
