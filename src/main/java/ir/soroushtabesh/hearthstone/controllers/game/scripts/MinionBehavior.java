@@ -11,8 +11,8 @@ public class MinionBehavior extends GenericScript {
     public static final String ATTACK_DONE = "onAttackDone";
     public static final String ATTACK_EFFECT = "onAttackEffect";
 
-    public void battleCry(GameObject gameObject) {
-
+    public boolean battleCry(GameObject gameObject) {
+        return true;
     }
 
     public void deathRattle() {
@@ -33,7 +33,7 @@ public class MinionBehavior extends GenericScript {
 
     @Override
     public void onTurnEnd() {
-        ((MinionObject) getOwnerObject()).setSleep(false);
-        System.out.println("MinionBehavior.onTurnEnd");
+        if (getGameController().getTurn() == getOwnerObject().getPlayerId())
+            ((MinionObject) getOwnerObject()).setSleep(false);
     }
 }

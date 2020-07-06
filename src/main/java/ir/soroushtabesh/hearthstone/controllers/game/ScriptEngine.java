@@ -8,6 +8,7 @@ import javafx.collections.ListChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ScriptEngine {
     private final GameController gameController;
@@ -51,39 +52,8 @@ public class ScriptEngine {
         remove(script, script.getOwnerObject());
     }
 
-    public void registerEventFilter(GameEventListener listener) {
-        if (listener != null)
-            eventListeners.add(listener);
-    }
-
-    private void put(GenericScript script, GameObject gameObject) {
-        scripts.put(gameObject, scripts.getOrDefault(gameObject, new ArrayList<>()));
-        scripts.get(gameObject).add(script);
-    }
-
-    private void remove(GenericScript script, GameObject gameObject) {
-        scripts.put(gameObject, scripts.getOrDefault(gameObject, new ArrayList<>()));
-        scripts.get(gameObject).remove(script);
-    }
-
-    public void broadcastEventGlobal(String event, Object... params) {
-        scripts.values().forEach((e) -> e.forEach((e1) -> broadcastEventOnScript(e1, event, params)));
-    }
-
-    public void broadcastEventOnPlayer(String event, int playerId, Object... params) {
-        scripts.values().forEach((e) -> e.forEach((e1) -> {
-            if (e1.getOwnerObject().getPlayerId() == playerId)
-                broadcastEventOnScript(e1, event, params);
-        }));
-    }
-
-    public void broadcastEventOnObject(GameObject gameObject, String event, Object... params) {
-        scripts.getOrDefault(gameObject, Collections.emptyList())
-                .forEach((e1) -> broadcastEventOnScript(e1, event, params));
-    }
-
-    public static void invoke(Object targetObject,
-                              String methodName, Object... parameters)
+    public static Optional<Boolean> invoke(Object targetObject,
+                                           String methodName, Object... parameters)
             throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         List<Method> methods = new ArrayList<>();
         Class<?> aClass = targetObject.getClass();
@@ -108,22 +78,69 @@ public class ScriptEngine {
                 Object[] finalParam = new Object[parameterTypes.length];
                 System.arraycopy(parameters, 0, finalParam, 0
                         , Math.min(parameterTypes.length, parameters.length));
-                method.invoke(targetObject, finalParam);
-                return;
+                Boolean res = (Boolean) method.invoke(targetObject, finalParam);
+                return Optional.ofNullable(res);
             }
         }
         throw new NoSuchMethodException();
     }
 
-    public void broadcastEventOnScript(GenericScript e1, String event, Object... params) {
+    public void registerEventFilter(GameEventListener listener) {
+        if (listener != null)
+            eventListeners.add(listener);
+    }
+
+    public void unregisterScriptAll(GameObject gameObject) {
+        scripts.getOrDefault(gameObject, new ArrayList<>()).clear();
+    }
+
+    private void put(GenericScript script, GameObject gameObject) {
+        scripts.put(gameObject, scripts.getOrDefault(gameObject, new ArrayList<>()));
+        scripts.get(gameObject).add(script);
+    }
+
+    private void remove(GenericScript script, GameObject gameObject) {
+        scripts.put(gameObject, scripts.getOrDefault(gameObject, new ArrayList<>()));
+        scripts.get(gameObject).remove(script);
+    }
+
+    public void broadcastEventGlobal(String event, Object... params) {
+        scripts.values().forEach((e) -> e.forEach((e1) -> broadcastEventOnScript(e1, event, params)));
+    }
+
+    public void broadcastEventOnPlayer(String event, int playerId, Object... params) {
+        scripts.values().forEach((e) -> e.forEach((e1) -> {
+            if (e1.getOwnerObject().getPlayerId() == playerId)
+                broadcastEventOnScript(e1, event, params);
+        }));
+    }
+
+    public void unregisterEventFilter(GameEventListener listener) {
+        if (listener != null)
+            eventListeners.remove(listener);
+    }
+
+    public Optional<Boolean> broadcastEventOnObject(GameObject gameObject, String event, Object... params) {
+        AtomicReference<Optional<Boolean>> res = new AtomicReference<>(Optional.empty());
+        scripts.getOrDefault(gameObject, Collections.emptyList())
+                .forEach((e1) -> {
+                    Optional<Boolean> val = broadcastEventOnScript(e1, event, params);
+                    if (val.isPresent() && val.get())
+                        res.set(val);
+                });
+        return res.get();
+    }
+
+    public Optional<Boolean> broadcastEventOnScript(GenericScript e1, String event, Object... params) {
         try {
-            invoke(e1, event, params);
+            return invoke(e1, event, params);
         } catch (NoSuchMethodException ignored) {
             System.err.println("No such method:");
             System.err.println("    e1 = " + e1 + ", event = " + event + ", params = " + Arrays.deepToString(params));
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        return Optional.empty();
     }
 
 }

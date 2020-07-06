@@ -1,5 +1,6 @@
 package ir.soroushtabesh.hearthstone.models.cards;
 
+import ir.soroushtabesh.hearthstone.controllers.game.scripts.HeroPowerBehavior;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.SpellBehavior;
 import ir.soroushtabesh.hearthstone.models.Card;
 import ir.soroushtabesh.hearthstone.models.Hero;
@@ -13,7 +14,7 @@ import javax.persistence.Entity;
 public class HeroPower extends Card {
 
     public HeroPower() {
-        setScriptModel(new ScriptModel(new SpellBehavior()));
+        setScriptModel(new ScriptModel(new HeroPowerBehavior()));
     }
 
     public HeroPower(String card_name, String description, Integer mana

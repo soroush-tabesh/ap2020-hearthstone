@@ -93,6 +93,10 @@ public class DeckReader {
             throw new NoSuchCardException();
         if (split.length == 2) {
             //todo: it's a quest. configure it.
+//            Quest card1 = (Quest) card;
+//            Quest quest = new Quest(card1.getName(), card1.getDescription(), card1.getMana()
+//                    , card1.getHeroClass(), card1.getPrice(), card1.getRarity());
+//            quest.getScriptModel().getScript(null);
         }
         return card;
     }

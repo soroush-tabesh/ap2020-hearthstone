@@ -19,4 +19,11 @@ public class HeroBehavior extends GenericScript {
     public void onAttackEffect(GameObject gameObject) {
 
     }
+
+    @Override
+    public void onTurnEnd() {
+        super.onTurnEnd();
+        getGameController().getModelPool().getPlayerDataById(getPlayerController().getId()).getHero()
+                .getHeroPower().setUsed(false);
+    }
 }

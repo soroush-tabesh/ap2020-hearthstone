@@ -10,7 +10,7 @@ public class SpellBehavior extends GenericScript {
 
     }
 
-    public void onSpellEffect(GameObject gameObject) {
-
+    public boolean onSpellEffect(GameObject gameObject) {
+        return true;
     }
 }

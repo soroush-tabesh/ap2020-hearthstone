@@ -13,6 +13,7 @@ import ir.soroushtabesh.hearthstone.util.Logger;
 
 import java.security.SecureRandom;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 public class LocalGameController extends GameController {
@@ -90,14 +91,33 @@ public class LocalGameController extends GameController {
         return Message.SUCCESS;
     }
 
-    private Message drawToHand(ModelPool.PlayerData playerData) {
-        return drawToHand(playerData, playerData.getHandCard().size());
+    public Message drawToHand(ModelPool.PlayerData playerData) {
+        return drawToHand(playerData, 0);
     }
 
-    private Message drawToHand(ModelPool.PlayerData playerData, int index) {
+    public Message drawToHand(ModelPool.PlayerData playerData, int index) {
         if (playerData.getDeckCard().isEmpty())
             return Message.INSUFFICIENT;
         CardObject cardObject = playerData.getDeckCard().remove(0);
+        if (playerData.getHandCard().size() >= 12) {
+            playerData.getBurnedCard().add(cardObject);
+            return Message.FULL;
+        } else {
+            playerData.getHandCard().add(index, cardObject);
+            return Message.SUCCESS;
+        }
+    }
+
+    public Message drawToHand(ModelPool.PlayerData playerData, int index, Class<? extends CardObject> targetClass) {
+        if (playerData.getDeckCard().isEmpty())
+            return Message.INSUFFICIENT;
+        CardObject cardObject = null;
+        for (CardObject object : playerData.getDeckCard()) {
+            if (targetClass.isAssignableFrom(object.getClass()))
+                cardObject = object;
+        }
+        if (cardObject == null)
+            return Message.IMPOSSIBLE;
         if (playerData.getHandCard().size() >= 12) {
             playerData.getBurnedCard().add(cardObject);
             return Message.FULL;
@@ -187,46 +207,80 @@ public class LocalGameController extends GameController {
             return Message.ERROR;
         if (!playerData.getHandCard().contains(cardObject))
             return Message.ERROR;
-        if (!withdrawMana(playerData, cardObject.getCardModel().getMana()))
+        if (!withdrawMana(playerData, cardObject.getManaCost()))
             return Message.INSUFFICIENT;
 
-        playerData.getHandCard().remove(cardObject);
-
+        boolean res = false;
         if (cardObject instanceof MinionObject) {
-            if (playerData.getGroundCard().size() >= 7)
-                return Message.FULL;
-            playerData.getGroundCard().add(groundIndex, (MinionObject) cardObject);
-            ((MinionObject) cardObject).setSleep(true);
-            if (cardObject.getCardModel().getActionType() == Card.ActionType.GLOBAL) {
-                getScriptEngine().broadcastEventOnObject(cardObject, MinionBehavior.BATTLE_CRY);
-            } else {
-                getScriptEngine().broadcastEventOnObject(cardObject, MinionBehavior.BATTLE_CRY, optionalTarget);
+            if (res = playCardMinion((MinionObject) cardObject, groundIndex, optionalTarget, playerId, token)) {
+                playerData.getHandCard().remove(cardObject);
+                playerData.getGroundCard().add(groundIndex, (MinionObject) cardObject);
             }
-            logEvent(new GameAction.MinionPlay((MinionObject) cardObject));
         } else if (cardObject instanceof SpellObject) {
-            if (cardObject.getCardModel().getActionType() == Card.ActionType.GLOBAL) {
-                getScriptEngine().broadcastEventOnObject(cardObject, SpellBehavior.SPELL_EFFECT);
-                logEvent(new GameAction.SpellGlobal((SpellObject) cardObject));
-            } else {
-                getScriptEngine().broadcastEventOnObject(cardObject, SpellBehavior.SPELL_EFFECT, optionalTarget);
-                logEvent(new GameAction.TargetedAttack(cardObject, optionalTarget));
+            if (res = playCardSpell((SpellObject) cardObject, groundIndex, optionalTarget, playerId, token)) {
+                playerData.getHandCard().remove(cardObject);
             }
-            getScriptEngine().broadcastEventOnObject(cardObject, SpellBehavior.SPELL_DONE, optionalTarget);
         } else if (cardObject instanceof WeaponObject) {
-            playerData.getHero().setCurrentWeapon((WeaponObject) cardObject);
+            if (res = playCardWeapon(((WeaponObject) cardObject), groundIndex, optionalTarget, playerId, token)) {
+                playerData.getHandCard().remove(cardObject);
+            }
         }
-        getScriptEngine().broadcastEventOnObject(cardObject, GenericScript.CARD_PLAY);
-        return Message.SUCCESS;
+
+        if (res) {
+            logEvent(new GameAction.CardPlay(cardObject));
+            getScriptEngine().broadcastEventOnObject(cardObject, GenericScript.CARD_PLAY);
+            return Message.SUCCESS;
+        } else {
+            //return mana back
+            depositMana(playerData, cardObject.getCardModel().getMana());
+            return Message.ERROR;
+        }
+    }
+
+    private boolean playCardMinion(MinionObject minionObject, int groundIndex, GameObject optionalTarget, int playerId, int token) {
+        ModelPool.PlayerData playerData = getModelPool().getPlayerDataById(playerId);
+        if (playerData.getGroundCard().size() >= 7)
+            return false;
+        minionObject.setSleep(true);
+        Optional<Boolean> optional;
+        if (minionObject.getCardModel().getActionType() == Card.ActionType.GLOBAL) {
+            optional = getScriptEngine().broadcastEventOnObject(minionObject, MinionBehavior.BATTLE_CRY);
+        } else {
+            optional = getScriptEngine().broadcastEventOnObject(minionObject, MinionBehavior.BATTLE_CRY, optionalTarget);
+        }
+        return optional.isEmpty() || optional.get();
+    }
+
+    private boolean playCardSpell(SpellObject spellObject, int groundIndex, GameObject optionalTarget, int playerId, int token) {
+        ModelPool.PlayerData playerData = getModelPool().getPlayerDataById(playerId);
+        Optional<Boolean> optional;
+        if (spellObject.getCardModel().getActionType() == Card.ActionType.GLOBAL) {
+            optional = getScriptEngine().broadcastEventOnObject(spellObject, SpellBehavior.SPELL_EFFECT);
+            logEvent(new GameAction.SpellGlobal(spellObject));
+        } else {
+            optional = getScriptEngine().broadcastEventOnObject(spellObject, SpellBehavior.SPELL_EFFECT, optionalTarget);
+            logEvent(new GameAction.TargetedAttack(spellObject, optionalTarget));
+        }
+        getScriptEngine().broadcastEventOnObject(spellObject, SpellBehavior.SPELL_DONE, optionalTarget);
+        return optional.isEmpty() || optional.get();
+    }
+
+    private boolean playCardWeapon(WeaponObject weaponObject, int groundIndex, GameObject optionalTarget, int playerId, int token) {
+        ModelPool.PlayerData playerData = getModelPool().getPlayerDataById(playerId);
+        playerData.getHero().setCurrentWeapon(weaponObject);
+        return true;
     }
 
     @Override
-    protected Message summonMinion(MinionObject source, int playerId, int token) {
+    public Message summonMinion(MinionObject source, int playerId, int token) {
         if (!checkPlayerValidity(playerId, token) || !isStarted())
             return Message.ERROR;
         if (source.getPlayerId() != playerId)
             return Message.ERROR;
         ModelPool.PlayerData playerData = getModelPool().getPlayerDataById(playerId);
         playerData.getGroundCard().add(source);
+        getScriptEngine().broadcastEventOnObject(source, GenericScript.CARD_PLAY);
+        source.setSleep(true);
         return Message.SUCCESS;
     }
 
@@ -298,6 +352,8 @@ public class LocalGameController extends GameController {
             return Message.ERROR;
         if (amount <= 0)
             return Message.ERROR;
+        if (target.getImmune() > 0)
+            return Message.IMPOSSIBLE;
         target.setHp(target.getHp() - Math.max(amount - target.getShield(), 0));
         target.setShield(Math.max(target.getShield() - amount, 0));
         getScriptEngine().broadcastEventOnObject(target, HeroBehavior.DAMAGE_TAKEN);
@@ -334,18 +390,28 @@ public class LocalGameController extends GameController {
         HeroPowerObject cardObject = source.getHeroPower();
         ModelPool.PlayerData playerData = getModelPool().getPlayerDataById(playerId);
 
-        if (!withdrawMana(playerData, cardObject.getCardModel().getMana()))
+        if (cardObject.isUsed())
+            return Message.IMPOSSIBLE;
+
+        if (!withdrawMana(playerData, cardObject.getManaCost()))
             return Message.INSUFFICIENT;
 
+        Optional<Boolean> optional = Optional.empty();
         if (cardObject.getCardModel().getActionType() == Card.ActionType.GLOBAL) {
-            getScriptEngine().broadcastEventOnObject(cardObject, SpellBehavior.SPELL_EFFECT);
+            optional = getScriptEngine().broadcastEventOnObject(cardObject, SpellBehavior.SPELL_EFFECT);
             logEvent(new GameAction.HeroPower(cardObject));
         } else {
-            getScriptEngine().broadcastEventOnObject(cardObject, SpellBehavior.SPELL_EFFECT, target);
+            optional = getScriptEngine().broadcastEventOnObject(cardObject, SpellBehavior.SPELL_EFFECT, target);
             logEvent(new GameAction.TargetedAttack(cardObject, target));
         }
-        getScriptEngine().broadcastEventOnObject(cardObject, SpellBehavior.SPELL_DONE, target);
-        return Message.SUCCESS;
+        if (optional.isEmpty() || optional.get()) {
+            cardObject.setUsed(true);
+            getScriptEngine().broadcastEventOnObject(cardObject, SpellBehavior.SPELL_DONE, target);
+            return Message.SUCCESS;
+        } else {
+            depositMana(playerData, cardObject.getCardModel().getMana());
+            return Message.ERROR;
+        }
     }
 
     private boolean withdrawMana(ModelPool.PlayerData playerData, int amount) {
@@ -353,6 +419,10 @@ public class LocalGameController extends GameController {
             return false;
         playerData.setMana(playerData.getMana() - amount);
         return true;
+    }
+
+    private void depositMana(ModelPool.PlayerData playerData, int amount) {
+        playerData.setMana(playerData.getMana() + amount);
     }
 
     private Message forceUseWeapon(HeroObject source, GameObject target, int playerId, int token) {
@@ -386,21 +456,21 @@ public class LocalGameController extends GameController {
         if (source.getCurrentWeapon() == null)
             return;
         if (target instanceof MinionObject) {
+            getScriptEngine().broadcastEventOnObject(source, HeroBehavior.ATTACK_EFFECT, target);
             performDamageOnMinion((MinionObject) target, source.getCurrentWeapon().getAttackPower(), playerId, token);
-            getScriptEngine().broadcastEventOnObject(source, HeroBehavior.ATTACK_EFFECT, target);
         } else if (target instanceof HeroObject) {
-            performDamageOnHero((HeroObject) target, source.getCurrentWeapon().getAttackPower(), playerId, token);
             getScriptEngine().broadcastEventOnObject(source, HeroBehavior.ATTACK_EFFECT, target);
+            performDamageOnHero((HeroObject) target, source.getCurrentWeapon().getAttackPower(), playerId, token);
         }
     }
 
     private void singleDirectionMinionAttack(MinionObject source, GameObject target, int playerId, int token) {
         if (target instanceof MinionObject) {
+            getScriptEngine().broadcastEventOnObject(source, MinionBehavior.ATTACK_EFFECT, target);
             performDamageOnMinion((MinionObject) target, source.getAttackPower(), playerId, token);
-            getScriptEngine().broadcastEventOnObject(source, MinionBehavior.ATTACK_EFFECT, target);
         } else if (target instanceof HeroObject) {
-            performDamageOnHero((HeroObject) target, source.getAttackPower(), playerId, token);
             getScriptEngine().broadcastEventOnObject(source, MinionBehavior.ATTACK_EFFECT, target);
+            performDamageOnHero((HeroObject) target, source.getAttackPower(), playerId, token);
         }
     }
 

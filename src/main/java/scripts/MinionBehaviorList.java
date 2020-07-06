@@ -2,23 +2,39 @@ package scripts;
 
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.MinionBehavior;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.GameObject;
+import ir.soroushtabesh.hearthstone.models.ScriptModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MinionBehaviorList extends MinionBehavior {
 
-    private final List<MinionBehavior> minionBehaviors = new ArrayList<>();
+    private transient final List<MinionBehavior> minionBehaviors = new ArrayList<>();
+    private final List<ScriptModel> scriptModels = new ArrayList<>();
 
     public MinionBehaviorList add(MinionBehavior minionBehavior) {
         minionBehaviors.add(minionBehavior);
+        scriptModels.add(new ScriptModel(minionBehavior));
         return this;
     }
 
     @Override
-    public void battleCry(GameObject gameObject) {
+    public void onScriptAdded() {
+        super.onScriptAdded();
+        scriptModels.forEach(scriptModel -> minionBehaviors.add((MinionBehavior) scriptModel.getScript(getGameController())));
+        minionBehaviors.forEach(minionBehavior -> {
+            minionBehavior.setGameController(getGameController());
+            minionBehavior.setOwnerObject(getOwnerObject());
+            minionBehavior.setPlayerController(getPlayerController());
+        });
+        minionBehaviors.forEach(MinionBehavior::onScriptAdded);
+    }
+
+    @Override
+    public boolean battleCry(GameObject gameObject) {
         super.battleCry(gameObject);
         minionBehaviors.forEach(minionBehavior -> minionBehavior.battleCry(gameObject));
+        return true;
     }
 
     @Override
@@ -49,12 +65,6 @@ public class MinionBehaviorList extends MinionBehavior {
     public void onTurnEnd() {
         super.onTurnEnd();
         minionBehaviors.forEach(MinionBehavior::onTurnEnd);
-    }
-
-    @Override
-    public void onScriptAdded() {
-        super.onScriptAdded();
-        minionBehaviors.forEach(MinionBehavior::onScriptAdded);
     }
 
     @Override

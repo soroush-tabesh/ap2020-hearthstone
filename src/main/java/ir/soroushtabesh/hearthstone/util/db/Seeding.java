@@ -1,5 +1,6 @@
 package ir.soroushtabesh.hearthstone.util.db;
 
+import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.WeaponObject;
 import ir.soroushtabesh.hearthstone.models.*;
 import ir.soroushtabesh.hearthstone.models.cards.*;
 import ir.soroushtabesh.hearthstone.util.Constants;
@@ -114,7 +115,8 @@ public class Seeding {
                     Hero.HeroClass.ROUGE,
                     3,
                     Card.Rarity.COMMON);
-            rogue_spec.setScriptModel(new ScriptModel(new RandomAdderToDeck(new PowerUpMinion(2, 2))));
+            rogue_spec.setScriptModel(new ScriptModel(
+                    new RandomAdderToDeck(WeaponObject.class, new PowerUpWeapon(2, 2))));
 
             Minion rogue_spec2 = new Minion("Skyvateer",
                     "Stealth\n" +
@@ -209,7 +211,7 @@ public class Seeding {
                     3,
                     Card.Rarity.RARE);
             priest_spec2.setScriptModel(new ScriptModel(new MultiSpell()
-                    .add(new Bomb(1, false)).add(new RestoreHealthAllMinions(1))));
+                    .add(new Bomb(1, false)).add(new RestoreHealthMyMinions(1))));
 
             //Spells
             Spell spell1 = new Spell("Sprint",
@@ -278,7 +280,7 @@ public class Seeding {
                     5,
                     Card.Rarity.RARE);
             spell7.setScriptModel(new ScriptModel(new MultiSpell()
-                    .add(new RestoreHealthAllMinions(5))
+                    .add(new RestoreHealthMyMinions(5))
                     .add(new RandomDrawer()).add(new RandomDrawer()).add(new RandomDrawer()).add(new RandomDrawer())
                     .add(new RandomDrawer())));
 
@@ -482,6 +484,17 @@ public class Seeding {
                     Minion.MinionClass.ALL);
             minion15.setTradable(false);
 
+            Minion minion16 = new Minion("Draconic Emissary",
+                    "",
+                    6,
+                    Hero.HeroClass.ALL,
+                    0,
+                    Card.Rarity.COMMON,
+                    6,
+                    6,
+                    Minion.MinionClass.DRAGON);
+            minion16.setTradable(false);
+
 
             //Quests
             Quest quest1 = new Quest("Strength in Numbers",
@@ -556,8 +569,8 @@ public class Seeding {
             weapon6.setScriptModel(new ScriptModel(new DesertSpear()));
 
 
-            InfoPassive passive1 = new InfoPassive("Twice Draw", "");
-            passive1.setScriptModel(new ScriptModel(new TwiceDraw()));
+            InfoPassive passive1 = new InfoPassive("Mana Jump", "");
+            passive1.setScriptModel(new ScriptModel(new ManaJump()));
             InfoPassive passive2 = new InfoPassive("Off Draws", "");
             passive2.setScriptModel(new ScriptModel(new OffDraws()));
             InfoPassive passive3 = new InfoPassive("Warriors", "");
@@ -571,7 +584,7 @@ public class Seeding {
                     mage, warlock, rogue, hunter, priest, paladin
                     , spell1, spell2, spell3, spell4, spell5, spell6, spell7, spell8, spell9, spell10
                     , minion1, minion2, minion3, minion4, minion5, minion6, minion7, minion8, minion9, minion10
-                    , minion11, minion12, minion13, minion14, minion15
+                    , minion11, minion12, minion13, minion14, minion15, minion16
                     , weapon1, weapon2, weapon3, weapon4, weapon5, weapon6
                     , mage_spec, warlock_spec, rogue_spec, hunter_spec, priest_spec, paladin_spec
                     , mage_spec2, warlock_spec2, rogue_spec2, hunter_spec2, priest_spec2, paladin_spec2
@@ -588,7 +601,7 @@ public class Seeding {
             List<Hero> heroes = session.createQuery("from Hero ", Hero.class).list();
             player.getOpenHeroes().addAll(heroes);
             List<Card> cards = session
-                    .createQuery("from Card where id < 37 and deckAssociative=true", Card.class)
+                    .createQuery("from Card where id < 37 and deckAssociative=true and tradable=true", Card.class)
                     .setMaxResults(27).list();
             cards.forEach(player::addOwnedCard);
 

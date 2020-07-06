@@ -650,6 +650,7 @@ public class BoardSceneController extends AbstractSceneController {
     }
 
     public void endTurnButton(ActionEvent event) {
+        AudioManager.getInstance().stopAlarm();
         interruptAskForTarget();
         if (gameController.getTurn() == 0)
             pc0.endTurn();

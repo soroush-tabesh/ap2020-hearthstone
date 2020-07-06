@@ -47,6 +47,10 @@ public class AudioManager {
         mediaPlayer_alarm.play();
     }
 
+    public void stopAlarm() {
+        mediaPlayer_alarm.stop();
+    }
+
     public DoubleProperty bgMusicVolumeProperty() {
         return mediaPlayer_bg.volumeProperty();
     }

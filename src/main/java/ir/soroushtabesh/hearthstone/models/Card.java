@@ -1,5 +1,6 @@
 package ir.soroushtabesh.hearthstone.models;
 
+import ir.soroushtabesh.hearthstone.util.db.DBUtil;
 import org.hibernate.Session;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
@@ -50,6 +51,10 @@ public abstract class Card {
         this.heroClass = heroClass;
         this.price = price;
         this.rarity = rarity;
+    }
+
+    public static Card getCardByName(String cardName) {
+        return DBUtil.doInJPA(session -> getCardByName(cardName, session));
     }
 
     public static Card getCardByName(String cardName, Session session) {

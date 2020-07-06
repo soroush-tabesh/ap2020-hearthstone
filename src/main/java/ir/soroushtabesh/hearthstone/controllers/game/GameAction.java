@@ -47,17 +47,17 @@ public abstract class GameAction {
         }
     }
 
-    public static class MinionPlay extends GameAction {
-        private final MinionObject source;
+    public static class CardPlay extends GameAction {
+        private final CardObject source;
 
-        MinionPlay(MinionObject source) {
-            super(String.format("Minion '%s(Pl.%d)' played"
+        CardPlay(CardObject source) {
+            super(String.format("Card '%s(Pl.%d)' played"
                     , source.getCardModel().getName()
                     , source.getPlayerId()));
             this.source = source;
         }
 
-        public MinionObject getSource() {
+        public CardObject getSource() {
             return source;
         }
     }

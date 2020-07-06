@@ -104,6 +104,7 @@ public class MinionCardView extends CardView {
                 });
         minionObject.immuneProperty()
                 .addListener((observable, oldValue, newValue) -> {
+                    System.out.println("MinionCardView.bindView");
                     immuneEffect.setVisible(newValue);
                 });
         minionObject.stealthProperty()

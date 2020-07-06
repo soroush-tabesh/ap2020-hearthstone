@@ -34,6 +34,15 @@ public class ModelPool {
         return sceneData;
     }
 
+    public List<MinionObject> getAllMinions() {
+        ModelPool.PlayerData pd0 = getPlayerDataById(0);
+        ModelPool.PlayerData pd1 = getPlayerDataById(1);
+        List<MinionObject> allCards = new ArrayList<>();
+        allCards.addAll(pd0.getGroundCard());
+        allCards.addAll(pd1.getGroundCard());
+        return allCards;
+    }
+
     public PlayerData getPlayerDataById(int id) {
         if (id >= 0 && id < playerDataList.size())
             return playerDataList.get(id);

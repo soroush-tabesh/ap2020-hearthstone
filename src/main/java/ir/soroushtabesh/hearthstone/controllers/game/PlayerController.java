@@ -16,6 +16,10 @@ public class PlayerController {
         this.id = id;
     }
 
+    public int getToken() {
+        return token;
+    }
+
     public GameController getGameController() {
         return gameController;
     }

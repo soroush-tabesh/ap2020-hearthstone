@@ -92,7 +92,7 @@ public abstract class GameController {
 
     protected abstract Message playCard(CardObject cardObject, int groundIndex, GameObject optionalTarget, int playerId, int token);
 
-    protected abstract Message summonMinion(MinionObject source, int playerId, int token);
+    public abstract Message summonMinion(MinionObject source, int playerId, int token);
 
     protected abstract Message playMinion(MinionObject source, GameObject target, int playerId, int token);
 
