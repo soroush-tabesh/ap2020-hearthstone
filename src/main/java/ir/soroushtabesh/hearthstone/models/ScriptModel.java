@@ -1,12 +1,12 @@
 package ir.soroushtabesh.hearthstone.models;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import ir.soroushtabesh.hearthstone.controllers.game.GameController;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.GenericScript;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
-import java.lang.reflect.Type;
 
 @Entity
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -27,7 +27,8 @@ public class ScriptModel {
 
     public ScriptModel(GenericScript genericScript) {
         scriptClass = genericScript.getClass();
-        scriptData = new GsonBuilder().create().toJson(genericScript);
+        scriptData = new GsonBuilder()
+                .create().toJson(genericScript);
     }
 
     public ScriptModel(Class<? extends GenericScript> scriptClass, String scriptData) {
@@ -38,9 +39,15 @@ public class ScriptModel {
     public GenericScript getScript(GameController gameController) {
         if (scriptClass == null || scriptData == null || scriptData.isEmpty())
             return null;
-        GenericScript genericScript = new GsonBuilder()
-                .registerTypeAdapter(GenericScript.class, new JsonDeserializerWithInheritance<GenericScript>())
-                .create().fromJson(scriptData, scriptClass);
+        Gson gson = new GsonBuilder().create();
+        GenericScript genericScript = gson.fromJson(scriptData, scriptClass);
+        try {
+            Class<? extends GenericScript> classOfT = (Class<? extends GenericScript>)
+                    getClass().getClassLoader().loadClass(genericScript.getClz());
+            genericScript = gson.fromJson(scriptData, classOfT);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         genericScript.setGameController(gameController);
         return genericScript;
     }
@@ -85,23 +92,4 @@ public class ScriptModel {
         return getId();
     }
 
-    private static class JsonDeserializerWithInheritance<T> implements JsonDeserializer<T> {
-        @Override
-        public T deserialize(
-                JsonElement json, Type typeOfT, JsonDeserializationContext context)
-                throws JsonParseException {
-            JsonObject jsonObject = json.getAsJsonObject();
-            JsonPrimitive classNamePrimitive = (JsonPrimitive) jsonObject.get("type");
-
-            String className = classNamePrimitive.getAsString();
-
-            Class<?> clazz;
-            try {
-                clazz = Class.forName(className);
-            } catch (ClassNotFoundException e) {
-                throw new JsonParseException(e.getMessage());
-            }
-            return context.deserialize(jsonObject, clazz);
-        }
-    }
 }

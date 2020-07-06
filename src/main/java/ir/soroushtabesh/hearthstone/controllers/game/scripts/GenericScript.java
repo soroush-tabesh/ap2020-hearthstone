@@ -1,6 +1,5 @@
 package ir.soroushtabesh.hearthstone.controllers.game.scripts;
 
-import com.google.gson.annotations.SerializedName;
 import ir.soroushtabesh.hearthstone.controllers.game.GameController;
 import ir.soroushtabesh.hearthstone.controllers.game.PlayerController;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.GameObject;
@@ -16,11 +15,14 @@ public class GenericScript {
     private transient GameController gameController;
     private transient PlayerController playerController;
 
-    @SerializedName("type")
-    private final String typeName;
+    private final String clz;
 
     public GenericScript() {
-        typeName = getClass().getName();
+        clz = getClass().getName();
+    }
+
+    public String getClz() {
+        return clz;
     }
 
     protected PlayerController getPlayerController() {
