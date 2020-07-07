@@ -1,9 +1,90 @@
 # Emulation of Hearthstone game
-_Currently under development._ 
+_Under development._ 
 
-## How to run the application
+## How to Run
 In the source package(ir.soroushtabesh.hearthstone) run Main class.
  Database system will initialize itself and no extra work is needed.
+
+## Phase 3 Documentation
+This phase implements a logic unit to manage gameplay.
+
+### Libraries and Dependencies
+Java 13 is used for build.
+Project is built using Gradle
+and obviously is maintained under git.
+
+- [Hibernate](http://hibernate.org/orm/) - Robust and widely used ORM, with an active community.
+- [H2](https://h2database.com) - Small SQL database, with embedded mode available.
+- [Apache Log4j 2](https://logging.apache.org/log4j/) - Taking control of Hibernate logging.
+- [Guava](https://github.com/google/guava) - Collections, caching, primitives support, concurrency libraries, common
+ annotations, string processing, I/O, and more.
+- [Apache Commons Codec](http://commons.apache.org/proper/commons-codec/) - General encoding/decoding algorithms, e.g. 
+phonetic, base64 or URL. 
+- [OpenJFX](https://openjfx.io/) - Alternate JavaFX library as it's no longer contained in JDK.
+- [Apache Lang](http://commons.apache.org/proper/commons-lang/) - Provides extra functionality for classes in java.lang.
+e.g. CompareToBuilder.
+- [AnimateFX](https://github.com/Typhon0/AnimateFX) - A library of ready-to-use animations for JavaFX.
+
+### Resources
+
+- [Game Pedia](https://hearthstone.gamepedia.com/) - A complete resource of game cards and heroes.
+- [Hearthstone's assets](https://github.com/GitHtub/Hearthstone/tree/master/Assets) - UI elements and font.
+- [Vlad Mihalcea' Blog](https://vladmihalcea.com/) - Contains perfect articles on Hibernate.
+- [Baeldung](https://www.baeldung.com/) - Tutorials of hibernate.
+- [SVG PathBuilder](https://codepen.io/anthonydugois/full/mewdyZ) - Online tool for making SVG paths.
+- [SoundBible](http://soundbible.com/) - A free online library of soundfx
+
+### A brief description of architecture
+
+#### Logic
+If you have ever played Hearthstone, you may have noticed that it's a game which mainly 
+relies upon events rather than realtime gameplay. This suggests you to design an event-driven 
+system to manage the logic and functionality of cards. However, a simple polymorphic system
+won't do the job as if used, 
+you'd need to write a script for every card you have and more importantly, you 
+would have not been able to combine functionality of cards and scripts to make new ones which 
+causes you to write even more scripts!    
+That brings us to a dynamic hierarchical script system which supports combination of scripts.
+The system I designed for this project, mainly follows Decorator and Composite design patterns;
+meaning the scripts can even be combined in runtime, and their structure is not static.   
+Also, the script system uses Java Reflection to load scripts which enables us to load scripts
+dynamically.   
+The scripts are also reusable in other forms. The script system ables one to load a json
+file along with the script class which lets you to use a single scripts but with 
+different parameters for various cards.
+
+#### Player Controller
+Not everyone can have edit-access on the models! The act of playing can only be done using 
+a Player Controller interface which even limits a player to act only behalf of himself!
+
+#### Game Objects
+The state-system of the game controller holds observable data models. Therefore, any change on any model
+gets simply reflected to whichever object needed which eases the communication with
+View system.    
+Game objects all have a unique identifier registered in a model pool therefore any entity has a single
+strong-referenced model which can be read across the application. this unique identifier is also used
+for hashing of the models.
+
+#### GUI
+##### Animation pool
+All animations get registered in an Animation Pool in order to become easier to
+manage.
+##### Drag and Drop
+The actions of playing cards are mainly done using drag and drop.
+##### View-Model
+view is linked to the game models using observers.
+
+#### Extensibility
+The Logic depends on a high-level GameController class. Therefore, in order to add an Online Mode
+to the game the only change needed is to add a Proxy or Inherited class to direct game request to
+a server.
+
+#### Deck Reader
+Uses json to load card names and build the corresponding deck object.
+
+
+
+
 
 ## Phase 2 Documentation
 This phase implements a graphical UI to interact with data models and there's a minimal implementaion of 
