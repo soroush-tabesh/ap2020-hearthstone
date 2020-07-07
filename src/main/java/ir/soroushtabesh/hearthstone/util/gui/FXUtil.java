@@ -90,19 +90,19 @@ public class FXUtil {
         }
 
         public static <E, F> void mapContent(ObservableList<F> mapped, ObservableList<? extends E> source,
-                                             Function<? super E, ? extends F> mapper
-                , Function<? super E, ? extends F> mapper2) {
+                                             Function<? super E, ? extends F> newObjectMapper
+                , Function<? super E, ? extends F> defaultMapper) {
 //            map(mapped, source, mapper);
             mapped.clear();
-            source.forEach(e -> mapped.add(mapper.apply(e)));
+            source.forEach(e -> mapped.add(newObjectMapper.apply(e)));
             source.addListener((InvalidationListener) c -> {
                 List<F> bc = new ArrayList<>(mapped);
                 mapped.clear();
                 source.forEach(e -> {
-                    if (!bc.contains(mapper2.apply(e)))
-                        mapped.add(mapper.apply(e));
+                    if (!bc.contains(defaultMapper.apply(e)))
+                        mapped.add(newObjectMapper.apply(e));
                     else
-                        mapped.add(mapper2.apply(e));
+                        mapped.add(defaultMapper.apply(e));
                 });
             });
         }

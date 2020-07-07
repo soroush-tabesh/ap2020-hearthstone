@@ -24,7 +24,7 @@
         <Button fx:id="deckReaderMode" alignment="CENTER" layoutX="501.0" layoutY="285.0" mnemonicParsing="false"
                 onAction="#deckReaderButtonAction" styleClass="menu_button" text="Deck Reader Mode"/>
         <Button fx:id="practiceButton" alignment="CENTER" layoutX="422.0" layoutY="653.0" mnemonicParsing="false"
-                onAction="#practiceButtonAction" styleClass="menu_button" text="Practice"/>
+                onAction="#practiceButtonAction" styleClass="menu_button" text="Practice" disable="true"/>
         <HBox alignment="CENTER" layoutX="1040.0" layoutY="756.0" prefHeight="64.0" prefWidth="146.0"
               styleClass="coin-area" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="14.0"
               AnchorPane.topAnchor="756.0">

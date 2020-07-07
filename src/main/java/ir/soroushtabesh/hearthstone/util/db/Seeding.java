@@ -23,7 +23,6 @@ public class Seeding {
     public static void seed() {
         try {
             //Heroes
-            //todo persist heropowers
             HeroPower fireblast = new HeroPower("Fireblast", "", 2
                     , Hero.HeroClass.MAGE, 2, Card.Rarity.FREE);
             fireblast.setScriptModel(new ScriptModel(new DealDamage(2)));
