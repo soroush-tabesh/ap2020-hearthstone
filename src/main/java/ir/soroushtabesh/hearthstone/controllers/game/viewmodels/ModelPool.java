@@ -71,7 +71,7 @@ public class ModelPool {
 
     public static class SceneData {
         private final GameController gameController;
-        private final ObservableList<GameAction> log = FXCollections.observableArrayList();
+        private final ObservableList<GameAction> log = FXCollections.synchronizedObservableList(FXCollections.observableArrayList());
 
         public SceneData(GameController gameController) {
             this.gameController = gameController;
@@ -86,12 +86,12 @@ public class ModelPool {
         private final int playerId;
         private final GameController gameController;
         //cards
-        private final ObservableList<CardObject> deckCard = FXCollections.observableArrayList();
-        private final ObservableList<CardObject> handCard = FXCollections.observableArrayList();
-        private final ObservableList<MinionObject> groundCard = FXCollections.observableArrayList();
-        private final ObservableList<MinionObject> deadCard = FXCollections.observableArrayList();
-        private final ObservableList<CardObject> burnedCard = FXCollections.observableArrayList();
-        private final ObservableList<Boolean> changeCardFlag = FXCollections.observableArrayList();
+        private final ObservableList<CardObject> deckCard = FXCollections.synchronizedObservableList(FXCollections.observableArrayList());
+        private final ObservableList<CardObject> handCard = FXCollections.synchronizedObservableList(FXCollections.observableArrayList());
+        private final ObservableList<MinionObject> groundCard = FXCollections.synchronizedObservableList(FXCollections.observableArrayList());
+        private final ObservableList<MinionObject> deadCard = FXCollections.synchronizedObservableList(FXCollections.observableArrayList());
+        private final ObservableList<CardObject> burnedCard = FXCollections.synchronizedObservableList(FXCollections.observableArrayList());
+        private final ObservableList<Boolean> changeCardFlag = FXCollections.synchronizedObservableList(FXCollections.observableArrayList());
         //flags and counters
         private final IntegerProperty mana = new SimpleIntegerProperty();
         private final IntegerProperty manaMax = new SimpleIntegerProperty();

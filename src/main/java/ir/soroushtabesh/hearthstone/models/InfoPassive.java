@@ -1,5 +1,6 @@
 package ir.soroushtabesh.hearthstone.models;
 
+import ir.soroushtabesh.hearthstone.controllers.game.scripts.HeroBehavior;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
@@ -19,7 +20,7 @@ public class InfoPassive {
 
     @ManyToOne
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
-    private ScriptModel scriptModel;
+    private ScriptModel scriptModel = new ScriptModel(new HeroBehavior());
 
     public InfoPassive() {
     }

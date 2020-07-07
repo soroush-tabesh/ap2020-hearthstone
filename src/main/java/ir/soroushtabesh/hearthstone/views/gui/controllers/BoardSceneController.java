@@ -253,7 +253,14 @@ public class BoardSceneController extends AbstractSceneController {
         bindDimPane();
         bindTimer();
         bindCommonAnimation();
+        bindWinner();
         initBoardDragDetection();
+    }
+
+    private void bindWinner() {
+        gameController.winnerProperty().addListener((observable, oldValue, newValue) ->
+                FXUtil.showAlertInfo("GameBoard", "Game Over"
+                        , "Player" + newValue + " won the game"));
     }
 
     private void unbindUI() {
@@ -372,8 +379,8 @@ public class BoardSceneController extends AbstractSceneController {
     }
 
     private void bindGroundCards() {
-        FXUtil.BindingUtil.mapContent(groundBox0.getChildren(), playerData0.getGroundCard(), this::getCardViewAnimated);
-        FXUtil.BindingUtil.mapContent(groundBox1.getChildren(), playerData1.getGroundCard(), this::getCardViewAnimated);
+        FXUtil.BindingUtil.mapContent(groundBox0.getChildren(), playerData0.getGroundCard(), this::getCardViewAnimated, this::getCardView);
+        FXUtil.BindingUtil.mapContent(groundBox1.getChildren(), playerData1.getGroundCard(), this::getCardViewAnimated, this::getCardView);
     }
 
     private CardView getCardViewAnimated(CardObject cardObject) {

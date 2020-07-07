@@ -3,7 +3,6 @@ package scripts;
 import ir.soroushtabesh.hearthstone.controllers.game.GameAction;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.GameEventListener;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.CardObject;
-import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.GameObject;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.MinionObject;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.SpellObject;
 import ir.soroushtabesh.hearthstone.models.Card;
@@ -19,13 +18,13 @@ public class LearnDraconic extends QuestWatch implements GameEventListener {
     }
 
     @Override
-    public boolean onSpellEffect(GameObject gameObject) {
+    public void applyReward() {
         getGameController().getScriptEngine().unregisterEventFilter(this);
         Card dragon = Card.getCardByName("Draconic Emissary");
         CardObject cardObject = CardObject.build(getPlayerController().getId(), getGameController(), dragon);
         getGameController().summonMinion((MinionObject) cardObject
                 , getPlayerController().getId(), getPlayerController().getToken());
-        return super.onSpellEffect(gameObject);
+        super.applyReward();
     }
 
     @Override
@@ -36,7 +35,7 @@ public class LearnDraconic extends QuestWatch implements GameEventListener {
                     && cardPlay.getSource() instanceof SpellObject) {
                 spent += cardPlay.getSource().getManaCost();
                 if (spent >= 8) {
-                    getCustomReward().onSpellEffect(null);
+                    getCustomReward().applyReward();
                 }
             }
         }

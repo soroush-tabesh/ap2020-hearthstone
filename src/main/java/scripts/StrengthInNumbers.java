@@ -3,7 +3,6 @@ package scripts;
 import ir.soroushtabesh.hearthstone.controllers.game.GameAction;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.GameEventListener;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.CardObject;
-import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.GameObject;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.MinionObject;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.SpellObject;
 import javafx.collections.ObservableList;
@@ -16,10 +15,12 @@ public class StrengthInNumbers extends QuestWatch implements GameEventListener {
     public void onCardPlay() {//start watch
         super.onCardPlay();
         getGameController().getScriptEngine().registerEventFilter(this);
+        new Thread(this::onCardPlay);
     }
 
     @Override
-    public boolean onSpellEffect(GameObject gameObject) {
+    public void applyReward() {
+        super.applyReward();
         getGameController().getScriptEngine().unregisterEventFilter(this);
         ObservableList<CardObject> deckCard = getGameController().getModelPool()
                 .getPlayerDataById(getPlayerController().getId()).getDeckCard();
@@ -31,7 +32,6 @@ public class StrengthInNumbers extends QuestWatch implements GameEventListener {
             getGameController().summonMinion(minionObject, getPlayerController().getId()
                     , getPlayerController().getToken());
         }
-        return super.onSpellEffect(gameObject);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class StrengthInNumbers extends QuestWatch implements GameEventListener {
                     && cardPlay.getSource() instanceof SpellObject) {
                 spent += cardPlay.getSource().getManaCost();
                 if (spent >= 10) {
-                    getCustomReward().onSpellEffect(null);
+                    getCustomReward().applyReward();
                 }
             }
         }

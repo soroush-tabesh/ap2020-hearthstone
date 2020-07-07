@@ -1,19 +1,21 @@
 package scripts;
 
+import ir.soroushtabesh.hearthstone.controllers.game.scripts.QuestReward;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.SpellBehavior;
 
-public class QuestWatch extends SpellBehavior {
-    private transient SpellBehavior customReward = this;
+public class QuestWatch extends SpellBehavior implements QuestReward {
+    private transient QuestReward customReward = this;
 
-    public SpellBehavior getCustomReward() {
+    public QuestReward getCustomReward() {
         return customReward;
     }
 
-    public void setCustomReward(SpellBehavior customReward) {
+    public void setCustomReward(QuestReward customReward) {
         this.customReward = customReward;
-        customReward.setGameController(getGameController());
-        customReward.setOwnerObject(getOwnerObject());
-        customReward.setPlayerController(getPlayerController());
     }
 
+    @Override
+    public void applyReward() {
+
+    }
 }

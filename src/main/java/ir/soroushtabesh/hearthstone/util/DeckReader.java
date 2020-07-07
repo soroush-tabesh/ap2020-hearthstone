@@ -2,14 +2,14 @@ package ir.soroushtabesh.hearthstone.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import ir.soroushtabesh.hearthstone.models.Card;
-import ir.soroushtabesh.hearthstone.models.Deck;
-import ir.soroushtabesh.hearthstone.models.DeckReaderModel;
-import ir.soroushtabesh.hearthstone.models.Hero;
+import ir.soroushtabesh.hearthstone.models.*;
 import ir.soroushtabesh.hearthstone.models.cards.Minion;
+import ir.soroushtabesh.hearthstone.models.cards.Quest;
 import ir.soroushtabesh.hearthstone.models.cards.Spell;
 import ir.soroushtabesh.hearthstone.models.cards.Weapon;
 import ir.soroushtabesh.hearthstone.util.db.DBUtil;
+import scripts.QuestWatch;
+import scripts.Summoner;
 
 import java.io.File;
 import java.io.IOException;
@@ -73,6 +73,8 @@ public class DeckReader {
         return friendly;
     }
 
+    private static int cntr = 10000;
+
     public static Card getCardFromName(String name) {
         name = name.toLowerCase().trim();
         if (name.equals("spell"))
@@ -81,7 +83,7 @@ public class DeckReader {
             return getRandomMinion();
         if (name.equals("weapon"))
             return getRandomWeapon();
-        String[] split = name.split("->reward: ");
+        String[] split = name.split("->reward:");
         for (int i = 0; i < split.length; i++)
             split[i] = split[i].trim();
 
@@ -90,13 +92,16 @@ public class DeckReader {
                 .setParameter("name", split[0])
                 .uniqueResult());
         if (card == null)
-            throw new NoSuchCardException();
+            throw new NoSuchCardException(name);
         if (split.length == 2) {
-            //todo: it's a quest. configure it.
-//            Quest card1 = (Quest) card;
-//            Quest quest = new Quest(card1.getName(), card1.getDescription(), card1.getMana()
-//                    , card1.getHeroClass(), card1.getPrice(), card1.getRarity());
-//            quest.getScriptModel().getScript(null);
+            Quest card1 = (Quest) card;
+            Quest quest = new Quest(card1.getName(), card1.getDescription(), card1.getMana()
+                    , card1.getHeroClass(), card1.getPrice(), card1.getRarity());
+            quest.setId(cntr++);
+            QuestWatch script = (QuestWatch) card1.getScriptModel().getScript(null);
+            script.setCustomReward(() -> new Summoner(split[1]).onSpellEffect(null));
+            quest.setScriptModel(new ScriptModel(script));
+            card = quest;
         }
         return card;
     }
