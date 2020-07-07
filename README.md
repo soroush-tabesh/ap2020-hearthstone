@@ -72,9 +72,9 @@ manage.
 ##### Drag and Drop
 The actions of playing cards are mainly done using drag and drop.
 ##### View-Model
-view is linked to the game models using observers.
+view is linked to the game models using observers. 
 
-#### Extensibility
+#### Extensibility 
 The Logic depends on a high-level GameController class. Therefore, in order to add an Online Mode
 to the game the only change needed is to add a Proxy or Inherited class to direct game request to
 a server.
