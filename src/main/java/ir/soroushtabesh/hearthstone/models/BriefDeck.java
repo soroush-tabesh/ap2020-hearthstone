@@ -98,7 +98,12 @@ public class BriefDeck {
                 .append(o2.getKey().getMana(), o1.getKey().getMana())
                 .append(o2.getKey() instanceof Minion ? 1 : 0, o1.getKey() instanceof Minion ? 1 : 0)
                 .toComparison());
-        favCardUsage = prior.get(0).getValue();
-        favCard = prior.get(0).getKey().getName();
+        if (prior.isEmpty()) {
+            favCardUsage = 0;
+            favCard = "N/A";
+        } else {
+            favCardUsage = prior.get(0).getValue();
+            favCard = prior.get(0).getKey().getName();
+        }
     }
 }

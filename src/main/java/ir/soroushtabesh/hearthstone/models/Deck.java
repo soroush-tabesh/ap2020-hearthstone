@@ -34,7 +34,7 @@ public class Deck {
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
     private Map<Card, Integer> cardsInDeck = new HashMap<>();
 
-    private DeckHistory deckHistory = new DeckHistory();
+    private final DeckHistory deckHistory = new DeckHistory();
 
     public Deck() {
     }
