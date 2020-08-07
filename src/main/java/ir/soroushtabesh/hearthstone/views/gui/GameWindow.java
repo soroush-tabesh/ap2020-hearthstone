@@ -38,6 +38,12 @@ public class GameWindow extends Application {
         }, 500);
     }
 
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        //todo close resources and streams
+    }
+
     private boolean setUpStage(Stage stage) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fxml/GameWindow.fxml"));
         try {

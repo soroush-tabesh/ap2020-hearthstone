@@ -11,5 +11,11 @@
       <jdbc-driver>org.h2.Driver</jdbc-driver>
       <jdbc-url>jdbc:h2:$PROJECT_DIR$/gameData</jdbc-url>
     </data-source>
+    <data-source source="LOCAL" name="soroush_tabesh_hs@localhost" uuid="181868fc-3a6c-4b7c-8275-498675e8c328">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://localhost:5432/soroush_tabesh_hs</jdbc-url>
+    </data-source>
   </component>
 </project>
