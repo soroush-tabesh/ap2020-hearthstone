@@ -1,4 +1,4 @@
-package ir.soroushtabesh.hearthstone.controllers;
+package ir.soroushtabesh.hearthstone.views.gui.controllers;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.scene.media.Media;

@@ -1,6 +1,5 @@
 package ir.soroushtabesh.hearthstone.views.gui.controllers;
 
-import ir.soroushtabesh.hearthstone.controllers.AudioManager;
 import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
 import ir.soroushtabesh.hearthstone.util.gui.FXUtil;
 import ir.soroushtabesh.hearthstone.views.gui.LoginScene;

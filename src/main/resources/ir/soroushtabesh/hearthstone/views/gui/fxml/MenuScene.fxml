@@ -11,20 +11,18 @@
             stylesheets="@../stylesheet/styles.css" xmlns="http://javafx.com/javafx/11.0.1"
             fx:controller="ir.soroushtabesh.hearthstone.views.gui.controllers.MenuSceneController">
     <children>
-        <Button fx:id="playButton" alignment="CENTER" layoutX="576.0" layoutY="229.0" mnemonicParsing="false"
+        <Button alignment="CENTER" layoutX="576.0" layoutY="229.0" mnemonicParsing="false"
                 onAction="#playButtonAction" styleClass="menu_button" text="Play"/>
-        <Button fx:id="shopButton" alignment="CENTER" layoutX="113.0" layoutY="658.0" mnemonicParsing="false"
+        <Button alignment="CENTER" layoutX="113.0" layoutY="658.0" mnemonicParsing="false"
                 onAction="#shopButtonAction" prefHeight="98.0" prefWidth="99.0" styleClass="menu_button"/>
-        <Button fx:id="statusButton" alignment="CENTER" layoutX="564.0" layoutY="402.0" mnemonicParsing="false"
+        <Button alignment="CENTER" layoutX="565.0" layoutY="285.0" mnemonicParsing="false"
                 onAction="#statusButtonAction" styleClass="menu_button" text="Status"/>
-        <Button fx:id="settingButton" alignment="CENTER" layoutX="561.0" layoutY="342.0" mnemonicParsing="false"
+        <Button alignment="CENTER" layoutX="561.0" layoutY="342.0" mnemonicParsing="false"
                 onAction="#settingButtonAction" styleClass="menu_button" text="Setting"/>
-        <Button fx:id="collectionButton" alignment="CENTER" layoutX="609.0" layoutY="653.0" mnemonicParsing="false"
+        <Button alignment="CENTER" layoutX="609.0" layoutY="653.0" mnemonicParsing="false"
                 onAction="#collectionButtonAction" styleClass="menu_button" text="Collection"/>
-        <Button fx:id="deckReaderMode" alignment="CENTER" layoutX="501.0" layoutY="285.0" mnemonicParsing="false"
-                onAction="#deckReaderButtonAction" styleClass="menu_button" text="Deck Reader Mode"/>
-        <Button fx:id="practiceButton" alignment="CENTER" layoutX="422.0" layoutY="653.0" mnemonicParsing="false"
-                onAction="#practiceButtonAction" styleClass="menu_button" text="Practice" disable="true"/>
+        <Button alignment="CENTER" layoutX="560.0" layoutY="400.0" mnemonicParsing="false"
+                onAction="#logout" styleClass="menu_button" text="Logout"/>
         <HBox alignment="CENTER" layoutX="1040.0" layoutY="756.0" prefHeight="64.0" prefWidth="146.0"
               styleClass="coin-area" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="14.0"
               AnchorPane.topAnchor="756.0">

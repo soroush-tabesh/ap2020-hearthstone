@@ -2,7 +2,6 @@ package ir.soroushtabesh.hearthstone.views.gui.controllers;
 
 import animatefx.animation.FadeOut;
 import animatefx.animation.Hinge;
-import ir.soroushtabesh.hearthstone.controllers.AudioManager;
 import ir.soroushtabesh.hearthstone.controllers.game.GameAction;
 import ir.soroushtabesh.hearthstone.controllers.game.GameController;
 import ir.soroushtabesh.hearthstone.controllers.game.LocalGameController;
@@ -119,6 +118,7 @@ public class BoardSceneController extends AbstractSceneController {
         super.onStart(message);
         if (message instanceof PlayMode)
             playMode = ((PlayMode) message);
+        //todo show mode chooser dialog
         initUI();
         switch (playMode) {
             case AI:
