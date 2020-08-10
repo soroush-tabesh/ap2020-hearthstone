@@ -4,10 +4,14 @@ import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
 import ir.soroushtabesh.hearthstone.models.Log;
 import ir.soroushtabesh.hearthstone.models.Player;
 import ir.soroushtabesh.hearthstone.util.db.DBUtil;
+import org.apache.log4j.Level;
 
 import java.util.Date;
 
 public class Logger {
+
+    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Logger.class);
+
     private Logger() {
     }
 
@@ -16,6 +20,7 @@ public class Logger {
     }
 
     public static void log(String event, String desc, Log.Severity severity) {
+
         Log log = new Log();
         if (PlayerManager.getInstance().getPlayer() != null) {
             Player player = PlayerManager.getInstance().getPlayer();
@@ -28,9 +33,13 @@ public class Logger {
         log.setEvent(event);
         log.setDescription(desc);
         log.setSeverity(severity);
-        DBUtil.doInJPATemp(session -> {
-            session.saveOrUpdate(log);
-            return null;
-        });
+        if (Constants.isServerMode())
+            DBUtil.doInJPATemp(session -> {
+                session.saveOrUpdate(log);
+                return null;
+            });
+        else
+            logger.log(Level.ALL, log.toString());
+
     }
 }

@@ -1,5 +1,6 @@
 package scripts;
 
+import ir.soroushtabesh.hearthstone.controllers.CardManager;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.SpellBehavior;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.CardObject;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.GameObject;
@@ -17,7 +18,7 @@ public class Summoner extends SpellBehavior {
     public boolean onSpellEffect(GameObject gameObject) {
         super.onSpellEffect(gameObject);
         for (String s : summonList) {
-            Card locust = Card.getCardByName(s);
+            Card locust = CardManager.getInstance().getCardByName(s);
             CardObject cardObject = CardObject.build(getPlayerController().getId(), getGameController(), locust);
             getGameController().summonMinion((MinionObject) cardObject
                     , getPlayerController().getId(), getPlayerController().getToken());

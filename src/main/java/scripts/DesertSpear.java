@@ -1,5 +1,6 @@
 package scripts;
 
+import ir.soroushtabesh.hearthstone.controllers.CardManager;
 import ir.soroushtabesh.hearthstone.controllers.game.GameAction;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.GameEventListener;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.SpellBehavior;
@@ -20,7 +21,7 @@ public class DesertSpear extends SpellBehavior implements GameEventListener {
             GameAction.TargetedAttack targetedAttack = (GameAction.TargetedAttack) gameAction;
             if (targetedAttack.getSource() == getOwnerObject()
                     && targetedAttack.getSource().getPlayerId() == getOwnerObject().getPlayerId()) {
-                Card locust = Card.getCardByName("Locust");
+                Card locust = CardManager.getInstance().getCardByName("Locust");
                 CardObject cardObject = CardObject.build(getPlayerController().getId(), getGameController(), locust);
                 getGameController().summonMinion((MinionObject) cardObject
                         , getPlayerController().getId(), getPlayerController().getToken());

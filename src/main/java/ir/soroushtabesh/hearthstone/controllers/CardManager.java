@@ -1,9 +1,9 @@
 package ir.soroushtabesh.hearthstone.controllers;
 
-import ir.soroushtabesh.hearthstone.models.Card;
-import ir.soroushtabesh.hearthstone.models.InfoPassive;
-import ir.soroushtabesh.hearthstone.models.Message;
-import ir.soroushtabesh.hearthstone.models.Player;
+import ir.soroushtabesh.hearthstone.models.*;
+import ir.soroushtabesh.hearthstone.models.cards.Minion;
+import ir.soroushtabesh.hearthstone.models.cards.Spell;
+import ir.soroushtabesh.hearthstone.models.cards.Weapon;
 import ir.soroushtabesh.hearthstone.util.Logger;
 import ir.soroushtabesh.hearthstone.util.db.DBUtil;
 
@@ -56,6 +56,39 @@ public class CardManager {
     public boolean isInAnyDeck(Card card) {
         Player player = PlayerManager.getInstance().getPlayer();
         return player.getOwnedCardsList().contains(card);
+    }
+
+    public Card getCardByName(String name) {
+        return DBUtil.doInJPA(session -> session
+                .createQuery("from Card where lower(name)=:name ", Card.class)
+                .setParameter("name", name.toLowerCase())
+                .uniqueResult());
+    }
+
+
+    public List<Minion> getAllMinions() {
+        return DBUtil.doInJPA(session -> session
+                .createQuery("from Minion ", Minion.class)
+                .list());
+    }
+
+    public List<Spell> getAllSpells() {
+        return DBUtil.doInJPA(session -> session
+                .createQuery("from Spell ", Spell.class)
+                .list());
+    }
+
+    public List<Weapon> getAllWeapons() {
+        return DBUtil.doInJPA(session -> session
+                .createQuery("from Weapon ", Weapon.class)
+                .list());
+    }
+
+    public Hero getHeroByClass(Hero.HeroClass heroClass) {
+        return DBUtil.doInJPA(session -> session
+                .createQuery("from Hero where heroClass=:cls ", Hero.class)
+                .setParameter("cls", heroClass)
+                .uniqueResult());
     }
 
 

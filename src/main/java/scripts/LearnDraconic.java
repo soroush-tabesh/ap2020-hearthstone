@@ -1,5 +1,6 @@
 package scripts;
 
+import ir.soroushtabesh.hearthstone.controllers.CardManager;
 import ir.soroushtabesh.hearthstone.controllers.game.GameAction;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.GameEventListener;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.CardObject;
@@ -20,7 +21,7 @@ public class LearnDraconic extends QuestWatch implements GameEventListener {
     @Override
     public void applyReward() {
         getGameController().getScriptEngine().unregisterEventFilter(this);
-        Card dragon = Card.getCardByName("Draconic Emissary");
+        Card dragon = CardManager.getInstance().getCardByName("Draconic Emissary");
         CardObject cardObject = CardObject.build(getPlayerController().getId(), getGameController(), dragon);
         getGameController().summonMinion((MinionObject) cardObject
                 , getPlayerController().getId(), getPlayerController().getToken());

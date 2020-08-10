@@ -2,6 +2,7 @@ package ir.soroushtabesh.hearthstone.views.gui.controllers;
 
 import animatefx.animation.FadeOut;
 import animatefx.animation.Hinge;
+import ir.soroushtabesh.hearthstone.controllers.CardManager;
 import ir.soroushtabesh.hearthstone.controllers.game.GameAction;
 import ir.soroushtabesh.hearthstone.controllers.game.GameController;
 import ir.soroushtabesh.hearthstone.controllers.game.LocalGameController;
@@ -159,11 +160,11 @@ public class BoardSceneController extends AbstractSceneController {
             return false;
         gameController = new LocalGameController();
         pc0 = gameController.registerPlayer(
-                DeckReader.getHeroByClass(Hero.HeroClass.MAGE),
+                CardManager.getInstance().getHeroByClass(Hero.HeroClass.MAGE),
                 deckReaderModel.getFriendlyDeck(),
                 new InfoPassive(), deckReaderModel.getFriendlyDeckList());
         pc1 = gameController.registerPlayer(
-                DeckReader.getHeroByClass(Hero.HeroClass.MAGE),
+                CardManager.getInstance().getHeroByClass(Hero.HeroClass.MAGE),
                 deckReaderModel.getEnemyDeck(),
                 new InfoPassive(), deckReaderModel.getEnemyDeckList());
         playerData0 = gameController.getModelPool().getPlayerDataById(pc0.getId());

@@ -1,5 +1,6 @@
 package scripts;
 
+import ir.soroushtabesh.hearthstone.controllers.CardManager;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.SpellBehavior;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.CardObject;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.GameObject;
@@ -15,7 +16,7 @@ public class PlayCard extends SpellBehavior {
     @Override
     public boolean onSpellEffect(GameObject gameObject) {
         super.onSpellEffect(gameObject);
-        Card locust = Card.getCardByName(cardName);
+        Card locust = CardManager.getInstance().getCardByName(cardName);
         CardObject cardObject = CardObject.build(getPlayerController().getId(), getGameController(), locust);
         getPlayerController().playCard(cardObject, 0, null);
         return true;

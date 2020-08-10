@@ -2,12 +2,15 @@ package ir.soroushtabesh.hearthstone.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import ir.soroushtabesh.hearthstone.models.*;
+import ir.soroushtabesh.hearthstone.controllers.CardManager;
+import ir.soroushtabesh.hearthstone.models.Card;
+import ir.soroushtabesh.hearthstone.models.Deck;
+import ir.soroushtabesh.hearthstone.models.DeckReaderModel;
+import ir.soroushtabesh.hearthstone.models.ScriptModel;
 import ir.soroushtabesh.hearthstone.models.cards.Minion;
 import ir.soroushtabesh.hearthstone.models.cards.Quest;
 import ir.soroushtabesh.hearthstone.models.cards.Spell;
 import ir.soroushtabesh.hearthstone.models.cards.Weapon;
-import ir.soroushtabesh.hearthstone.util.db.DBUtil;
 import scripts.QuestWatch;
 import scripts.Summoner;
 
@@ -87,10 +90,7 @@ public class DeckReader {
         for (int i = 0; i < split.length; i++)
             split[i] = split[i].trim();
 
-        Card card = DBUtil.doInJPA(session -> session
-                .createQuery("from Card where lower(name)=:name ", Card.class)
-                .setParameter("name", split[0])
-                .uniqueResult());
+        Card card = CardManager.getInstance().getCardByName(split[0]);
         if (card == null)
             throw new NoSuchCardException(name);
         if (split.length == 2) {
@@ -110,31 +110,18 @@ public class DeckReader {
         return names.stream().map(DeckReader::getCardFromName).collect(Collectors.toList());
     }
 
-    public static Hero getHeroByClass(Hero.HeroClass heroClass) {
-        return DBUtil.doInJPA(session -> session
-                .createQuery("from Hero where heroClass=:cls ", Hero.class)
-                .setParameter("cls", heroClass)
-                .uniqueResult());
-    }
-
     public static Minion getRandomMinion() {
-        List<Minion> cards = DBUtil.doInJPA(session -> session
-                .createQuery("from Minion ", Minion.class)
-                .list());
+        List<Minion> cards = CardManager.getInstance().getAllMinions();
         return cards.get(new SecureRandom().nextInt(cards.size()));
     }
 
     public static Spell getRandomSpell() {
-        List<Spell> cards = DBUtil.doInJPA(session -> session
-                .createQuery("from Spell ", Spell.class)
-                .list());
+        List<Spell> cards = CardManager.getInstance().getAllSpells();
         return cards.get(new SecureRandom().nextInt(cards.size()));
     }
 
     private static Weapon getRandomWeapon() {
-        List<Weapon> cards = DBUtil.doInJPA(session -> session
-                .createQuery("from Weapon ", Weapon.class)
-                .list());
+        List<Weapon> cards = CardManager.getInstance().getAllWeapons();
         return cards.get(new SecureRandom().nextInt(cards.size()));
     }
 }

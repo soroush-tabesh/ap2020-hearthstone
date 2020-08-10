@@ -1,8 +1,6 @@
 package ir.soroushtabesh.hearthstone.models;
 
 import ir.soroushtabesh.hearthstone.util.Logger;
-import ir.soroushtabesh.hearthstone.util.db.DBUtil;
-import org.hibernate.Session;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -131,19 +129,6 @@ public class Player {
 
     public List<Deck> getDecks() {
         return decks;
-    }
-
-    public Deck getDeckOfHero(Hero hero, Session session) {
-        if (hero == null)
-            return null;
-        for (Deck deck : decks) {
-            if (deck.getHeroClass().equals(hero.getHeroClass()))
-                return deck;
-        }
-        Deck deck = new Deck(hero.getHeroClass(), this);
-        decks.add(deck);
-        DBUtil.pushSingleObject(this, session);
-        return deck;
     }
 
     public void addDeck(Deck deck) {

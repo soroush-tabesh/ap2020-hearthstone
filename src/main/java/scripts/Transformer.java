@@ -1,5 +1,6 @@
 package scripts;
 
+import ir.soroushtabesh.hearthstone.controllers.CardManager;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.SpellBehavior;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.CardObject;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.GameObject;
@@ -24,7 +25,7 @@ public class Transformer extends SpellBehavior {
         ModelPool.PlayerData playerData = getGameController().getModelPool().getPlayerDataById(getPlayerController().getId());
         playerData.getGroundCard().remove(minionObject);
 
-        Card card = Card.getCardByName(transformTo);
+        Card card = CardManager.getInstance().getCardByName(transformTo);
         CardObject cardObject = CardObject.build(getPlayerController().getId(), getGameController(), card);
         getGameController().summonMinion((MinionObject) cardObject
                 , getPlayerController().getId(), getPlayerController().getToken());
