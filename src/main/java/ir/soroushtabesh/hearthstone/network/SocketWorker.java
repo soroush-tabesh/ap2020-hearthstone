@@ -1,7 +1,7 @@
 package ir.soroushtabesh.hearthstone.network;
 
+import ir.soroushtabesh.hearthstone.models.Message;
 import ir.soroushtabesh.hearthstone.network.command.Command;
-import ir.soroushtabesh.hearthstone.network.models.Message;
 import ir.soroushtabesh.hearthstone.network.models.Packet;
 import ir.soroushtabesh.hearthstone.util.JSONUtil;
 

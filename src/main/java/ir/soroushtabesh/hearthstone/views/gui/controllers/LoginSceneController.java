@@ -1,6 +1,7 @@
 package ir.soroushtabesh.hearthstone.views.gui.controllers;
 
 import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
+import ir.soroushtabesh.hearthstone.models.Message;
 import ir.soroushtabesh.hearthstone.views.gui.LoginScene;
 import ir.soroushtabesh.hearthstone.views.gui.MenuScene;
 import javafx.event.ActionEvent;
@@ -20,7 +21,7 @@ public class LoginSceneController extends AbstractSceneController {
             ((LoginScene) getCurrentScene()).showCheckInput();
             return;
         }
-        PlayerManager.Message message = PlayerManager.getInstance().makeAccount(getInputUsername(), getInputPassword());
+        Message message = PlayerManager.getInstance().makeAccount(getInputUsername(), getInputPassword());
         switch (message) {
             case ERROR:
                 ((LoginScene) getCurrentScene()).showError();
@@ -39,7 +40,7 @@ public class LoginSceneController extends AbstractSceneController {
             ((LoginScene) getCurrentScene()).showCheckInput();
             return;
         }
-        PlayerManager.Message message = PlayerManager.getInstance().authenticate(getInputUsername(), getInputPassword());
+        Message message = PlayerManager.getInstance().authenticate(getInputUsername(), getInputPassword());
         switch (message) {
             case ERROR:
                 ((LoginScene) getCurrentScene()).showError();

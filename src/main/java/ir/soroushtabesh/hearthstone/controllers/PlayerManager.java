@@ -1,5 +1,6 @@
 package ir.soroushtabesh.hearthstone.controllers;
 
+import ir.soroushtabesh.hearthstone.models.Message;
 import ir.soroushtabesh.hearthstone.models.Player;
 import ir.soroushtabesh.hearthstone.util.HashUtil;
 import ir.soroushtabesh.hearthstone.util.Logger;
@@ -89,23 +90,4 @@ public class PlayerManager {
         return player;
     }
 
-    public void refreshPlayer() {
-        try {
-            player = DBUtil.doInJPA(session -> session.get(player.getClass(), player.getId()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void updatePlayer(Player player) {
-        Logger.log("PlayerManager", "update player " + player.getUsername());
-        DBUtil.doInJPA(session -> {
-            session.saveOrUpdate(player);
-            return null;
-        });
-    }
-
-    public enum Message {
-        EXISTS, SUCCESS, ERROR, WRONG
-    }
 }

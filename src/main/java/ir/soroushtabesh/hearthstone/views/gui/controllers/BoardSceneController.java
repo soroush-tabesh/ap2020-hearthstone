@@ -7,10 +7,7 @@ import ir.soroushtabesh.hearthstone.controllers.game.GameController;
 import ir.soroushtabesh.hearthstone.controllers.game.LocalGameController;
 import ir.soroushtabesh.hearthstone.controllers.game.PlayerController;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.*;
-import ir.soroushtabesh.hearthstone.models.Card;
-import ir.soroushtabesh.hearthstone.models.DeckReaderModel;
-import ir.soroushtabesh.hearthstone.models.Hero;
-import ir.soroushtabesh.hearthstone.models.InfoPassive;
+import ir.soroushtabesh.hearthstone.models.*;
 import ir.soroushtabesh.hearthstone.util.DeckReader;
 import ir.soroushtabesh.hearthstone.util.TimerUnit;
 import ir.soroushtabesh.hearthstone.util.gui.AnimationPool;
@@ -595,7 +592,7 @@ public class BoardSceneController extends AbstractSceneController {
         dnDHelper.addDropDetector(changeStand, (event) -> {
             CardObject cardObject = (CardObject) gameController.getModelPool()
                     .getGameObjectById(Integer.parseInt(event.getDragboard().getString()));
-            GameController.Message message = (cardObject.getPlayerId() == 0 ? pc0 : pc1)
+            Message message = (cardObject.getPlayerId() == 0 ? pc0 : pc1)
                     .changeCard((cardObject.getPlayerId() == 0 ? playerData0 : playerData1)
                             .getHandCard().indexOf(cardObject));
             System.out.println(message);

@@ -1,12 +1,12 @@
 package scripts;
 
-import ir.soroushtabesh.hearthstone.controllers.game.GameController;
 import ir.soroushtabesh.hearthstone.controllers.game.LocalGameController;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.GenericScript;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.SpellBehavior;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.CardObject;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.GameObject;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.ModelPool;
+import ir.soroushtabesh.hearthstone.models.Message;
 import ir.soroushtabesh.hearthstone.models.ScriptModel;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class RandomAdderToDeck extends SpellBehavior {
             if (((LocalGameController) getGameController())
                     .drawToHand(playerData, 0
                             , (Class<? extends CardObject>) getClass().getClassLoader().loadClass(targetClass))
-                    == GameController.Message.SUCCESS) {
+                    == Message.SUCCESS) {
                 CardObject cardObject = playerData.getHandCard().get(0);
                 scriptsToAdd.forEach(scriptModel -> cardObject.addMiscScript(scriptModel.getScript(getGameController())));
             }

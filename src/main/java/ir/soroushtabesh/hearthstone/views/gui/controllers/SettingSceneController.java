@@ -1,6 +1,7 @@
 package ir.soroushtabesh.hearthstone.views.gui.controllers;
 
 import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
+import ir.soroushtabesh.hearthstone.models.Message;
 import ir.soroushtabesh.hearthstone.util.gui.FXUtil;
 import ir.soroushtabesh.hearthstone.views.gui.LoginScene;
 import javafx.event.ActionEvent;
@@ -35,10 +36,10 @@ public class SettingSceneController extends AbstractSceneController {
                         , Alert.AlertType.CONFIRMATION);
         if (buttonType.isPresent() && buttonType.get() == ButtonType.OK) {
             PlayerManager playerManager = PlayerManager.getInstance();
-            PlayerManager.Message message = playerManager.deleteAccount(passField.getText());
-            if (message == PlayerManager.Message.ERROR)
+            Message message = playerManager.deleteAccount(passField.getText());
+            if (message == Message.ERROR)
                 FXUtil.showAlert("Setting", "Account Delete", "Error", Alert.AlertType.ERROR);
-            else if (message == PlayerManager.Message.WRONG)
+            else if (message == Message.WRONG)
                 FXUtil.showAlert("Setting", "Account Delete", "Wrong Password", Alert.AlertType.ERROR);
             else {
                 SceneManager.getInstance().showScene(LoginScene.class);

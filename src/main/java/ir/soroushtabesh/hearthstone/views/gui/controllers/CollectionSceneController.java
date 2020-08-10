@@ -159,7 +159,7 @@ public class CollectionSceneController extends AbstractSceneController {
             } else {
                 Deck selectedDeck = ((BriefDeck) selectedPane.getProperties().get("deck")).getDeck();
                 Card selectedCard = this.selectedCardView.getBriefCard().getCard();
-                Deck.Message res = DeckManager.getInstance().addCardToDeck(selectedCard, selectedDeck);
+                Message res = DeckManager.getInstance().addCardToDeck(selectedCard, selectedDeck);
                 switch (res) {
                     case SUCCESS:
                         updateSelectedDeckView();

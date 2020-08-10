@@ -1,10 +1,7 @@
 package ir.soroushtabesh.hearthstone.controllers.game;
 
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.*;
-import ir.soroushtabesh.hearthstone.models.Card;
-import ir.soroushtabesh.hearthstone.models.Deck;
-import ir.soroushtabesh.hearthstone.models.Hero;
-import ir.soroushtabesh.hearthstone.models.InfoPassive;
+import ir.soroushtabesh.hearthstone.models.*;
 import javafx.beans.property.*;
 
 import java.util.List;
@@ -103,9 +100,5 @@ public abstract class GameController {
     protected abstract void logEvent(GameAction gameAction);
 
     protected abstract Message changeCard(int cardNumberInList, int playerId, int token);
-
-    public enum Message {
-        IMPOSSIBLE, SUCCESS, ERROR, FULL, INSUFFICIENT
-    }
 
 }

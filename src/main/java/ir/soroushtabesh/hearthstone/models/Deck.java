@@ -169,8 +169,5 @@ public class Deck {
         return getId();
     }
 
-    public enum Message {
-        INCOMPATIBLE, INSUFFICIENT, SUCCESS, FULL
-    }
 
 }

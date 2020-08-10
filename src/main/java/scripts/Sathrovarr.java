@@ -1,11 +1,11 @@
 package scripts;
 
-import ir.soroushtabesh.hearthstone.controllers.game.GameController;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.MinionBehavior;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.CardObject;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.GameObject;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.MinionObject;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.ModelPool;
+import ir.soroushtabesh.hearthstone.models.Message;
 
 public class Sathrovarr extends MinionBehavior {
     @Override
@@ -24,7 +24,7 @@ public class Sathrovarr extends MinionBehavior {
             if (playerData.getHandCard().size() < 12)
                 playerData.getHandCard().add(build2);
             playerData.getDeckCard().add(build3);
-            if (getPlayerController().playCard(build2, 0, null) != GameController.Message.SUCCESS)
+            if (getPlayerController().playCard(build2, 0, null) != Message.SUCCESS)
                 playerData.getHandCard().remove(build2);
         }
         return true;

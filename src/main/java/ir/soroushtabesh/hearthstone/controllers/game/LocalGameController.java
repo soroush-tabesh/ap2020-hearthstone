@@ -5,10 +5,7 @@ import ir.soroushtabesh.hearthstone.controllers.game.scripts.HeroBehavior;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.MinionBehavior;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.SpellBehavior;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.*;
-import ir.soroushtabesh.hearthstone.models.Card;
-import ir.soroushtabesh.hearthstone.models.Deck;
-import ir.soroushtabesh.hearthstone.models.Hero;
-import ir.soroushtabesh.hearthstone.models.InfoPassive;
+import ir.soroushtabesh.hearthstone.models.*;
 import ir.soroushtabesh.hearthstone.util.Logger;
 
 import java.security.SecureRandom;

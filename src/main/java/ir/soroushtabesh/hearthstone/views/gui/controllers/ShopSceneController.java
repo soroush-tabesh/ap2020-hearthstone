@@ -3,6 +3,7 @@ package ir.soroushtabesh.hearthstone.views.gui.controllers;
 import ir.soroushtabesh.hearthstone.controllers.CardManager;
 import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
 import ir.soroushtabesh.hearthstone.models.Card;
+import ir.soroushtabesh.hearthstone.models.Message;
 import ir.soroushtabesh.hearthstone.models.Player;
 import ir.soroushtabesh.hearthstone.util.gui.FXUtil;
 import ir.soroushtabesh.hearthstone.views.gui.CollectionScene;
@@ -97,7 +98,7 @@ public class ShopSceneController extends AbstractSceneController {
                     , Alert.AlertType.ERROR);
             return;
         }
-        CardManager.Message message = CardManager.getInstance().buyCard(selectedCardView.getBriefCard().getCard());
+        Message message = CardManager.getInstance().buyCard(selectedCardView.getBriefCard().getCard());
         switch (message) {
             case FULL:
                 FXUtil.showAlert("Shop", "Buy: " + selectedCardView.getBriefCard().getName()
@@ -136,7 +137,7 @@ public class ShopSceneController extends AbstractSceneController {
                         + (cardManager.isInAnyDeck(card) ? " You have this card in some of your decks" : "")
                 , cardManager.isInAnyDeck(card) ? Alert.AlertType.WARNING : Alert.AlertType.CONFIRMATION);
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            CardManager.Message message = cardManager.sellCard(card);
+            Message message = cardManager.sellCard(card);
             switch (message) {
                 case EMPTY:
                     FXUtil.showAlert("Shop", "Sell: " + selectedCardView.getBriefCard().getName()

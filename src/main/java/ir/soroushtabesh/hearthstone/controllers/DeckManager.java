@@ -2,6 +2,7 @@ package ir.soroushtabesh.hearthstone.controllers;
 
 import ir.soroushtabesh.hearthstone.models.Card;
 import ir.soroushtabesh.hearthstone.models.Deck;
+import ir.soroushtabesh.hearthstone.models.Message;
 import ir.soroushtabesh.hearthstone.models.Player;
 import ir.soroushtabesh.hearthstone.util.Logger;
 import ir.soroushtabesh.hearthstone.util.db.DBUtil;
@@ -44,9 +45,9 @@ public class DeckManager {
         return res;
     }
 
-    public Deck.Message addCardToDeck(Card card, Deck deck) {
-        Deck.Message res = DBUtil.doInJPA(session -> deck.addCard(card));
-        if (res == Deck.Message.SUCCESS)
+    public Message addCardToDeck(Card card, Deck deck) {
+        Message res = DBUtil.doInJPA(session -> deck.addCard(card));
+        if (res == Message.SUCCESS)
             Logger.log("DeckManager", String.format("add card '%s' to deck '%s'"
                     , card.getName(), deck.getName()));
         return res;

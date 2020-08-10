@@ -2,6 +2,7 @@ package ir.soroushtabesh.hearthstone.controllers;
 
 import ir.soroushtabesh.hearthstone.models.Card;
 import ir.soroushtabesh.hearthstone.models.InfoPassive;
+import ir.soroushtabesh.hearthstone.models.Message;
 import ir.soroushtabesh.hearthstone.models.Player;
 import ir.soroushtabesh.hearthstone.util.Logger;
 import ir.soroushtabesh.hearthstone.util.db.DBUtil;
@@ -57,8 +58,5 @@ public class CardManager {
         return player.getOwnedCardsList().contains(card);
     }
 
-    public enum Message {
-        INSUFFICIENT, FULL, EMPTY, SUCCESS
-    }
 
 }

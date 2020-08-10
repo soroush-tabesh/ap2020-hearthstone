@@ -1,6 +1,6 @@
 package ir.soroushtabesh.hearthstone.network;
 
-import ir.soroushtabesh.hearthstone.network.models.Message;
+import ir.soroushtabesh.hearthstone.models.Message;
 
 public interface IGameServer {
     Message signUp(String username, String password);
