@@ -99,6 +99,13 @@ public class PlayerManager {
 //        return player;
     }
 
+    public Player getPlayerByID(int id) {
+        return DBUtil.doInJPA(session -> session
+                .createQuery("from Player where id=:id", Player.class)
+                .setParameter("id", id)
+                .uniqueResult());
+    }
+
     private static class PlayerManagerProxy extends PlayerManager {
 
     }

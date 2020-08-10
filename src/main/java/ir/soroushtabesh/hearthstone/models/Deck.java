@@ -1,5 +1,6 @@
 package ir.soroushtabesh.hearthstone.models;
 
+import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
 import ir.soroushtabesh.hearthstone.util.Logger;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
@@ -25,12 +26,10 @@ public class Deck {
 
     private Hero.HeroClass heroClass = Hero.HeroClass.ALL;
 
-    @ManyToOne
-    @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
-    private Player player;
+    private int playerID;
+    private transient Player player;
 
     @ElementCollection
-    @Column(name = "count")
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
     private Map<Card, Integer> cardsInDeck = new HashMap<>();
 
@@ -41,11 +40,13 @@ public class Deck {
 
     public Deck(Hero.HeroClass heroClass, Player player) {
         this.heroClass = heroClass;
+        this.playerID = player.getId();
         this.player = player;
     }
 
     public Deck(Hero.HeroClass heroClass, Player player, Map<Card, Integer> cardsInDeck) {
         this.heroClass = heroClass;
+        this.playerID = player.getId();
         this.player = player;
         this.cardsInDeck = cardsInDeck;
     }
@@ -80,10 +81,13 @@ public class Deck {
     }
 
     public Player getPlayer() {
-        return player;
+        if (player != null)
+            return player;
+        return PlayerManager.getInstance().getPlayerByID(playerID);
     }
 
     public void setPlayer(Player player) {
+        this.playerID = player.getId();
         this.player = player;
     }
 
@@ -99,7 +103,7 @@ public class Deck {
         if (!card.getHeroClass().equals(Hero.HeroClass.ALL) && !card.getHeroClass().equals(getHeroClass()))
             return Message.INCOMPATIBLE;
         int current = getCountInDeck(card);
-        int possess = player.getOwnedAmount(card);
+        int possess = getPlayer().getOwnedAmount(card);
         if (current + count > Math.min(possess, 2))
             return Message.INSUFFICIENT;
         if (getTotalCountOfCards() >= 30)

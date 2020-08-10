@@ -24,7 +24,6 @@ public class Player {
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
     private final List<Deck> decks = new ArrayList<>();
     @ElementCollection
-    @Column(name = "count")
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
     private final Map<Card, Integer> ownedCards = new HashMap<>();
     private final PlayerStats playerStats = new PlayerStats();

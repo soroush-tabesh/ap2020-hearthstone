@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="hibernate.cfg.xml/Hibernate" uuid="bfdd26b7-e420-41b1-8409-ef2e555c0371">
-      <driver-ref>h2.unified</driver-ref>
-      <synchronize>true</synchronize>
-      <imported>true</imported>
-      <remarks>Hibernate
-
-/Users/soroushtabesh/IdeaProjects/ap2020-hearthstone/src/main/resources/hibernate.cfg.xml</remarks>
-      <jdbc-driver>org.h2.Driver</jdbc-driver>
-      <jdbc-url>jdbc:h2:$PROJECT_DIR$/gameData</jdbc-url>
-    </data-source>
-    <data-source source="LOCAL" name="soroush_tabesh_hs@localhost" uuid="181868fc-3a6c-4b7c-8275-498675e8c328">
+    <data-source source="LOCAL" name="soroush_tabesh_hs@localhost" uuid="c5596dd8-5233-40aa-a515-05f02d243b77">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
