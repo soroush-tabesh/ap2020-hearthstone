@@ -1,6 +1,7 @@
 package ir.soroushtabesh.hearthstone.network;
 
 import ir.soroushtabesh.hearthstone.network.command.Command;
+import ir.soroushtabesh.hearthstone.network.models.Message;
 import ir.soroushtabesh.hearthstone.network.models.Packet;
 import ir.soroushtabesh.hearthstone.util.JSONUtil;
 
@@ -9,6 +10,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.security.SecureRandom;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -22,7 +24,7 @@ public class SocketWorker implements Runnable {
     private final SecureRandom secureRandom = new SecureRandom();
     private final IGameServer gameServer;
     private Runnable listener;
-    private final Map<Long, LazyResult<Packet>> filters = new HashMap<>();
+    private final Map<Long, LazyResult<Packet>> filters = Collections.synchronizedMap(new HashMap<>());
 
     SocketWorker(long wid, Socket socket, IGameServer gameServer) {
         this.wid = wid;
@@ -54,7 +56,7 @@ public class SocketWorker implements Runnable {
                 Command command = packet.getCommand();
                 if (command != null) {
                     new Thread(() -> {
-                        Packet.Message message = command.visit(this, gameServer, packet.getPID());
+                        Message message = command.visit(this, gameServer, packet.getPID());
                         sendPacket(new Packet(message), packet.getPID());
                     }).start();
                 }
@@ -75,8 +77,12 @@ public class SocketWorker implements Runnable {
             listener.run();
     }
 
+    public long generateID() {
+        return secureRandom.nextLong();
+    }
+
     public synchronized void sendPacket(Packet packet) {
-        sendPacket(packet, secureRandom.nextLong());
+        sendPacket(packet, generateID());
     }
 
     public synchronized void sendPacket(Packet packet, long pid) {

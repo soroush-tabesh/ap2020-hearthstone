@@ -30,7 +30,6 @@ public class ComServer implements Runnable {
     public synchronized void startServer() {
         if (running)
             return;
-        running = true;
         if (thread != null)
             thread.interrupt();
         thread = new Thread(this);
@@ -38,9 +37,9 @@ public class ComServer implements Runnable {
             serverSocket = new ServerSocket(config.getPort());
             thread.start();
         } catch (IOException e) {
-            running = false;
             e.printStackTrace();
         }
+        running = true;
     }
 
     @Override
@@ -49,6 +48,7 @@ public class ComServer implements Runnable {
             try {
                 Socket clientSocket = serverSocket.accept();
                 SocketWorker worker = new SocketWorker(++idCounter, clientSocket, gameServer);
+                worker.registerBreakageListener(() -> workers.remove(worker.getWID()));
                 workers.put(worker.getWID(), worker);
                 worker.startWorker();
             } catch (Exception e) {
