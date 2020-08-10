@@ -37,15 +37,6 @@ public class Player {
     private String password;
     private Integer coin = 50;
     private Boolean deleted = false;
-    @ManyToOne
-    @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
-    private Hero currentHero;
-    @ManyToOne
-    @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
-    private Deck currentDeck;
-    @ManyToOne
-    @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
-    private InfoPassive currentPassive;
 
     public Player(String username, String password) {
         this.username = username;
@@ -57,23 +48,6 @@ public class Player {
 
     public PlayerStats getPlayerStats() {
         return playerStats;
-    }
-
-    public Hero getCurrentHero() {
-        return currentHero;
-    }
-
-    public void setCurrentHero(Hero currentHero) {
-        this.currentHero = currentHero;
-        Logger.log("select hero", currentHero.getName());
-    }
-
-    public Deck getCurrentDeck() {
-        return currentDeck;
-    }
-
-    public void setCurrentDeck(Deck currentDeck) {
-        this.currentDeck = currentDeck;
     }
 
     public Integer getId() {
@@ -141,14 +115,6 @@ public class Player {
 
     public int getOwnedAmount(Card card) {
         return ownedCards.getOrDefault(card, 0);
-    }
-
-    public InfoPassive getCurrentPassive() {
-        return currentPassive;
-    }
-
-    public void setCurrentPassive(InfoPassive currentPassive) {
-        this.currentPassive = currentPassive;
     }
 
     public List<Hero> getOpenHeroes() {

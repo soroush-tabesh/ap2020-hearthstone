@@ -83,16 +83,6 @@ public class SelectHeroDeckDialog extends Dialog<ButtonType> implements Initiali
 //        updatePlayer();
     }
 
-    private void updatePlayer() {
-        Player player = PlayerManager.getInstance().getPlayer();
-        player.setCurrentDeck(getSelectedDeck());
-        player.setCurrentHero(getSelectedHero());
-        player.setCurrentPassive(getSelectedInfoPassive());
-        Logger.log("PlayerManager", String.format("update player:%s , deck:%s , hero:%s , passive:%s",
-                player.getUsername(), player.getCurrentDeck().getName(), player.getCurrentHero().getName()
-                , player.getCurrentPassive()));
-        PlayerManager.getInstance().updatePlayer(player);
-    }
 
     @Override
     public Deck getSelectedDeck() {
@@ -119,7 +109,6 @@ public class SelectHeroDeckDialog extends Dialog<ButtonType> implements Initiali
 
     private void initHeroCombo(Player player) {
         heroCombo.getItems().addAll(player.getOpenHeroes());
-        heroCombo.setValue(player.getCurrentHero());
         heroCombo.getSelectionModel().select(0);
     }
 
@@ -139,8 +128,6 @@ public class SelectHeroDeckDialog extends Dialog<ButtonType> implements Initiali
                 heroCombo.valueProperty()));
         filteredItems = new FilteredList<>(FXCollections.observableArrayList(player.getDecks()));
         filteredItems.predicateProperty().bind(Bindings.createObjectBinding(categoryFilter::get, categoryFilter));
-        if (player.getCurrentDeck() != null)
-            deckCombo.setValue(player.getCurrentDeck());
         Bindings.bindContent(deckCombo.getItems(), filteredItems);
         deckCombo.getSelectionModel().select(0);
     }
