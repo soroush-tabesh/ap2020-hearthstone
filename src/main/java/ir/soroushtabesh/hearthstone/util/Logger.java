@@ -20,7 +20,6 @@ public class Logger {
     }
 
     public static void log(String event, String desc, Log.Severity severity) {
-
         Log log = new Log();
         if (PlayerManager.getInstance().getPlayer() != null) {
             Player player = PlayerManager.getInstance().getPlayer();

@@ -4,19 +4,29 @@ import ir.soroushtabesh.hearthstone.models.*;
 import ir.soroushtabesh.hearthstone.models.cards.Minion;
 import ir.soroushtabesh.hearthstone.models.cards.Spell;
 import ir.soroushtabesh.hearthstone.models.cards.Weapon;
+import ir.soroushtabesh.hearthstone.util.Constants;
 import ir.soroushtabesh.hearthstone.util.Logger;
 import ir.soroushtabesh.hearthstone.util.db.DBUtil;
 
 import java.util.List;
 
 public class CardManager {
-    private static CardManager instance = new CardManager();
+    private static CardManager instanceMain;
+    private static CardManager instanceProxy;
 
     private CardManager() {
     }
 
     public static CardManager getInstance() {
-        return instance;
+        if (Constants.isServerMode()) {
+            if (instanceMain == null)
+                instanceMain = new CardManager();
+            return instanceMain;
+        } else {
+            if (instanceProxy == null)
+                instanceProxy = new CardManagerProxy();
+            return instanceProxy;
+        }
     }
 
     public List<Card> getAllCards() {
@@ -91,5 +101,8 @@ public class CardManager {
                 .uniqueResult());
     }
 
+    private static class CardManagerProxy extends CardManager {
+
+    }
 
 }

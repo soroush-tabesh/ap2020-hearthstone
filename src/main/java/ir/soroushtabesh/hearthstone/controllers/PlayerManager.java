@@ -2,22 +2,30 @@ package ir.soroushtabesh.hearthstone.controllers;
 
 import ir.soroushtabesh.hearthstone.models.Message;
 import ir.soroushtabesh.hearthstone.models.Player;
+import ir.soroushtabesh.hearthstone.util.Constants;
 import ir.soroushtabesh.hearthstone.util.HashUtil;
 import ir.soroushtabesh.hearthstone.util.Logger;
 import ir.soroushtabesh.hearthstone.util.db.DBUtil;
 import ir.soroushtabesh.hearthstone.util.db.Seeding;
 
 public class PlayerManager {
-    private static PlayerManager instance;
+    private static PlayerManager instanceMain;
+    private static PlayerManager instanceProxy;
     private Player player;
 
     private PlayerManager() {
     }
 
     public static PlayerManager getInstance() {
-        if (instance == null)
-            instance = new PlayerManager();
-        return instance;
+        if (Constants.isServerMode()) {
+            if (instanceMain == null)
+                instanceMain = new PlayerManager();
+            return instanceMain;
+        } else {
+            if (instanceProxy == null)
+                instanceProxy = new PlayerManagerProxy();
+            return instanceProxy;
+        }
     }
 
     public boolean logout() {
@@ -87,7 +95,12 @@ public class PlayerManager {
     }
 
     public Player getPlayer() {
-        return player;
+        return null;
+//        return player;
+    }
+
+    private static class PlayerManagerProxy extends PlayerManager {
+
     }
 
 }

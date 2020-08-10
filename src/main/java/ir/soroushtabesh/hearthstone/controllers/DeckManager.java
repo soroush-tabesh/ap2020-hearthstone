@@ -4,17 +4,27 @@ import ir.soroushtabesh.hearthstone.models.Card;
 import ir.soroushtabesh.hearthstone.models.Deck;
 import ir.soroushtabesh.hearthstone.models.Message;
 import ir.soroushtabesh.hearthstone.models.Player;
+import ir.soroushtabesh.hearthstone.util.Constants;
 import ir.soroushtabesh.hearthstone.util.Logger;
 import ir.soroushtabesh.hearthstone.util.db.DBUtil;
 
 public class DeckManager {
-    private static DeckManager instance = new DeckManager();
+    private static DeckManager instanceMain;
+    private static DeckManager instanceProxy;
 
     private DeckManager() {
     }
 
     public static DeckManager getInstance() {
-        return instance;
+        if (Constants.isServerMode()) {
+            if (instanceMain == null)
+                instanceMain = new DeckManager();
+            return instanceMain;
+        } else {
+            if (instanceProxy == null)
+                instanceProxy = new DeckManagerProxy();
+            return instanceProxy;
+        }
     }
 
     public boolean removeDeck(Deck deck) {
@@ -61,6 +71,10 @@ public class DeckManager {
             return null;
         });
         Logger.log("DeckManager", "new deck: " + deck.getName());
+    }
+
+    private static class DeckManagerProxy extends DeckManager {
+
     }
 
 }
