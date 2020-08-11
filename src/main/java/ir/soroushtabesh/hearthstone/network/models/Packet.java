@@ -4,13 +4,16 @@ import ir.soroushtabesh.hearthstone.models.Message;
 import ir.soroushtabesh.hearthstone.network.command.Command;
 import ir.soroushtabesh.hearthstone.util.JSONUtil;
 
-public class Packet {
+import java.io.*;
+import java.util.Base64;
 
+public class Packet implements Serializable {
+
+    private static final long serialVersionUID = -8381830815514853403L;
     private long pid;
     private Message message;
     private String commandClass;
     private String commandData;
-    private String parcelClass;
     private String parcelData;
 
     public Packet(Message message, Command command) {
@@ -28,8 +31,7 @@ public class Packet {
     }
 
     public void setParcel(Object parcel) {
-        parcelClass = parcel.getClass().getName();
-        parcelData = JSONUtil.getGson().toJson(parcel);
+        parcelData = encode(serialize(parcel));
     }
 
     public void setPid(long pid) {
@@ -46,9 +48,11 @@ public class Packet {
 
     @SuppressWarnings("unchecked")
     public Command getCommand() {
+        if (commandClass == null)
+            return null;
         Class<? extends Command> clz;
         try {
-            clz = (Class<? extends Command>) getClass().getClassLoader().loadClass(commandClass);
+            clz = (Class<? extends Command>) Class.forName(commandClass);
         } catch (ClassNotFoundException | ClassCastException e) {
             e.printStackTrace();
             return null;
@@ -57,14 +61,54 @@ public class Packet {
     }
 
     public Object getParcel() {
-        Class<?> clz;
-        try {
-            clz = getClass().getClassLoader().loadClass(parcelClass);
-        } catch (ClassNotFoundException | ClassCastException e) {
-            e.printStackTrace();
+        if (parcelData == null)
             return null;
-        }
-        return JSONUtil.getGson().fromJson(parcelData, clz);
+        return deserialize(decode(parcelData));
     }
 
+    private byte[] serialize(Object object) {
+        byte[] res = null;
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(object);
+            oos.flush();
+            res = baos.toByteArray();
+            baos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    private Object deserialize(byte[] data) {
+        Object res = null;
+        try {
+            ByteArrayInputStream bais = new ByteArrayInputStream(data);
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            res = ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    private String encode(byte[] data) {
+        return Base64.getEncoder().encodeToString(data);
+    }
+
+    private byte[] decode(String str) {
+        return Base64.getDecoder().decode(str);
+    }
+
+    @Override
+    public String toString() {
+        return "Packet{" +
+                "pid=" + pid +
+                ", message=" + message +
+                ", commandClass='" + commandClass + '\'' +
+                ", commandData='" + commandData + '\'' +
+                ", parcelData='" + parcelData + '\'' +
+                '}';
+    }
 }

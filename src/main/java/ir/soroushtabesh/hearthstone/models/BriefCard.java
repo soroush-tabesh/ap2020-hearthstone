@@ -7,10 +7,12 @@ import ir.soroushtabesh.hearthstone.models.cards.Weapon;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.io.Serializable;
 import java.util.Collection;
 
-public class BriefCard {
+public class BriefCard implements Serializable {
 
+    private static final long serialVersionUID = -1949476176176490610L;
     private final Card card;
     private int price;
     private int mana;

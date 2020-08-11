@@ -8,6 +8,8 @@ import ir.soroushtabesh.hearthstone.util.Constants;
 import ir.soroushtabesh.hearthstone.util.Logger;
 import ir.soroushtabesh.hearthstone.util.db.DBUtil;
 
+import static ir.soroushtabesh.hearthstone.network.RemoteGameServer.sendPOST;
+
 public class DeckManager {
     private static DeckManager instanceMain;
     private static DeckManager instanceProxy;
@@ -74,7 +76,45 @@ public class DeckManager {
     }
 
     private static class DeckManagerProxy extends DeckManager {
+        @Override
+        public boolean removeDeck(Deck deck) {
+            return sendPOST((worker, gameServer, pid) -> {
+                // TODO: 8/11/20 remove deck command
+                return null;
+            }).getMessage() == Message.SUCCESS;
+        }
 
+        @Override
+        public void updateDeckProperties(Deck deck) {
+            sendPOST((worker, gameServer, pid) -> {
+                // TODO: 8/11/20  update deck command
+                return null;
+            });
+        }
+
+        @Override
+        public boolean removeCardFromDeck(Card card, Deck deck) {
+            return sendPOST((worker, gameServer, pid) -> {
+                // TODO: 8/11/20 remove card command
+                return null;
+            }).getMessage() == Message.SUCCESS;
+        }
+
+        @Override
+        public Message addCardToDeck(Card card, Deck deck) {
+            return sendPOST((worker, gameServer, pid) -> {
+                // TODO: 8/11/20 add card command
+                return null;
+            }).getMessage();
+        }
+
+        @Override
+        public void saveNewDeck(Deck deck, Player player) {
+            sendPOST((worker, gameServer, pid) -> {
+                // TODO: 8/11/20 add deck command
+                return null;
+            });
+        }
     }
 
 }

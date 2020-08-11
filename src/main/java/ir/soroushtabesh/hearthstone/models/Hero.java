@@ -7,11 +7,13 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Hero {
+public class Hero implements Serializable {
 
+    private static final long serialVersionUID = -6819421441591514297L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

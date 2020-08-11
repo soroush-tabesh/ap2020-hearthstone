@@ -5,10 +5,13 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public abstract class Card {
+public abstract class Card implements Serializable {
+
+    private static final long serialVersionUID = -1046084412697634862L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

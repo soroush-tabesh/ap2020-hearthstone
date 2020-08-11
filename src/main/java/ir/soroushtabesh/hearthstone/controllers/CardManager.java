@@ -4,11 +4,14 @@ import ir.soroushtabesh.hearthstone.models.*;
 import ir.soroushtabesh.hearthstone.models.cards.Minion;
 import ir.soroushtabesh.hearthstone.models.cards.Spell;
 import ir.soroushtabesh.hearthstone.models.cards.Weapon;
+import ir.soroushtabesh.hearthstone.network.models.Packet;
 import ir.soroushtabesh.hearthstone.util.Constants;
 import ir.soroushtabesh.hearthstone.util.Logger;
 import ir.soroushtabesh.hearthstone.util.db.DBUtil;
 
 import java.util.List;
+
+import static ir.soroushtabesh.hearthstone.network.RemoteGameServer.sendPOST;
 
 public class CardManager {
     private static CardManager instanceMain;
@@ -102,7 +105,92 @@ public class CardManager {
     }
 
     private static class CardManagerProxy extends CardManager {
+        @Override
+        public List<Card> getAllCards() {
+            Packet packet = sendPOST((worker, gameServer, pid) -> {
+                // TODO: 8/11/20 get player command
+                return null;
+            });
+            return (List<Card>) packet.getParcel();
+        }
 
+        @Override
+        public List<InfoPassive> getAllPassives() {
+            Packet packet = sendPOST((worker, gameServer, pid) -> {
+                // TODO: 8/11/20 get player command
+                return null;
+            });
+            return (List<InfoPassive>) packet.getParcel();
+        }
+
+        @Override
+        public Message buyCard(Card card) {
+            return sendPOST((worker, gameServer, pid) -> {
+                // TODO: 8/11/20 add card command
+                return null;
+            }).getMessage();
+        }
+
+        @Override
+        public Message sellCard(Card card) {
+            return sendPOST((worker, gameServer, pid) -> {
+                // TODO: 8/11/20 add card command
+                return null;
+            }).getMessage();
+        }
+
+        @Override
+        public boolean isInAnyDeck(Card card) {
+            return sendPOST((worker, gameServer, pid) -> {
+                // TODO: 8/11/20 add card command
+                return null;
+            }).getMessage() == Message.SUCCESS;
+        }
+
+        @Override
+        public Card getCardByName(String name) {
+            Packet packet = sendPOST((worker, gameServer, pid) -> {
+                // TODO: 8/11/20 get player command
+                return null;
+            });
+            return (Card) packet.getParcel();
+        }
+
+        @Override
+        public List<Minion> getAllMinions() {
+            Packet packet = sendPOST((worker, gameServer, pid) -> {
+                // TODO: 8/11/20 get player command
+                return null;
+            });
+            return (List<Minion>) packet.getParcel();
+        }
+
+        @Override
+        public List<Spell> getAllSpells() {
+            Packet packet = sendPOST((worker, gameServer, pid) -> {
+                // TODO: 8/11/20 get player command
+                return null;
+            });
+            return (List<Spell>) packet.getParcel();
+        }
+
+        @Override
+        public List<Weapon> getAllWeapons() {
+            Packet packet = sendPOST((worker, gameServer, pid) -> {
+                // TODO: 8/11/20 get player command
+                return null;
+            });
+            return (List<Weapon>) packet.getParcel();
+        }
+
+        @Override
+        public Hero getHeroByClass(Hero.HeroClass heroClass) {
+            Packet packet = sendPOST((worker, gameServer, pid) -> {
+                // TODO: 8/11/20 get player command
+                return null;
+            });
+            return (Hero) packet.getParcel();
+        }
     }
 
 }

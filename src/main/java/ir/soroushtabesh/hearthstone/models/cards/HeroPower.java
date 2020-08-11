@@ -13,6 +13,8 @@ import javax.persistence.Entity;
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class HeroPower extends Card {
 
+    private static final long serialVersionUID = -335982167179476885L;
+
     public HeroPower() {
         setScriptModel(new ScriptModel(new HeroPowerBehavior()));
     }

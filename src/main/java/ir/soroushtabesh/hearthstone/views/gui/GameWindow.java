@@ -1,14 +1,17 @@
 package ir.soroushtabesh.hearthstone.views.gui;
 
+import ir.soroushtabesh.hearthstone.network.RemoteGameServer;
 import ir.soroushtabesh.hearthstone.util.gui.FXUtil;
-import ir.soroushtabesh.hearthstone.views.gui.controllers.AudioManager;
 import ir.soroushtabesh.hearthstone.views.gui.controllers.GameWindowController;
 import ir.soroushtabesh.hearthstone.views.gui.controllers.SceneManager;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.ImageCursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -29,19 +32,45 @@ public class GameWindow extends Application {
 
     @Override
     public void start(Stage stage) {
+
+        Alert alertConnection = new Alert(Alert.AlertType.CONFIRMATION);
+        alertConnection.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+        alertConnection.setTitle("Hearthstone");
+        alertConnection.setHeaderText("Network");
+        alertConnection.setContentText("Connecting...");
+
+        Alert alertError = new Alert(Alert.AlertType.ERROR);
+        alertError.setTitle("Hearthstone");
+        alertError.setHeaderText("Network");
+        alertError.setContentText("Error");
+
+        Runnable runnable = () -> Platform.runLater(() -> {
+            FXUtil.runLater(() -> {
+                while (!RemoteGameServer.getInstance().connect() && stage.isShowing()) {
+                    alertError.showAndWait();
+                }
+                alertConnection.close();
+            }, 1000);
+            alertConnection.showAndWait();
+        });
+        RemoteGameServer.getInstance().setOnErrorListener(runnable);
+        FXUtil.runLater(runnable, 100);
+
         setStage(stage);
         if (!setUpStage(stage)) throw new RuntimeException("Could not load fxml");
         gameInit();
         FXUtil.runLater(() -> {
             SceneManager.getInstance().showScene(LoginScene.class);
-            AudioManager.getInstance().startBackgroundMusic();
+            // FIXME: 8/11/20
+//            AudioManager.getInstance().startBackgroundMusic();
         }, 500);
+
     }
 
     @Override
     public void stop() throws Exception {
         super.stop();
-        //todo close resources and streams
+        RemoteGameServer.getInstance().disconnect();
     }
 
     private boolean setUpStage(Stage stage) {

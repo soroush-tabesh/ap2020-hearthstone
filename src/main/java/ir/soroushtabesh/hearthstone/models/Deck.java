@@ -1,6 +1,7 @@
 package ir.soroushtabesh.hearthstone.models;
 
 import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
+import ir.soroushtabesh.hearthstone.util.Exclude;
 import ir.soroushtabesh.hearthstone.util.Logger;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
@@ -8,6 +9,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,8 +18,9 @@ import java.util.Map;
 @Entity
 @DynamicUpdate
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Deck {
+public class Deck implements Serializable {
 
+    private static final long serialVersionUID = -64440247449920895L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -27,7 +30,11 @@ public class Deck {
     private Hero.HeroClass heroClass = Hero.HeroClass.ALL;
 
     private int playerID;
-    private transient Player player;
+
+    @ManyToOne
+    @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
+    @Exclude
+    private Player player;
 
     @ElementCollection
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})

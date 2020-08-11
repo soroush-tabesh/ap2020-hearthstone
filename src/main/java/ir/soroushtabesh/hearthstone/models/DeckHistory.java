@@ -6,11 +6,13 @@ import org.hibernate.annotations.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 @Embeddable
-public class DeckHistory {
+public class DeckHistory implements Serializable {
+    private static final long serialVersionUID = 7187395941249722709L;
     private Integer totalGames = 0;
     private Integer wonGames = 0;
     @ElementCollection

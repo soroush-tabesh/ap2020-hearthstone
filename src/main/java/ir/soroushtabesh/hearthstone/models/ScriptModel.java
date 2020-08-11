@@ -7,12 +7,14 @@ import ir.soroushtabesh.hearthstone.controllers.game.scripts.GenericScript;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class ScriptModel {
+public class ScriptModel implements Serializable {
 
     private static final Gson gson;
+    private static final long serialVersionUID = -2484337745463110831L;
 
     static {
         GsonBuilder gsonBuilder = new GsonBuilder();

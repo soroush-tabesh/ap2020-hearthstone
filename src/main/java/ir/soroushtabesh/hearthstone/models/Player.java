@@ -1,5 +1,6 @@
 package ir.soroushtabesh.hearthstone.models;
 
+import ir.soroushtabesh.hearthstone.util.Exclude;
 import ir.soroushtabesh.hearthstone.util.Logger;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
@@ -7,6 +8,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,8 +17,9 @@ import java.util.Map;
 @Entity
 @DynamicUpdate
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Player {
+public class Player implements Serializable {
 
+    private static final long serialVersionUID = -3493860018461994382L;
     @ManyToMany
     @Cascade({CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE})
     private final List<Hero> openHeroes = new ArrayList<>();
@@ -31,6 +34,7 @@ public class Player {
     @Id
     private Integer id;
     private String username;
+    @Exclude
     private String password;
     private Integer coin = 50;
     private Boolean deleted = false;

@@ -11,6 +11,8 @@ import javax.persistence.Entity;
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Quest extends Spell {
 
+    private static final long serialVersionUID = -102855245924033686L;
+
     public Quest() {
         setScriptModel(new ScriptModel(new SpellBehavior()));
     }

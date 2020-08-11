@@ -12,6 +12,8 @@ import javax.persistence.Entity;
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Spell extends Card {
 
+    private static final long serialVersionUID = 8245206235590360156L;
+
     public Spell() {
         setScriptModel(new ScriptModel(new SpellBehavior()));
     }

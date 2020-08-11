@@ -1,7 +1,10 @@
 package ir.soroushtabesh.hearthstone.models;
 
-public class BriefHero {
+import java.io.Serializable;
 
+public class BriefHero implements Serializable {
+
+    private static final long serialVersionUID = -3625789241555460828L;
     private final Hero hero;
     private String name;
     private int hp;

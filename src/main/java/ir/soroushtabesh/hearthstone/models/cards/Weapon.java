@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 @Entity
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Weapon extends Card {
+    private static final long serialVersionUID = -3828816520320939517L;
     private Integer durability = 1;
     private Integer attackPower = 1;
 

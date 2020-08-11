@@ -40,7 +40,7 @@ public class LoginSceneController extends AbstractSceneController {
             ((LoginScene) getCurrentScene()).showCheckInput();
             return;
         }
-        Message message = PlayerManager.getInstance().authenticate(getInputUsername(), getInputPassword());
+        Message message = PlayerManager.getInstance().authenticate(getInputUsername(), getInputPassword()).getMessage();
         switch (message) {
             case ERROR:
                 ((LoginScene) getCurrentScene()).showError();

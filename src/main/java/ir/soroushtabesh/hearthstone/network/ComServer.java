@@ -44,6 +44,7 @@ public class ComServer implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("ComServer.run");
         while (running && !Thread.interrupted()) {
             try {
                 Socket clientSocket = serverSocket.accept();

@@ -1,6 +1,5 @@
 package ir.soroushtabesh.hearthstone.network;
 
-import ir.soroushtabesh.hearthstone.models.Message;
 import ir.soroushtabesh.hearthstone.network.command.Command;
 import ir.soroushtabesh.hearthstone.network.models.Packet;
 import ir.soroushtabesh.hearthstone.util.JSONUtil;
@@ -10,7 +9,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.security.SecureRandom;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -24,7 +22,7 @@ public class SocketWorker implements Runnable {
     private final SecureRandom secureRandom = new SecureRandom();
     private final IGameServer gameServer;
     private Runnable listener;
-    private final Map<Long, LazyResult<Packet>> filters = Collections.synchronizedMap(new HashMap<>());
+    private final Map<Long, LazyResult<Packet>> filters = new HashMap<>();
 
     SocketWorker(long wid, Socket socket, IGameServer gameServer) {
         this.wid = wid;
@@ -53,16 +51,18 @@ public class SocketWorker implements Runnable {
             try {
                 s = inputStream.readUTF();
                 Packet packet = JSONUtil.getGson().fromJson(s, Packet.class);
+                System.out.println("received: " + packet);
                 Command command = packet.getCommand();
                 if (command != null) {
                     new Thread(() -> {
-                        Message message = command.visit(this, gameServer, packet.getPID());
-                        sendPacket(new Packet(message), packet.getPID());
+                        Packet res = command.visit(this, gameServer, packet.getPID());
+                        sendPacket(res, packet.getPID());
                     }).start();
                 }
-                LazyResult<Packet> lazyResult = filters.remove(packet.getPID());
-                if (lazyResult != null)
+                LazyResult<Packet> lazyResult = filters.get(packet.getPID());
+                if (lazyResult != null) {
                     new Thread(() -> lazyResult.call(packet)).start();
+                }
             } catch (IOException e) {
                 reportBreakage();
                 break;
@@ -88,27 +88,35 @@ public class SocketWorker implements Runnable {
     public synchronized void sendPacket(Packet packet, long pid) {
         packet.setPid(pid);
         try {
-            outputStream.writeUTF(JSONUtil.getGson().toJson(packet));
+            String str = JSONUtil.getGson().toJson(packet);
+            System.out.println("sent: " + str);
+            outputStream.writeUTF(str);
         } catch (IOException e) {
             e.printStackTrace();
             reportBreakage();
         }
     }
 
-    public void receivePacket(long pid, LazyResult<Packet> result) {
+    public void registerPacketReceiver(long pid, LazyResult<Packet> result) {
         filters.put(pid, result);
     }
 
-    public Packet receivePacket(long pid) {
+    public void unregisterPacketReceiver(long pid) {
+        filters.remove(pid);
+    }
+
+    public Packet sendAndWaitReceivePacket(Packet toSend, long pid) {
         Object lock = new Object();
         AtomicReference<Packet> reference = new AtomicReference<>();
-        receivePacket(pid, packet -> {
+        registerPacketReceiver(pid, packet -> {
             reference.set(packet);
+            unregisterPacketReceiver(pid);
             synchronized (lock) {
                 lock.notifyAll();
             }
         });
         synchronized (lock) {
+            sendPacket(toSend, pid);
             while (reference.get() == null) {
                 try {
                     lock.wait();
@@ -119,6 +127,14 @@ public class SocketWorker implements Runnable {
             }
             return reference.get();
         }
+    }
+
+    public Packet sendAndWaitReceivePacket(Packet toSend) {
+        return sendAndWaitReceivePacket(toSend, secureRandom.nextLong());
+    }
+
+    public boolean isRunning() {
+        return thread != null && !thread.isInterrupted() && thread.isAlive();
     }
 
     public void startWorker() {

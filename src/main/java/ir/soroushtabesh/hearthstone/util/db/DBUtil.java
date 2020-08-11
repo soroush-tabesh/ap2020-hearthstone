@@ -14,6 +14,7 @@ public class DBUtil {
     }
 
     public static SessionFactory getSessionFactory() {
+        System.out.println("DBUtil.getSessionFactory");
         if (sessionFactory == null) {
             try {
                 sessionFactory = new Configuration()

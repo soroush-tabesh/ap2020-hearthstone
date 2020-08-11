@@ -1,6 +1,8 @@
 package ir.soroushtabesh.hearthstone.network;
 
+import ir.soroushtabesh.hearthstone.network.command.Command;
 import ir.soroushtabesh.hearthstone.network.models.Config;
+import ir.soroushtabesh.hearthstone.network.models.Packet;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -13,6 +15,7 @@ public class RemoteGameServer implements IGameServer {
     private SocketWorker worker;
     private Socket socket;
     private Long token = null;
+    private Runnable listener;
 
     private RemoteGameServer() {
     }
@@ -26,7 +29,7 @@ public class RemoteGameServer implements IGameServer {
     }
 
     public boolean isConnected() {
-        return socket != null && !socket.isClosed();
+        return socket != null && !socket.isClosed() && worker != null && worker.isRunning();
     }
 
     public boolean connect() {
@@ -35,7 +38,10 @@ public class RemoteGameServer implements IGameServer {
         try {
             socket = new Socket(InetAddress.getByName(config.getAddress()), config.getPort());
             worker = new SocketWorker(0, socket, this);
+            if (listener != null)
+                worker.registerBreakageListener(listener);
             worker.startWorker();
+            System.out.println("RemoteGameServer: connected");
         } catch (Exception e) {
             return false;
         }
@@ -44,6 +50,7 @@ public class RemoteGameServer implements IGameServer {
 
     public void disconnect() {
         if (socket != null && !socket.isClosed() && worker != null) {
+            worker.registerBreakageListener(null);
             worker.stopWorker();
             try {
                 socket.close();
@@ -64,4 +71,16 @@ public class RemoteGameServer implements IGameServer {
     public void setToken(Long token) {
         this.token = token;
     }
+
+    public void setOnErrorListener(Runnable listener) {
+        this.listener = listener;
+        if (worker != null)
+            worker.registerBreakageListener(listener);
+    }
+
+    public static Packet sendPOST(Command command) {
+        return getInstance().getWorker()
+                .sendAndWaitReceivePacket(new Packet(command));
+    }
+
 }

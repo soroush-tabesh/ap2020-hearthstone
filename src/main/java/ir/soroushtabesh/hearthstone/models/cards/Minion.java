@@ -13,6 +13,7 @@ import javax.persistence.Enumerated;
 @Entity
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Minion extends Card {
+    private static final long serialVersionUID = -2150083791412047917L;
     private Integer hp = 1;
     private Integer attackPower = 1;
     @Enumerated(EnumType.STRING)

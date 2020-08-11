@@ -3,12 +3,14 @@ package ir.soroushtabesh.hearthstone.models;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Log {
+public class Log implements Serializable {
 
+    private static final long serialVersionUID = 2034985353873499077L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

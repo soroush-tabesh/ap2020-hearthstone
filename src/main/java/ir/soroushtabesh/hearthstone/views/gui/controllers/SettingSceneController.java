@@ -36,7 +36,7 @@ public class SettingSceneController extends AbstractSceneController {
                         , Alert.AlertType.CONFIRMATION);
         if (buttonType.isPresent() && buttonType.get() == ButtonType.OK) {
             PlayerManager playerManager = PlayerManager.getInstance();
-            Message message = playerManager.deleteAccount(passField.getText());
+            Message message = playerManager.deleteAccount(playerManager.getPlayer().getUsername(), passField.getText());
             if (message == Message.ERROR)
                 FXUtil.showAlert("Setting", "Account Delete", "Error", Alert.AlertType.ERROR);
             else if (message == Message.WRONG)

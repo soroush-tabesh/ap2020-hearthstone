@@ -1,9 +1,11 @@
 package ir.soroushtabesh.hearthstone.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeckReaderModel {
+public class DeckReaderModel implements Serializable {
+    private static final long serialVersionUID = -8598073927878172880L;
     private final List<String> friend = new ArrayList<>();
     private final List<String> enemy = new ArrayList<>();
     private transient Deck friendlyDeck, enemyDeck;

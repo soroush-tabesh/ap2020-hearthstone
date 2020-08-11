@@ -1,9 +1,11 @@
 package ir.soroushtabesh.hearthstone.models;
 
 import javax.persistence.Embeddable;
+import java.io.Serializable;
 
 @Embeddable
-public class PlayerStats {
+public class PlayerStats implements Serializable {
+    private static final long serialVersionUID = 9186777021941124210L;
     private int gameCount;
     private int winCount;
 

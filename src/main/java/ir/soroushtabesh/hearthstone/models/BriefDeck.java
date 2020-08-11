@@ -5,13 +5,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class BriefDeck {
+public class BriefDeck implements Serializable {
 
+    private static final long serialVersionUID = 8474100873165587456L;
     private final Deck deck;
     private String name;
     private int winCount;
