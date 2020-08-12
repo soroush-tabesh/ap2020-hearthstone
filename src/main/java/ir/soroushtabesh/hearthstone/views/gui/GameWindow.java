@@ -40,12 +40,23 @@ public class GameWindow extends Application {
         alertConnection.setHeaderText("Network");
         alertConnection.setContentText("Connecting...");
 
+        Alert fetchAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        fetchAlert.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+        fetchAlert.getDialogPane().lookupButton(ButtonType.CANCEL).setDisable(true);
+        fetchAlert.setTitle("Hearthstone");
+        fetchAlert.setHeaderText("Network");
+        fetchAlert.setContentText("Fetching Data...");
+
         Alert alertError = new Alert(Alert.AlertType.ERROR);
         alertError.setTitle("Hearthstone");
         alertError.setHeaderText("Network");
         alertError.setContentText("Error");
 
-        Runnable runnable = () -> Platform.runLater(() -> {
+        RemoteGameServer.getInstance().setOnFetchStartListener(() -> FXUtil.runLater(fetchAlert::showAndWait, 0));
+
+        RemoteGameServer.getInstance().setOnFetchEndListener(() -> FXUtil.runLater(fetchAlert::close, 0));
+
+        Runnable connectionRunnable = () -> Platform.runLater(() -> {
             FXUtil.runLater(() -> {
                 while (!RemoteGameServer.getInstance().connect() && stage.isShowing()) {
                     alertError.showAndWait();
@@ -54,8 +65,8 @@ public class GameWindow extends Application {
             }, 1000);
             alertConnection.showAndWait();
         });
-        RemoteGameServer.getInstance().setOnErrorListener(runnable);
-        FXUtil.runLater(runnable, 100);
+        RemoteGameServer.getInstance().setOnErrorListener(connectionRunnable);
+        FXUtil.runLater(connectionRunnable, 100);
 
         setStage(stage);
         if (!setUpStage(stage)) throw new RuntimeException("Could not load fxml");

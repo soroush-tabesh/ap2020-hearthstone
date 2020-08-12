@@ -8,6 +8,7 @@ import ir.soroushtabesh.hearthstone.models.Player;
 import ir.soroushtabesh.hearthstone.util.gui.FXUtil;
 import ir.soroushtabesh.hearthstone.views.gui.CollectionScene;
 import ir.soroushtabesh.hearthstone.views.gui.controls.CardView;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -42,6 +43,7 @@ public class ShopSceneController extends AbstractSceneController {
         if (message instanceof Card)
             messageCard = (Card) message;
         new Thread(() -> {
+            PlayerManager.getInstance().refreshPlayer();
             cards = CardView.buildAll(CardManager.getInstance().getAllCards());
             selectedCardView = null;
             Player player = PlayerManager.getInstance().getPlayer();
@@ -98,7 +100,7 @@ public class ShopSceneController extends AbstractSceneController {
                     , Alert.AlertType.ERROR);
             return;
         }
-        Message message = CardManager.getInstance().buyCard(selectedCardView.getBriefCard().getCard()
+        Message message = CardManager.getInstance().buyCard(selectedCardView.getBriefCard().getCard().getId()
                 , PlayerManager.getInstance().getToken());
         switch (message) {
             case FULL:
@@ -119,8 +121,13 @@ public class ShopSceneController extends AbstractSceneController {
                     FXUtil.showAlertInfo("Shop", "Sell: " + selectedCardView.getBriefCard().getName()
                             , "Successfully bought!");
         }
-        selectCard(selectedCardView);
-        selectedCardView.update();
+        new Thread(() -> {
+            PlayerManager.getInstance().refreshPlayer();
+            Platform.runLater(() -> {
+                selectCard(selectedCardView);
+                selectedCardView.update();
+            });
+        }).start();
     }
 
     @FXML
@@ -138,7 +145,7 @@ public class ShopSceneController extends AbstractSceneController {
                         + (cardManager.isInAnyDeck(card) ? " You have this card in some of your decks" : "")
                 , cardManager.isInAnyDeck(card) ? Alert.AlertType.WARNING : Alert.AlertType.CONFIRMATION);
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            Message message = cardManager.sellCard(card, PlayerManager.getInstance().getToken());
+            Message message = cardManager.sellCard(card.getId(), PlayerManager.getInstance().getToken());
             switch (message) {
                 case EMPTY:
                     FXUtil.showAlert("Shop", "Sell: " + selectedCardView.getBriefCard().getName()
@@ -150,8 +157,13 @@ public class ShopSceneController extends AbstractSceneController {
                             , "Successfully sold!");
             }
         }
-        selectCard(selectedCardView);
-        selectedCardView.update();
+        new Thread(() -> {
+            PlayerManager.getInstance().refreshPlayer();
+            Platform.runLater(() -> {
+                selectCard(selectedCardView);
+                selectedCardView.update();
+            });
+        }).start();
     }
 
 }

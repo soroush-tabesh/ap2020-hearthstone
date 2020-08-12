@@ -45,6 +45,12 @@ public class Deck implements Serializable {
     public Deck() {
     }
 
+    public Deck(int id, String name, Hero.HeroClass heroClass) {
+        this.id = id;
+        this.name = name;
+        this.heroClass = heroClass;
+    }
+
     public Deck(Hero.HeroClass heroClass, Player player) {
         this.heroClass = heroClass;
         this.playerID = player.getId();

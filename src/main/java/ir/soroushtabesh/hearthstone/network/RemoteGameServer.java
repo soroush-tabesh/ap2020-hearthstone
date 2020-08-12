@@ -15,7 +15,9 @@ public class RemoteGameServer implements IGameServer {
     private SocketWorker worker;
     private Socket socket;
     private Long token = null;
-    private Runnable listener;
+    private Runnable breakageListener;
+    private Runnable onFetchStartListener;
+    private Runnable onFetchEndListener;
 
     private RemoteGameServer() {
     }
@@ -38,8 +40,8 @@ public class RemoteGameServer implements IGameServer {
         try {
             socket = new Socket(InetAddress.getByName(config.getAddress()), config.getPort());
             worker = new SocketWorker(0, socket, this);
-            if (listener != null)
-                worker.registerBreakageListener(listener);
+            if (breakageListener != null)
+                worker.registerBreakageListener(breakageListener);
             worker.startWorker();
             System.out.println("RemoteGameServer: connected");
         } catch (Exception e) {
@@ -73,14 +75,25 @@ public class RemoteGameServer implements IGameServer {
     }
 
     public void setOnErrorListener(Runnable listener) {
-        this.listener = listener;
+        this.breakageListener = listener;
         if (worker != null)
             worker.registerBreakageListener(listener);
     }
 
+    public void setOnFetchStartListener(Runnable onFetchStartListener) {
+        this.onFetchStartListener = onFetchStartListener;
+    }
+
+    public void setOnFetchEndListener(Runnable onFetchEndListener) {
+        this.onFetchEndListener = onFetchEndListener;
+    }
+
     public static Packet sendPOST(Command command) {
-        return getInstance().getWorker()
+        getInstance().onFetchStartListener.run();
+        Packet packet = getInstance().getWorker()
                 .sendAndWaitReceivePacket(new Packet(command));
+        getInstance().onFetchEndListener.run();
+        return packet;
     }
 
 }

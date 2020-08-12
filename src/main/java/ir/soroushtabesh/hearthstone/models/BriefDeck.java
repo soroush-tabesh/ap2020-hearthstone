@@ -1,5 +1,6 @@
 package ir.soroushtabesh.hearthstone.models;
 
+import ir.soroushtabesh.hearthstone.controllers.DeckManager;
 import ir.soroushtabesh.hearthstone.models.cards.Minion;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,7 +15,7 @@ import java.util.Map;
 public class BriefDeck implements Serializable {
 
     private static final long serialVersionUID = 8474100873165587456L;
-    private final Deck deck;
+    private Deck deck;
     private String name;
     private int winCount;
     private int gameCount;
@@ -30,7 +31,7 @@ public class BriefDeck implements Serializable {
 
     public static BriefDeck build(Deck deck) {
         BriefDeck briefDeck = new BriefDeck(deck);
-        briefDeck.refresh();
+        briefDeck.refresh2();
         return briefDeck;
     }
 
@@ -77,6 +78,11 @@ public class BriefDeck implements Serializable {
     }
 
     public void refresh() {
+        deck = DeckManager.getInstance().getDeckByID(deck.getId());
+        refresh2();
+    }
+
+    private void refresh2() {
         DeckHistory deckHistory = deck.getDeckHistory();
         name = deck.getName();
         winCount = deckHistory.getWonGames();

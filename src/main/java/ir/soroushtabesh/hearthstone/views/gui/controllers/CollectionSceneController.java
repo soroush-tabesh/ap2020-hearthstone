@@ -9,6 +9,7 @@ import ir.soroushtabesh.hearthstone.views.gui.ShopScene;
 import ir.soroushtabesh.hearthstone.views.gui.controls.CardTextView;
 import ir.soroushtabesh.hearthstone.views.gui.controls.CardView;
 import ir.soroushtabesh.hearthstone.views.gui.controls.EditDeckDialog;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -74,6 +75,7 @@ public class CollectionSceneController extends AbstractSceneController {
         super.onStart(message);
         this.message = message;
         clearFilters(null);
+        new Thread(() -> PlayerManager.getInstance().refreshPlayer()).start();
         new Thread(() -> {
             ObservableList<CardView> list = FXCollections.observableList(CardView
                     .buildAll(CardManager.getInstance().getAllCards()));
@@ -161,7 +163,7 @@ public class CollectionSceneController extends AbstractSceneController {
             } else {
                 Deck selectedDeck = ((BriefDeck) selectedPane.getProperties().get("deck")).getDeck();
                 Card selectedCard = this.selectedCardView.getBriefCard().getCard();
-                Message res = DeckManager.getInstance().addCardToDeck(selectedCard, selectedDeck
+                Message res = DeckManager.getInstance().addCardToDeck(selectedCard.getId(), selectedDeck.getId()
                         , PlayerManager.getInstance().getToken());
                 switch (res) {
                     case SUCCESS:
@@ -193,7 +195,7 @@ public class CollectionSceneController extends AbstractSceneController {
             TitledPane selectedPane = decksAccordion.getExpandedPane();
             Deck selectedDeck = ((BriefDeck) selectedPane.getProperties().get("deck")).getDeck();
             Card selectedCard = cardTextContextTemp.getBriefCard().getCard();
-            boolean res = DeckManager.getInstance().removeCardFromDeck(selectedCard, selectedDeck
+            boolean res = DeckManager.getInstance().removeCardFromDeck(selectedCard.getId(), selectedDeck.getId()
                     , PlayerManager.getInstance().getToken());
             if (res) {
                 updateSelectedDeckView();
@@ -217,7 +219,7 @@ public class CollectionSceneController extends AbstractSceneController {
             Optional<ButtonType> res = FXUtil.showAlert("Collection", "Remove Deck"
                     , "Are you sure you want to remove this deck?", Alert.AlertType.CONFIRMATION);
             if (res.isPresent() && res.get().equals(ButtonType.OK)) {
-                DeckManager.getInstance().removeDeck(selectedDeck, PlayerManager.getInstance().getToken());
+                DeckManager.getInstance().removeDeck(selectedDeck.getId(), PlayerManager.getInstance().getToken());
                 decksAccordion.getPanes().remove(selectedPane);
             }
         });
@@ -238,6 +240,7 @@ public class CollectionSceneController extends AbstractSceneController {
         if (res.isPresent() && res.get() == ButtonType.OK) {
             editDeckDialog.updateDeck();
             DeckManager.getInstance().saveNewDeck(deck, PlayerManager.getInstance().getToken());
+            new Thread(() -> PlayerManager.getInstance().refreshPlayer()).start();
             return deck;
         }
         return null;
@@ -250,15 +253,21 @@ public class CollectionSceneController extends AbstractSceneController {
         if (res.isPresent() && res.get() == ButtonType.OK) {
             editDeckDialog.updateDeck();
             DeckManager.getInstance().updateDeckProperties(deck, PlayerManager.getInstance().getToken());
+            new Thread(() -> PlayerManager.getInstance().refreshPlayer()).start();
         }
     }
 
     private void updateDeckView(TitledPane target) {
         if (target == null)
             return;
-        BriefDeck deck = (BriefDeck) target.getProperties().get("deck");
-        deck.refresh();
-        generateDeckTitlePane(deck, target);
+        new Thread(() -> {
+            PlayerManager.getInstance().refreshPlayer();
+            Platform.runLater(() -> {
+                BriefDeck deck = (BriefDeck) target.getProperties().get("deck");
+                deck.refresh();
+                generateDeckTitlePane(deck, target);
+            });
+        }).start();
     }
 
     private void updateSelectedDeckView() {

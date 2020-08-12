@@ -30,10 +30,8 @@ public class DeckManager {
         }
     }
 
-    public boolean removeDeck(Deck tDeck, long token) {
-        if (tDeck == null)
-            return false;
-        Deck deck = getDeckByID(tDeck.getId());
+    public boolean removeDeck(int deckID, long token) {
+        Deck deck = getDeckByID(deckID);
         if (deck.getPlayer() != PlayerManager.getInstance().getPlayerByToken(token))
             return false;
         Boolean rs = DBUtil.doInJPA(session -> {
@@ -63,14 +61,12 @@ public class DeckManager {
         });
     }
 
-    public boolean removeCardFromDeck(Card tCard, Deck tDeck, long token) {
-        if (tDeck == null)
-            return false;
-        Deck deck = getDeckByID(tDeck.getId());
+    public boolean removeCardFromDeck(int cardID, int deckID, long token) {
+        Deck deck = getDeckByID(deckID);
         Player player = PlayerManager.getInstance().getPlayerByToken(token);
         if (deck.getPlayer() != player)
             return false;
-        Card card = CardManager.getInstance().getCardByID(tCard.getId());
+        Card card = CardManager.getInstance().getCardByID(cardID);
         Boolean res = DBUtil.doInJPA(session -> deck.removeCardOnce(card));
         if (res)
             Logger.log("DeckManager", String.format("remove card '%s' from deck '%s'"
@@ -78,14 +74,12 @@ public class DeckManager {
         return res;
     }
 
-    public Message addCardToDeck(Card tCard, Deck tDeck, long token) {
-        if (tDeck == null)
-            return Message.ERROR;
-        Deck deck = getDeckByID(tDeck.getId());
+    public Message addCardToDeck(int cardID, int deckID, long token) {
+        Deck deck = getDeckByID(deckID);
         Player player = PlayerManager.getInstance().getPlayerByToken(token);
         if (deck.getPlayer() != player)
             return Message.ERROR;
-        Card card = CardManager.getInstance().getCardByID(tCard.getId());
+        Card card = CardManager.getInstance().getCardByID(cardID);
         Message res = DBUtil.doInJPA(session -> deck.addCard(card));
         if (res == Message.SUCCESS)
             Logger.log("DeckManager", String.format("add card '%s' to deck '%s'"
@@ -109,7 +103,7 @@ public class DeckManager {
         return Message.SUCCESS;
     }
 
-    private Deck getDeckByID(int id) {
+    public Deck getDeckByID(int id) {
         return DBUtil.doInJPA(session ->
                 session.createQuery("from Deck where id=:id", Deck.class)
                         .setParameter("id", id)
@@ -118,8 +112,8 @@ public class DeckManager {
 
     private static class DeckManagerProxy extends DeckManager {
         @Override
-        public boolean removeDeck(Deck deck, long token) {
-            return sendPOST(new RemoveDeck(deck, token)).getMessage() == Message.SUCCESS;
+        public boolean removeDeck(int deckID, long token) {
+            return sendPOST(new RemoveDeck(deckID, token)).getMessage() == Message.SUCCESS;
         }
 
         @Override
@@ -128,18 +122,23 @@ public class DeckManager {
         }
 
         @Override
-        public boolean removeCardFromDeck(Card card, Deck deck, long token) {
-            return sendPOST(new RemoveCardInDeck(card, deck, token)).getMessage() == Message.SUCCESS;
+        public boolean removeCardFromDeck(int cardID, int deckID, long token) {
+            return sendPOST(new RemoveCardInDeck(cardID, deckID, token)).getMessage() == Message.SUCCESS;
         }
 
         @Override
-        public Message addCardToDeck(Card card, Deck deck, long token) {
-            return sendPOST(new AddCardToDeck(card, deck, token)).getMessage();
+        public Message addCardToDeck(int cardID, int deckID, long token) {
+            return sendPOST(new AddCardToDeck(cardID, deckID, token)).getMessage();
         }
 
         @Override
         public Message saveNewDeck(Deck deck, long token) {
             return sendPOST(new MakeDeck(deck, token)).getMessage();
+        }
+
+        @Override
+        public Deck getDeckByID(int id) {
+            return (Deck) sendPOST(new GetDeck(id)).getParcel();
         }
     }
 

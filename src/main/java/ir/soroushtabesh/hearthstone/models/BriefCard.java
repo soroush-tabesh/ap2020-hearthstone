@@ -1,5 +1,6 @@
 package ir.soroushtabesh.hearthstone.models;
 
+import ir.soroushtabesh.hearthstone.controllers.CardManager;
 import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
 import ir.soroushtabesh.hearthstone.models.cards.Minion;
 import ir.soroushtabesh.hearthstone.models.cards.Spell;
@@ -13,7 +14,7 @@ import java.util.Collection;
 public class BriefCard implements Serializable {
 
     private static final long serialVersionUID = -1949476176176490610L;
-    private final Card card;
+    private Card card;
     private int price;
     private int mana;
     private int hp;
@@ -26,7 +27,7 @@ public class BriefCard implements Serializable {
 
     public static BriefCard build(Card card) {
         BriefCard briefCard = new BriefCard(card);
-        briefCard.refresh();
+        briefCard.refresh2();
         return briefCard;
     }
 
@@ -65,6 +66,11 @@ public class BriefCard implements Serializable {
     }
 
     public void refresh() {
+        card = CardManager.getInstance().getCardByID(card.getId());
+        refresh2();
+    }
+
+    private void refresh2() {
         price = card.getPrice();
         mana = card.getMana();
         name = card.getName();

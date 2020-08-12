@@ -11,7 +11,7 @@ public class MakeDeck implements Command {
     private final long token;
 
     public MakeDeck(Deck deck, long token) {
-        this.deck = deck;
+        this.deck = new Deck(deck.getId(), deck.getName(), deck.getHeroClass());
         this.token = token;
     }
 

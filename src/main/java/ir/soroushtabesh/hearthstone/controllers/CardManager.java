@@ -44,11 +44,9 @@ public class CardManager {
         return DBUtil.doInJPA(session -> session.createQuery("from InfoPassive ", InfoPassive.class).list());
     }
 
-    public Message buyCard(Card tCard, long token) {
+    public Message buyCard(int cardID, long token) {
         Player player = PlayerManager.getInstance().getPlayerByToken(token);
-        if (tCard == null)
-            return Message.ERROR;
-        Card card = getCardByID(tCard.getId());
+        Card card = getCardByID(cardID);
         if (card == null || player == null)
             return Message.ERROR;
         return DBUtil.doInJPA(session -> {
@@ -62,11 +60,9 @@ public class CardManager {
         });
     }
 
-    public Message sellCard(Card tCard, long token) {
+    public Message sellCard(int cardID, long token) {
         Player player = PlayerManager.getInstance().getPlayerByToken(token);
-        if (tCard == null)
-            return Message.ERROR;
-        Card card = getCardByID(tCard.getId());
+        Card card = getCardByID(cardID);
         if (card == null || player == null)
             return Message.ERROR;
         return DBUtil.doInJPA(session -> {
@@ -136,13 +132,13 @@ public class CardManager {
         }
 
         @Override
-        public Message buyCard(Card card, long token) {
-            return sendPOST(new BuyCard(token, card)).getMessage();
+        public Message buyCard(int cardID, long token) {
+            return sendPOST(new BuyCard(token, cardID)).getMessage();
         }
 
         @Override
-        public Message sellCard(Card card, long token) {
-            return sendPOST(new SellCard(token, card)).getMessage();
+        public Message sellCard(int cardID, long token) {
+            return sendPOST(new SellCard(token, cardID)).getMessage();
         }
 
         @Override
@@ -179,6 +175,12 @@ public class CardManager {
         public Hero getHeroByClass(Hero.HeroClass heroClass) {
             Packet packet = sendPOST(new GetHero(heroClass));
             return (Hero) packet.getParcel();
+        }
+
+        @Override
+        public Card getCardByID(int id) {
+            Packet packet = sendPOST(new GetCard(id));
+            return (Card) packet.getParcel();
         }
     }
 

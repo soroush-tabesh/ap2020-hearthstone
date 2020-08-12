@@ -31,6 +31,8 @@ public class Packet implements Serializable {
     }
 
     public void setParcel(Object parcel) {
+        if (parcel == null)
+            return;
         parcelData = encode(serialize(parcel));
     }
 
