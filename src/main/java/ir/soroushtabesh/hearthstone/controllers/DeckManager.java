@@ -119,27 +119,27 @@ public class DeckManager {
     private static class DeckManagerProxy extends DeckManager {
         @Override
         public boolean removeDeck(Deck deck, long token) {
-            return sendPOST(new RmDeck(deck, token)).getMessage() == Message.SUCCESS;
+            return sendPOST(new RemoveDeck(deck, token)).getMessage() == Message.SUCCESS;
         }
 
         @Override
         public void updateDeckProperties(Deck deck, long token) {
-            sendPOST(new UpDeck(deck, token));
+            sendPOST(new UpdateDeck(deck, token));
         }
 
         @Override
         public boolean removeCardFromDeck(Card card, Deck deck, long token) {
-            return sendPOST(new RmCrdDeck(card, deck, token)).getMessage() == Message.SUCCESS;
+            return sendPOST(new RemoveCardInDeck(card, deck, token)).getMessage() == Message.SUCCESS;
         }
 
         @Override
         public Message addCardToDeck(Card card, Deck deck, long token) {
-            return sendPOST(new AddCrdDeck(card, deck, token)).getMessage();
+            return sendPOST(new AddCardToDeck(card, deck, token)).getMessage();
         }
 
         @Override
         public Message saveNewDeck(Deck deck, long token) {
-            return sendPOST(new MkDeck(deck, token)).getMessage();
+            return sendPOST(new MakeDeck(deck, token)).getMessage();
         }
     }
 
