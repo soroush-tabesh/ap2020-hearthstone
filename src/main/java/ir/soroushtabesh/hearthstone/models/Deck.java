@@ -94,8 +94,11 @@ public class Deck implements Serializable {
     }
 
     public void setPlayer(Player player) {
-        this.playerID = player.getId();
         this.player = player;
+        if (player != null)
+            this.playerID = player.getId();
+        else
+            this.playerID = 0;
     }
 
     public List<Card> getCardsInDeck() {

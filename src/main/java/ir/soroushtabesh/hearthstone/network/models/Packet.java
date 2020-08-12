@@ -108,7 +108,7 @@ public class Packet implements Serializable {
                 ", message=" + message +
                 ", commandClass='" + commandClass + '\'' +
                 ", commandData='" + commandData + '\'' +
-                ", parcelData='" + parcelData + '\'' +
+                ", parcelData.length='" + (parcelData == null ? 0 : parcelData.length()) + '\'' +
                 '}';
     }
 }

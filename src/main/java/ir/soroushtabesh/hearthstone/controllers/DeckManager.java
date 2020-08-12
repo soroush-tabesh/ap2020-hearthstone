@@ -4,6 +4,7 @@ import ir.soroushtabesh.hearthstone.models.Card;
 import ir.soroushtabesh.hearthstone.models.Deck;
 import ir.soroushtabesh.hearthstone.models.Message;
 import ir.soroushtabesh.hearthstone.models.Player;
+import ir.soroushtabesh.hearthstone.network.command.*;
 import ir.soroushtabesh.hearthstone.util.Constants;
 import ir.soroushtabesh.hearthstone.util.Logger;
 import ir.soroushtabesh.hearthstone.util.db.DBUtil;
@@ -29,27 +30,47 @@ public class DeckManager {
         }
     }
 
-    public boolean removeDeck(Deck deck) {
-        return DBUtil.doInJPA(session -> {
+    public boolean removeDeck(Deck tDeck, long token) {
+        if (tDeck == null)
+            return false;
+        Deck deck = getDeckByID(tDeck.getId());
+        if (deck.getPlayer() != PlayerManager.getInstance().getPlayerByToken(token))
+            return false;
+        Boolean rs = DBUtil.doInJPA(session -> {
             boolean res = deck.getPlayer().getDecks().remove(deck);
             if (res) {
-                Logger.log("DeckManager", "remove deck: " + deck.getName());
                 deck.setPlayer(null);
                 session.remove(deck);
             }
             return res;
         });
+        if (rs)
+            Logger.log("DeckManager", "remove deck: " + deck.getId());
+        return rs;
     }
 
-    public void updateDeckProperties(Deck deck) {
+    public void updateDeckProperties(Deck tDeck, long token) {
+        if (tDeck == null)
+            return;
+        Deck deck = getDeckByID(tDeck.getId());
+        if (deck.getPlayer() != PlayerManager.getInstance().getPlayerByToken(token))
+            return;
         Logger.log("DeckManager", "update deck: " + deck.getName());
         DBUtil.doInJPA(session -> {
-            session.saveOrUpdate(deck);
+            deck.setName(tDeck.getName());
+            deck.setHeroClass(tDeck.getHeroClass());
             return null;
         });
     }
 
-    public boolean removeCardFromDeck(Card card, Deck deck) {
+    public boolean removeCardFromDeck(Card tCard, Deck tDeck, long token) {
+        if (tDeck == null)
+            return false;
+        Deck deck = getDeckByID(tDeck.getId());
+        Player player = PlayerManager.getInstance().getPlayerByToken(token);
+        if (deck.getPlayer() != player)
+            return false;
+        Card card = CardManager.getInstance().getCardByID(tCard.getId());
         Boolean res = DBUtil.doInJPA(session -> deck.removeCardOnce(card));
         if (res)
             Logger.log("DeckManager", String.format("remove card '%s' from deck '%s'"
@@ -57,7 +78,14 @@ public class DeckManager {
         return res;
     }
 
-    public Message addCardToDeck(Card card, Deck deck) {
+    public Message addCardToDeck(Card tCard, Deck tDeck, long token) {
+        if (tDeck == null)
+            return Message.ERROR;
+        Deck deck = getDeckByID(tDeck.getId());
+        Player player = PlayerManager.getInstance().getPlayerByToken(token);
+        if (deck.getPlayer() != player)
+            return Message.ERROR;
+        Card card = CardManager.getInstance().getCardByID(tCard.getId());
         Message res = DBUtil.doInJPA(session -> deck.addCard(card));
         if (res == Message.SUCCESS)
             Logger.log("DeckManager", String.format("add card '%s' to deck '%s'"
@@ -65,55 +93,53 @@ public class DeckManager {
         return res;
     }
 
-    public void saveNewDeck(Deck deck, Player player) {
+    public Message saveNewDeck(Deck tDeck, long token) {
+        Player player = PlayerManager.getInstance().getPlayerByToken(token);
+        if (player == null)
+            return Message.ERROR;
         DBUtil.doInJPA(session -> {
+            Deck deck = new Deck();
+            deck.setName(tDeck.getName());
+            deck.setHeroClass(tDeck.getHeroClass());
             session.saveOrUpdate(deck);
             player.addDeck(deck);
-            session.saveOrUpdate(player);
             return null;
         });
-        Logger.log("DeckManager", "new deck: " + deck.getName());
+        Logger.log("DeckManager", "new deck: " + tDeck.getName());
+        return Message.SUCCESS;
+    }
+
+    private Deck getDeckByID(int id) {
+        return DBUtil.doInJPA(session ->
+                session.createQuery("from Deck where id=:id", Deck.class)
+                        .setParameter("id", id)
+                        .uniqueResult());
     }
 
     private static class DeckManagerProxy extends DeckManager {
         @Override
-        public boolean removeDeck(Deck deck) {
-            return sendPOST((worker, gameServer, pid) -> {
-                // TODO: 8/11/20 remove deck command
-                return null;
-            }).getMessage() == Message.SUCCESS;
+        public boolean removeDeck(Deck deck, long token) {
+            return sendPOST(new RmDeck(deck, token)).getMessage() == Message.SUCCESS;
         }
 
         @Override
-        public void updateDeckProperties(Deck deck) {
-            sendPOST((worker, gameServer, pid) -> {
-                // TODO: 8/11/20  update deck command
-                return null;
-            });
+        public void updateDeckProperties(Deck deck, long token) {
+            sendPOST(new UpDeck(deck, token));
         }
 
         @Override
-        public boolean removeCardFromDeck(Card card, Deck deck) {
-            return sendPOST((worker, gameServer, pid) -> {
-                // TODO: 8/11/20 remove card command
-                return null;
-            }).getMessage() == Message.SUCCESS;
+        public boolean removeCardFromDeck(Card card, Deck deck, long token) {
+            return sendPOST(new RmCrdDeck(card, deck, token)).getMessage() == Message.SUCCESS;
         }
 
         @Override
-        public Message addCardToDeck(Card card, Deck deck) {
-            return sendPOST((worker, gameServer, pid) -> {
-                // TODO: 8/11/20 add card command
-                return null;
-            }).getMessage();
+        public Message addCardToDeck(Card card, Deck deck, long token) {
+            return sendPOST(new AddCrdDeck(card, deck, token)).getMessage();
         }
 
         @Override
-        public void saveNewDeck(Deck deck, Player player) {
-            sendPOST((worker, gameServer, pid) -> {
-                // TODO: 8/11/20 add deck command
-                return null;
-            });
+        public Message saveNewDeck(Deck deck, long token) {
+            return sendPOST(new MkDeck(deck, token)).getMessage();
         }
     }
 

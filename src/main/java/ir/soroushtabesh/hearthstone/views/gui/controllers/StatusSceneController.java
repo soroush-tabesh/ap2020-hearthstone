@@ -4,6 +4,7 @@ import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
 import ir.soroushtabesh.hearthstone.models.BriefDeck;
 import ir.soroushtabesh.hearthstone.models.Player;
 import ir.soroushtabesh.hearthstone.models.PlayerStats;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
@@ -76,19 +77,24 @@ public class StatusSceneController extends AbstractSceneController {
     @Override
     public void onStart(Object message) {
         super.onStart(message);
-        Player player = PlayerManager.getInstance().getPlayer();
-        decks = BriefDeck.buildAll(player.getDecks());
-        PlayerStats playerStats = player.getPlayerStats();
-        sortedDecks = new SortedList<>(decks, (o1, o2) -> new CompareToBuilder()
-                .append(o2.getWinRatio(), o1.getWinRatio())
-                .append(o2.getWinCount(), o1.getWinCount())
-                .append(o2.getGameCount(), o1.getGameCount())
-                .append(o2.getAvgMana(), o1.getAvgMana())
-                .toComparison());
-        gamesWonLabel.setText(playerStats.getWinCount() + "");
-        gamesPlayedLabel.setText(playerStats.getGameCount() + "");
-        coinsLabel.setText(player.getCoin() + "");
-        usernameLabel.setText(player.getUsername());
-        Bindings.bindContent(deckTable.getItems(), sortedDecks);
+        new Thread(() -> {
+            PlayerManager.getInstance().refreshPlayer();
+            Player player = PlayerManager.getInstance().getPlayer();
+            decks = BriefDeck.buildAll(player.getDecks());
+            PlayerStats playerStats = player.getPlayerStats();
+            Platform.runLater(() -> {
+                sortedDecks = new SortedList<>(decks, (o1, o2) -> new CompareToBuilder()
+                        .append(o2.getWinRatio(), o1.getWinRatio())
+                        .append(o2.getWinCount(), o1.getWinCount())
+                        .append(o2.getGameCount(), o1.getGameCount())
+                        .append(o2.getAvgMana(), o1.getAvgMana())
+                        .toComparison());
+                gamesWonLabel.setText(playerStats.getWinCount() + "");
+                gamesPlayedLabel.setText(playerStats.getGameCount() + "");
+                coinsLabel.setText(player.getCoin() + "");
+                usernameLabel.setText(player.getUsername());
+                Bindings.bindContent(deckTable.getItems(), sortedDecks);
+            });
+        }).start();
     }
 }

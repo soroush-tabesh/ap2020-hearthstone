@@ -8,6 +8,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +51,7 @@ public class SocketWorker implements Runnable {
         String s;
         while (!Thread.interrupted()) {
             try {
-                s = inputStream.readUTF();
+                s = receive();
                 Packet packet = JSONUtil.getGson().fromJson(s, Packet.class);
                 System.out.println("received: " + packet);
                 Command command = packet.getCommand();
@@ -66,9 +68,33 @@ public class SocketWorker implements Runnable {
             } catch (IOException e) {
                 reportBreakage();
                 break;
-            } catch (Exception ignored) {
+            } catch (Exception e) {
+                e.printStackTrace();
+                try {
+                    socket.close();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+                reportBreakage();
+                break;
             }
         }
+    }
+
+    private String receive() throws IOException {
+        byte[] len = readNBytes(4);
+        System.out.println("A " + len.length);
+        int l = ByteBuffer.wrap(len).getInt();
+        System.out.println("B " + l);
+        return new String(readNBytes(l), StandardCharsets.UTF_8);
+    }
+
+    private byte[] readNBytes(int n) throws IOException {
+        byte[] res = new byte[n];
+        for (int i = 0; i < n; i++) {
+            res[i] = inputStream.readByte();
+        }
+        return res;
     }
 
     private void reportBreakage() {
@@ -89,8 +115,11 @@ public class SocketWorker implements Runnable {
         packet.setPid(pid);
         try {
             String str = JSONUtil.getGson().toJson(packet);
-            System.out.println("sent: " + str);
-            outputStream.writeUTF(str);
+//            outputStream.writeUTF(str);
+            byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
+            System.out.println("C " + bytes.length);
+            outputStream.writeInt(bytes.length);
+            outputStream.write(bytes);
         } catch (IOException e) {
             e.printStackTrace();
             reportBreakage();

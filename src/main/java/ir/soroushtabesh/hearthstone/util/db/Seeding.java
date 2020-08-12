@@ -3,10 +3,8 @@ package ir.soroushtabesh.hearthstone.util.db;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.WeaponObject;
 import ir.soroushtabesh.hearthstone.models.*;
 import ir.soroushtabesh.hearthstone.models.cards.*;
-import ir.soroushtabesh.hearthstone.util.Constants;
 import scripts.*;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -629,8 +627,8 @@ public class Seeding {
     }
 
     public static void initiate() {
-        File file = new File(Constants.DB_URL + Constants.DB_URL_SUFFIX);
-        if (!file.exists())
+        if (DBUtil.doInJPA(session -> session.createQuery("from Card where id=1")).uniqueResult() == null) {
             seed();
+        }
     }
 }

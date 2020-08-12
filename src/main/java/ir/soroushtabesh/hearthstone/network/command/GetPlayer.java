@@ -6,6 +6,7 @@ import ir.soroushtabesh.hearthstone.models.Player;
 import ir.soroushtabesh.hearthstone.network.IGameServer;
 import ir.soroushtabesh.hearthstone.network.SocketWorker;
 import ir.soroushtabesh.hearthstone.network.models.Packet;
+import ir.soroushtabesh.hearthstone.util.db.DBUtil;
 
 public class GetPlayer implements Command {
     private Integer id;
@@ -36,6 +37,7 @@ public class GetPlayer implements Command {
         }
         if (player != null) {
             Packet p = new Packet(Message.SUCCESS);
+            DBUtil.hydrate(player);
             p.setParcel(player);
             return p;
         } else {

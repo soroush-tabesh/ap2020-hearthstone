@@ -4,6 +4,7 @@ import ir.soroushtabesh.hearthstone.models.*;
 import ir.soroushtabesh.hearthstone.models.cards.Minion;
 import ir.soroushtabesh.hearthstone.models.cards.Spell;
 import ir.soroushtabesh.hearthstone.models.cards.Weapon;
+import ir.soroushtabesh.hearthstone.network.command.*;
 import ir.soroushtabesh.hearthstone.network.models.Packet;
 import ir.soroushtabesh.hearthstone.util.Constants;
 import ir.soroushtabesh.hearthstone.util.Logger;
@@ -33,17 +34,24 @@ public class CardManager {
     }
 
     public List<Card> getAllCards() {
-        return DBUtil.doInJPA(session ->
+        List<Card> cards = DBUtil.doInJPA(session ->
                 session.createQuery("from Card where tradable=true", Card.class).list());
+        System.out.println("CardManager.getAllCards " + cards.size());
+        return cards;
     }
 
     public List<InfoPassive> getAllPassives() {
         return DBUtil.doInJPA(session -> session.createQuery("from InfoPassive ", InfoPassive.class).list());
     }
 
-    public Message buyCard(Card card) {
+    public Message buyCard(Card tCard, long token) {
+        Player player = PlayerManager.getInstance().getPlayerByToken(token);
+        if (tCard == null)
+            return Message.ERROR;
+        Card card = getCardByID(tCard.getId());
+        if (card == null || player == null)
+            return Message.ERROR;
         return DBUtil.doInJPA(session -> {
-            Player player = PlayerManager.getInstance().getPlayer();
             if (player.getCoin() < card.getPrice())
                 return Message.INSUFFICIENT;
             if (!player.addOwnedCard(card))
@@ -54,9 +62,14 @@ public class CardManager {
         });
     }
 
-    public Message sellCard(Card card) {
+    public Message sellCard(Card tCard, long token) {
+        Player player = PlayerManager.getInstance().getPlayerByToken(token);
+        if (tCard == null)
+            return Message.ERROR;
+        Card card = getCardByID(tCard.getId());
+        if (card == null || player == null)
+            return Message.ERROR;
         return DBUtil.doInJPA(session -> {
-            Player player = PlayerManager.getInstance().getPlayer();
             if (player.getOwnedAmount(card) <= 0)
                 return Message.EMPTY;
             player.removeOwnedCard(card);
@@ -67,8 +80,7 @@ public class CardManager {
     }
 
     public boolean isInAnyDeck(Card card) {
-        Player player = PlayerManager.getInstance().getPlayer();
-        return player.getOwnedCardsList().contains(card);
+        return false;
     }
 
     public Card getCardByName(String name) {
@@ -78,6 +90,12 @@ public class CardManager {
                 .uniqueResult());
     }
 
+    public Card getCardByID(int id) {
+        return DBUtil.doInJPA(session -> session
+                .createQuery("from Card where id=:id ", Card.class)
+                .setParameter("id", id)
+                .uniqueResult());
+    }
 
     public List<Minion> getAllMinions() {
         return DBUtil.doInJPA(session -> session
@@ -107,88 +125,59 @@ public class CardManager {
     private static class CardManagerProxy extends CardManager {
         @Override
         public List<Card> getAllCards() {
-            Packet packet = sendPOST((worker, gameServer, pid) -> {
-                // TODO: 8/11/20 get player command
-                return null;
-            });
+            Packet packet = sendPOST(new GetCards());
             return (List<Card>) packet.getParcel();
         }
 
         @Override
         public List<InfoPassive> getAllPassives() {
-            Packet packet = sendPOST((worker, gameServer, pid) -> {
-                // TODO: 8/11/20 get player command
-                return null;
-            });
+            Packet packet = sendPOST(new GetPassives());
             return (List<InfoPassive>) packet.getParcel();
         }
 
         @Override
-        public Message buyCard(Card card) {
-            return sendPOST((worker, gameServer, pid) -> {
-                // TODO: 8/11/20 add card command
-                return null;
-            }).getMessage();
+        public Message buyCard(Card card, long token) {
+            return sendPOST(new BuyCard(token, card)).getMessage();
         }
 
         @Override
-        public Message sellCard(Card card) {
-            return sendPOST((worker, gameServer, pid) -> {
-                // TODO: 8/11/20 add card command
-                return null;
-            }).getMessage();
+        public Message sellCard(Card card, long token) {
+            return sendPOST(new SellCard(token, card)).getMessage();
         }
 
         @Override
         public boolean isInAnyDeck(Card card) {
-            return sendPOST((worker, gameServer, pid) -> {
-                // TODO: 8/11/20 add card command
-                return null;
-            }).getMessage() == Message.SUCCESS;
+            Player player = PlayerManager.getInstance().getPlayer();
+            return player.getOwnedCardsList().contains(card);
         }
 
         @Override
         public Card getCardByName(String name) {
-            Packet packet = sendPOST((worker, gameServer, pid) -> {
-                // TODO: 8/11/20 get player command
-                return null;
-            });
+            Packet packet = sendPOST(new GetCard(name));
             return (Card) packet.getParcel();
         }
 
         @Override
         public List<Minion> getAllMinions() {
-            Packet packet = sendPOST((worker, gameServer, pid) -> {
-                // TODO: 8/11/20 get player command
-                return null;
-            });
+            Packet packet = sendPOST(new GetMinions());
             return (List<Minion>) packet.getParcel();
         }
 
         @Override
         public List<Spell> getAllSpells() {
-            Packet packet = sendPOST((worker, gameServer, pid) -> {
-                // TODO: 8/11/20 get player command
-                return null;
-            });
+            Packet packet = sendPOST(new GetSpells());
             return (List<Spell>) packet.getParcel();
         }
 
         @Override
         public List<Weapon> getAllWeapons() {
-            Packet packet = sendPOST((worker, gameServer, pid) -> {
-                // TODO: 8/11/20 get player command
-                return null;
-            });
+            Packet packet = sendPOST(new GetWeapons());
             return (List<Weapon>) packet.getParcel();
         }
 
         @Override
         public Hero getHeroByClass(Hero.HeroClass heroClass) {
-            Packet packet = sendPOST((worker, gameServer, pid) -> {
-                // TODO: 8/11/20 get player command
-                return null;
-            });
+            Packet packet = sendPOST(new GetHero(heroClass));
             return (Hero) packet.getParcel();
         }
     }

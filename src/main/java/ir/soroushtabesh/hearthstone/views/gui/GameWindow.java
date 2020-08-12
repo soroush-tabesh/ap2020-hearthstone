@@ -35,6 +35,7 @@ public class GameWindow extends Application {
 
         Alert alertConnection = new Alert(Alert.AlertType.CONFIRMATION);
         alertConnection.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+        alertConnection.getDialogPane().lookupButton(ButtonType.CANCEL).setDisable(true);
         alertConnection.setTitle("Hearthstone");
         alertConnection.setHeaderText("Network");
         alertConnection.setContentText("Connecting...");

@@ -1,5 +1,6 @@
 package ir.soroushtabesh.hearthstone.util.db;
 
+import com.javaetmoi.core.persistence.hibernate.LazyLoadingUtil;
 import ir.soroushtabesh.hearthstone.util.Constants;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -14,7 +15,6 @@ public class DBUtil {
     }
 
     public static SessionFactory getSessionFactory() {
-        System.out.println("DBUtil.getSessionFactory");
         if (sessionFactory == null) {
             try {
                 sessionFactory = new Configuration()
@@ -109,6 +109,12 @@ public class DBUtil {
             session.getTransaction().commit();
         }
         return res;
+    }
+
+    public static void hydrate(Object object) {
+        if (!Constants.isServerMode())
+            return;
+        LazyLoadingUtil.deepHydrate(getOpenSession(), object);
     }
 
 }

@@ -77,9 +77,11 @@ public class CollectionSceneController extends AbstractSceneController {
         new Thread(() -> {
             ObservableList<CardView> list = FXCollections.observableList(CardView
                     .buildAll(CardManager.getInstance().getAllCards()));
-            bindTilePaneToCards(list);
-            bindDeckView();
-            FXUtil.runLater(() -> list.forEach(cardView -> prepareCardView(message, cardView)), 0);
+            FXUtil.runLater(() -> {
+                bindTilePaneToCards(list);
+                bindDeckView();
+                list.forEach(cardView -> prepareCardView(message, cardView));
+            }, 0);
         }).start();
     }
 
@@ -159,7 +161,8 @@ public class CollectionSceneController extends AbstractSceneController {
             } else {
                 Deck selectedDeck = ((BriefDeck) selectedPane.getProperties().get("deck")).getDeck();
                 Card selectedCard = this.selectedCardView.getBriefCard().getCard();
-                Message res = DeckManager.getInstance().addCardToDeck(selectedCard, selectedDeck);
+                Message res = DeckManager.getInstance().addCardToDeck(selectedCard, selectedDeck
+                        , PlayerManager.getInstance().getToken());
                 switch (res) {
                     case SUCCESS:
                         updateSelectedDeckView();
@@ -190,7 +193,8 @@ public class CollectionSceneController extends AbstractSceneController {
             TitledPane selectedPane = decksAccordion.getExpandedPane();
             Deck selectedDeck = ((BriefDeck) selectedPane.getProperties().get("deck")).getDeck();
             Card selectedCard = cardTextContextTemp.getBriefCard().getCard();
-            boolean res = DeckManager.getInstance().removeCardFromDeck(selectedCard, selectedDeck);
+            boolean res = DeckManager.getInstance().removeCardFromDeck(selectedCard, selectedDeck
+                    , PlayerManager.getInstance().getToken());
             if (res) {
                 updateSelectedDeckView();
             } else {
@@ -213,7 +217,7 @@ public class CollectionSceneController extends AbstractSceneController {
             Optional<ButtonType> res = FXUtil.showAlert("Collection", "Remove Deck"
                     , "Are you sure you want to remove this deck?", Alert.AlertType.CONFIRMATION);
             if (res.isPresent() && res.get().equals(ButtonType.OK)) {
-                DeckManager.getInstance().removeDeck(selectedDeck);
+                DeckManager.getInstance().removeDeck(selectedDeck, PlayerManager.getInstance().getToken());
                 decksAccordion.getPanes().remove(selectedPane);
             }
         });
@@ -233,7 +237,7 @@ public class CollectionSceneController extends AbstractSceneController {
         Optional<ButtonType> res = editDeckDialog.showAndWait();
         if (res.isPresent() && res.get() == ButtonType.OK) {
             editDeckDialog.updateDeck();
-            DeckManager.getInstance().saveNewDeck(deck, PlayerManager.getInstance().getPlayer());
+            DeckManager.getInstance().saveNewDeck(deck, PlayerManager.getInstance().getToken());
             return deck;
         }
         return null;
@@ -245,7 +249,7 @@ public class CollectionSceneController extends AbstractSceneController {
         Optional<ButtonType> res = editDeckDialog.showAndWait();
         if (res.isPresent() && res.get() == ButtonType.OK) {
             editDeckDialog.updateDeck();
-            DeckManager.getInstance().updateDeckProperties(deck);
+            DeckManager.getInstance().updateDeckProperties(deck, PlayerManager.getInstance().getToken());
         }
     }
 
