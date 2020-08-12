@@ -83,9 +83,8 @@ public class SocketWorker implements Runnable {
 
     private String receive() throws IOException {
         byte[] len = readNBytes(4);
-        System.out.println("A " + len.length);
         int l = ByteBuffer.wrap(len).getInt();
-        System.out.println("B " + l);
+        System.out.println("received len: " + l);
         return new String(readNBytes(l), StandardCharsets.UTF_8);
     }
 
@@ -117,7 +116,8 @@ public class SocketWorker implements Runnable {
             String str = JSONUtil.getGson().toJson(packet);
 //            outputStream.writeUTF(str);
             byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
-            System.out.println("C " + bytes.length);
+            System.out.println("sent len:  " + bytes.length);
+            System.out.println("sent: " + packet);
             outputStream.writeInt(bytes.length);
             outputStream.write(bytes);
         } catch (IOException e) {
