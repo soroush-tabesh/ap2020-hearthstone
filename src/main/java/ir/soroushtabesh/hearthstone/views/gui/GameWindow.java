@@ -4,6 +4,7 @@ import ir.soroushtabesh.hearthstone.network.RemoteGameServer;
 import ir.soroushtabesh.hearthstone.util.gui.FXUtil;
 import ir.soroushtabesh.hearthstone.views.gui.controllers.GameWindowController;
 import ir.soroushtabesh.hearthstone.views.gui.controllers.SceneManager;
+import ir.soroushtabesh.hearthstone.views.gui.controls.ConnectDialog;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -12,6 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -35,13 +37,6 @@ public class GameWindow extends Application {
     @Override
     public void start(Stage stage) {
 
-        Alert alertConnection = new Alert(Alert.AlertType.CONFIRMATION);
-        alertConnection.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
-        alertConnection.getDialogPane().lookupButton(ButtonType.CANCEL).setDisable(true);
-        alertConnection.setTitle("Hearthstone");
-        alertConnection.setHeaderText("Network");
-        alertConnection.setContentText("Connecting...");
-
         fetchAlert = new Alert(Alert.AlertType.CONFIRMATION);
         fetchAlert.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
         fetchAlert.getDialogPane().lookupButton(ButtonType.CANCEL).setDisable(true);
@@ -49,24 +44,13 @@ public class GameWindow extends Application {
         fetchAlert.setHeaderText("Network");
         fetchAlert.setContentText("Fetching Data...");
 
-        Alert alertError = new Alert(Alert.AlertType.ERROR);
-        alertError.setTitle("Hearthstone");
-        alertError.setHeaderText("Network");
-        alertError.setContentText("Error");
+        Dialog<ButtonType> connectDialog = new ConnectDialog(stage);
 
         RemoteGameServer.getInstance().setOnFetchStartListener(GameWindow::addBusyWaiter);
 
         RemoteGameServer.getInstance().setOnFetchEndListener(GameWindow::releaseBusyWaiter);
 
-        Runnable connectionRunnable = () -> Platform.runLater(() -> {
-            FXUtil.runLater(() -> {
-                while (!RemoteGameServer.getInstance().connect() && stage.isShowing()) {
-                    alertError.showAndWait();
-                }
-                alertConnection.close();
-            }, 1000);
-            alertConnection.showAndWait();
-        });
+        Runnable connectionRunnable = () -> Platform.runLater(connectDialog::showAndWait);
         RemoteGameServer.getInstance().setOnErrorListener(connectionRunnable);
         FXUtil.runLater(connectionRunnable, 100);
 
