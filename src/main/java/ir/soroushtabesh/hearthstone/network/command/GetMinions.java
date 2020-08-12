@@ -17,7 +17,7 @@ public class GetMinions implements Command {
         List<Minion> cards = new ArrayList<>(CardManager.getInstance().getAllMinions());
         Packet packet = new Packet(Message.SUCCESS);
         DBUtil.hydrate(cards);
-        packet.setParcel(cards);
+        packet.setParcel(new ArrayList<>(cards));
         return packet;
     }
 }

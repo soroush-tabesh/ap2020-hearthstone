@@ -2,6 +2,7 @@ package ir.soroushtabesh.hearthstone.controllers;
 
 import ir.soroushtabesh.hearthstone.models.Message;
 import ir.soroushtabesh.hearthstone.models.Player;
+import ir.soroushtabesh.hearthstone.models.PlayerStats;
 import ir.soroushtabesh.hearthstone.network.command.*;
 import ir.soroushtabesh.hearthstone.network.models.Packet;
 import ir.soroushtabesh.hearthstone.util.Constants;
@@ -13,6 +14,7 @@ import ir.soroushtabesh.hearthstone.util.db.Seeding;
 import java.security.SecureRandom;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static ir.soroushtabesh.hearthstone.network.RemoteGameServer.sendPOST;
@@ -78,15 +80,12 @@ public class PlayerManager {
     public Message deleteAccount(String username, String password) {
         password = HashUtil.hash(password);
         Player player = getPlayerByUsername(username);
-        if (!password.equals(player.getPassword()))
+        if (player == null || !password.equals(player.getPassword()))
             return Message.WRONG;
-        player.setDeleted(true);
-        try {
-            DBUtil.pushSingleObject(player);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Message.ERROR;
-        }
+        DBUtil.doInJPA(session -> {
+            player.setDeleted(true);
+            return null;
+        });
         Logger.log("PlayerManager", "delete-user" + player.getUsername());
         Long aLong = username2token.remove(username);
         if (aLong != null)
@@ -138,13 +137,21 @@ public class PlayerManager {
 
     public Player getPlayerByUsername(String username) {
         return DBUtil.doInJPA(session -> session
-                .createQuery("from Player where username=:username", Player.class)
+                .createQuery("from Player where username=:username and deleted=false", Player.class)
                 .setParameter("username", username)
                 .uniqueResult());
     }
 
     public Player getPlayerByToken(long token) {
         return getPlayerByUsername(token2username.get(token));
+    }
+
+    public List<PlayerStats> getPlayers() {
+        return DBUtil.doInJPA(session ->
+                session.createQuery(
+                        "select p.playerStats from Player p where p.deleted=false " +
+                                "order by p.playerStats.cupCount desc , p.username asc", PlayerStats.class)
+                        .list());
     }
 
     private static class PlayerManagerProxy extends PlayerManager {
@@ -231,6 +238,11 @@ public class PlayerManager {
         @Override
         public Player getPlayerByToken(long token) {
             return (Player) sendPOST(new GetPlayer(token)).getParcel();
+        }
+
+        @Override
+        public List<PlayerStats> getPlayers() {
+            return (List<PlayerStats>) sendPOST(new GetPlayers()).getParcel();
         }
     }
 

@@ -1,5 +1,6 @@
 package ir.soroushtabesh.hearthstone.util.db;
 
+import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.WeaponObject;
 import ir.soroushtabesh.hearthstone.models.*;
 import ir.soroushtabesh.hearthstone.models.cards.*;
@@ -610,7 +611,7 @@ public class Seeding {
                 deck.setName(hero.getName() + " #1");
                 deck.getCardsInDeck().addAll(cards);
 
-                int r = (int) (10 * Math.random());
+                int r = (int) (40 * Math.random());
 
                 deck.getDeckHistory().setTotalGames(r);
                 deck.getDeckHistory().setWonGames((int) (r * Math.random()));
@@ -620,6 +621,8 @@ public class Seeding {
                 player.getPlayerStats().setWinCount((int) (r * Math.random()));
 
                 session.saveOrUpdate(deck);
+                player.getPlayerStats().setSsid(player.getId());
+                player.getPlayerStats().setCupCount(player.getPlayerStats().getWinCount());
                 player.addDeck(deck);
             }
             return null;
@@ -629,6 +632,9 @@ public class Seeding {
     public static void initiate() {
         if (DBUtil.doInJPA(session -> session.createQuery("from Card where id=1")).uniqueResult() == null) {
             seed();
+            for (int i = 0; i < 20; i++) {
+                PlayerManager.getInstance().makeAccount("asd" + i, "asd");
+            }
         }
     }
 }

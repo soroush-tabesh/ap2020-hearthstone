@@ -1,23 +1,18 @@
 package ir.soroushtabesh.hearthstone.network.command;
 
-import ir.soroushtabesh.hearthstone.controllers.CardManager;
-import ir.soroushtabesh.hearthstone.models.InfoPassive;
+import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
 import ir.soroushtabesh.hearthstone.models.Message;
 import ir.soroushtabesh.hearthstone.network.IGameServer;
 import ir.soroushtabesh.hearthstone.network.SocketWorker;
 import ir.soroushtabesh.hearthstone.network.models.Packet;
-import ir.soroushtabesh.hearthstone.util.db.DBUtil;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class GetPassives implements Command {
+public class GetPlayers implements Command {
     @Override
     public Packet visit(SocketWorker worker, IGameServer gameServer, long pid) {
-        List<InfoPassive> cards = new ArrayList<>(CardManager.getInstance().getAllPassives());
         Packet packet = new Packet(Message.SUCCESS);
-        DBUtil.hydrate(cards);
-        packet.setParcel(new ArrayList<>(cards));
+        packet.setParcel(new ArrayList<>(PlayerManager.getInstance().getPlayers()));
         return packet;
     }
 }

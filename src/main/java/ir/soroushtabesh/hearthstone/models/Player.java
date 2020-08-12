@@ -37,23 +37,15 @@ public class Player implements Serializable {
     @Exclude
     private String password;
     private Integer coin = 50;
-    private Integer cup = 0;
     private Boolean deleted = false;
 
     public Player(String username, String password) {
         this.username = username;
+        playerStats.setUn(username);
         this.password = password;
     }
 
     public Player() {
-    }
-
-    public Integer getCup() {
-        return cup;
-    }
-
-    public void setCup(Integer cup) {
-        this.cup = cup;
     }
 
     public PlayerStats getPlayerStats() {
@@ -69,6 +61,7 @@ public class Player implements Serializable {
     }
 
     public void setUsername(String username) {
+        playerStats.setUn(username);
         this.username = username;
     }
 

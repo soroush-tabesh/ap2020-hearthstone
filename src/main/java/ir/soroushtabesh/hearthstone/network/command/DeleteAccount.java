@@ -16,6 +16,6 @@ public class DeleteAccount implements Command {
 
     @Override
     public Packet visit(SocketWorker worker, IGameServer gameServer, long pid) {
-        return new Packet(PlayerManager.getInstance().makeAccount(username, password));
+        return new Packet(PlayerManager.getInstance().deleteAccount(username, password));
     }
 }

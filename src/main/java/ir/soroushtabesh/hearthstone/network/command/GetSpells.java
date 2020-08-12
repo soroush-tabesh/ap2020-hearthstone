@@ -17,7 +17,7 @@ public class GetSpells implements Command {
         List<Spell> cards = new ArrayList<>(CardManager.getInstance().getAllSpells());
         Packet packet = new Packet(Message.SUCCESS);
         DBUtil.hydrate(cards);
-        packet.setParcel(cards);
+        packet.setParcel(new ArrayList<>(cards));
         return packet;
     }
 }

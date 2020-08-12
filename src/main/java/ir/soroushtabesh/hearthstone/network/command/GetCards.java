@@ -17,7 +17,7 @@ public class GetCards implements Command {
         List<Card> cards = new ArrayList<>(CardManager.getInstance().getAllCards());
         Packet packet = new Packet(Message.SUCCESS);
         DBUtil.hydrate(cards);
-        packet.setParcel(cards);
+        packet.setParcel(new ArrayList<>(cards));
         return packet;
     }
 }

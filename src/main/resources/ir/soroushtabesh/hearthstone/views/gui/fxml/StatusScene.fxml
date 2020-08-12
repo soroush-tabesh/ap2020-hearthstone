@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" id="statusPane" fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity"
-            minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0"
-            stylesheets="@../stylesheet/styles.css"
-            xmlns="http://javafx.com/javafx/11.0.1"
+<AnchorPane id="statusPane" fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+            minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" stylesheets="@../stylesheet/styles.css"
+            xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="ir.soroushtabesh.hearthstone.views.gui.controllers.StatusSceneController">
     <children>
-        <VBox layoutX="50.0" layoutY="194.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="50.0"
-              AnchorPane.rightAnchor="50.0">
+        <VBox layoutX="50.0" layoutY="178.0" prefWidth="1100.0" AnchorPane.leftAnchor="50.0"
+              AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="178.0">
             <children>
                 <Label styleClass="label_small" text="Deck Stats:">
                     <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                     </padding>
                 </Label>
-                <TableView fx:id="deckTable" prefHeight="529.0" prefWidth="1097.0">
+                <TableView fx:id="deckTable" prefHeight="236.0" prefWidth="1100.0">
                 </TableView>
             </children>
         </VBox>
@@ -27,8 +25,9 @@
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
             </padding>
         </Label>
-        <GridPane layoutX="50.0" layoutY="88.0" prefHeight="90.0" prefWidth="373.0">
+        <GridPane layoutX="50.0" layoutY="88.0" prefHeight="90.0" prefWidth="527.0">
             <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
             </columnConstraints>
@@ -94,10 +93,50 @@
                         </Label>
                     </children>
                 </HBox>
+                <HBox alignment="CENTER_LEFT" layoutX="186.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0"
+                      GridPane.columnIndex="2">
+                    <children>
+                        <Label text="Cups:">
+                            <HBox.margin>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </HBox.margin>
+                        </Label>
+                        <Label fx:id="cupsLabel" text="0">
+                            <HBox.margin>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </HBox.margin>
+                        </Label>
+                    </children>
+                </HBox>
             </children>
         </GridPane>
-        <Button fx:id="backButton" layoutX="1111.0" layoutY="1.0" mnemonicParsing="false" prefWidth="75.0"
-                styleClass="button-native"
-                text="Back" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0" onAction="#backPressed"/>
+        <Button fx:id="backButton" layoutX="1111.0" layoutY="1.0" mnemonicParsing="false" onAction="#backPressed"
+                prefWidth="75.0" styleClass="button-native" text="Back" AnchorPane.rightAnchor="20.0"
+                AnchorPane.topAnchor="20.0"/>
+        <HBox layoutX="50.0" layoutY="473.0" prefHeight="267.0" prefWidth="1100.0" spacing="5.0">
+            <children>
+                <VBox prefHeight="267.0">
+                    <children>
+                        <Label styleClass="label_small" text="Top Players:">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                        </Label>
+                        <TableView fx:id="topPlayersTable" prefHeight="236.0" prefWidth="1100.0"/>
+                    </children>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <VBox prefHeight="267.0">
+                    <children>
+                        <Label styleClass="label_small" text="My Rank:">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                        </Label>
+                        <TableView fx:id="myRankTable" prefHeight="236.0" prefWidth="1100.0"/>
+                    </children>
+                </VBox>
+            </children>
+        </HBox>
     </children>
 </AnchorPane>

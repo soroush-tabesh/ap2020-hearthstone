@@ -19,6 +19,7 @@ public class BriefDeck implements Serializable {
     private String name;
     private int winCount;
     private int gameCount;
+    private int cupCount;
     private float winRatio;
     private float avgMana;
     private String heroClass;
@@ -51,6 +52,10 @@ public class BriefDeck implements Serializable {
 
     public int getGameCount() {
         return gameCount;
+    }
+
+    public int getCupCount() {
+        return cupCount;
     }
 
     public float getWinRatio() {
@@ -87,6 +92,7 @@ public class BriefDeck implements Serializable {
         name = deck.getName();
         winCount = deckHistory.getWonGames();
         gameCount = deckHistory.getTotalGames();
+        cupCount = deckHistory.getCupCount();
         winRatio = 1f * winCount / Math.max(gameCount, 1);
 
         List<Card> cards = deck.getCardsInDeck();
