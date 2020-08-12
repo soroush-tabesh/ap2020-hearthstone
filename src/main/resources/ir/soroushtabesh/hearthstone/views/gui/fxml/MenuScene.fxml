@@ -13,13 +13,13 @@
     <children>
         <Button alignment="CENTER" layoutX="576.0" layoutY="229.0" mnemonicParsing="false"
                 onAction="#playButtonAction" styleClass="menu_button" text="Play"/>
-        <Button alignment="CENTER" layoutX="113.0" layoutY="658.0" mnemonicParsing="false"
+        <Button id="shopButton" alignment="CENTER" layoutX="113.0" layoutY="658.0" mnemonicParsing="false"
                 onAction="#shopButtonAction" prefHeight="98.0" prefWidth="99.0" styleClass="menu_button"/>
         <Button alignment="CENTER" layoutX="565.0" layoutY="285.0" mnemonicParsing="false"
                 onAction="#statusButtonAction" styleClass="menu_button" text="Status"/>
         <Button alignment="CENTER" layoutX="561.0" layoutY="342.0" mnemonicParsing="false"
                 onAction="#settingButtonAction" styleClass="menu_button" text="Setting"/>
-        <Button alignment="CENTER" layoutX="609.0" layoutY="653.0" mnemonicParsing="false"
+        <Button id="collectionButton" alignment="CENTER" layoutX="609.0" layoutY="653.0" mnemonicParsing="false"
                 onAction="#collectionButtonAction" styleClass="menu_button" text="Collection"/>
         <Button alignment="CENTER" layoutX="560.0" layoutY="400.0" mnemonicParsing="false"
                 onAction="#logout" styleClass="menu_button" text="Logout"/>
