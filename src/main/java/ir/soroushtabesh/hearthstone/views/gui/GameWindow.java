@@ -25,6 +25,7 @@ public class GameWindow extends Application {
     private Scene scene = null;
     private ImageCursor cursorNormal;
     private ImageCursor cursorDown;
+    private int busy = 0;
 
     public static void main(String[] args) {
         launch(args);
@@ -52,9 +53,16 @@ public class GameWindow extends Application {
         alertError.setHeaderText("Network");
         alertError.setContentText("Error");
 
-        RemoteGameServer.getInstance().setOnFetchStartListener(() -> FXUtil.runLater(fetchAlert::showAndWait, 0));
+        RemoteGameServer.getInstance().setOnFetchStartListener(() -> FXUtil.runLater(() -> {
+            ++busy;
+            if (busy > 0 && !fetchAlert.isShowing())
+                fetchAlert.showAndWait();
+        }, 200));
 
-        RemoteGameServer.getInstance().setOnFetchEndListener(() -> FXUtil.runLater(fetchAlert::close, 0));
+        RemoteGameServer.getInstance().setOnFetchEndListener(() -> FXUtil.runLater(() -> {
+            --busy;
+            fetchAlert.close();
+        }, 0));
 
         Runnable connectionRunnable = () -> Platform.runLater(() -> {
             FXUtil.runLater(() -> {
