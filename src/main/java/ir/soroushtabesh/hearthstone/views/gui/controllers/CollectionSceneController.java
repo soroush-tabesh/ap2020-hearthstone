@@ -5,6 +5,7 @@ import ir.soroushtabesh.hearthstone.controllers.DeckManager;
 import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
 import ir.soroushtabesh.hearthstone.models.*;
 import ir.soroushtabesh.hearthstone.util.gui.FXUtil;
+import ir.soroushtabesh.hearthstone.views.gui.GameWindow;
 import ir.soroushtabesh.hearthstone.views.gui.ShopScene;
 import ir.soroushtabesh.hearthstone.views.gui.controls.CardTextView;
 import ir.soroushtabesh.hearthstone.views.gui.controls.CardView;
@@ -75,14 +76,16 @@ public class CollectionSceneController extends AbstractSceneController {
         super.onStart(message);
         this.message = message;
         clearFilters(null);
-        new Thread(() -> PlayerManager.getInstance().refreshPlayer()).start();
         new Thread(() -> {
+            GameWindow.addBusyWaiter();
+            PlayerManager.getInstance().refreshPlayer();
             ObservableList<CardView> list = FXCollections.observableList(CardView
                     .buildAll(CardManager.getInstance().getAllCards()));
             FXUtil.runLater(() -> {
                 bindTilePaneToCards(list);
                 bindDeckView();
                 list.forEach(cardView -> prepareCardView(message, cardView));
+                GameWindow.releaseBusyWaiter();
             }, 0);
         }).start();
     }

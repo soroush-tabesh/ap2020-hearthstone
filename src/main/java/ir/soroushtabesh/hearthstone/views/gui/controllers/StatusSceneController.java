@@ -4,6 +4,7 @@ import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
 import ir.soroushtabesh.hearthstone.models.BriefDeck;
 import ir.soroushtabesh.hearthstone.models.Player;
 import ir.soroushtabesh.hearthstone.models.PlayerStats;
+import ir.soroushtabesh.hearthstone.views.gui.GameWindow;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
@@ -78,6 +79,7 @@ public class StatusSceneController extends AbstractSceneController {
     public void onStart(Object message) {
         super.onStart(message);
         new Thread(() -> {
+            GameWindow.addBusyWaiter();
             PlayerManager.getInstance().refreshPlayer();
             Player player = PlayerManager.getInstance().getPlayer();
             decks = BriefDeck.buildAll(player.getDecks());
@@ -94,6 +96,7 @@ public class StatusSceneController extends AbstractSceneController {
                 coinsLabel.setText(player.getCoin() + "");
                 usernameLabel.setText(player.getUsername());
                 Bindings.bindContent(deckTable.getItems(), sortedDecks);
+                GameWindow.releaseBusyWaiter();
             });
         }).start();
     }

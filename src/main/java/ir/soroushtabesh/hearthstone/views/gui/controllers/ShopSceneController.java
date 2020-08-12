@@ -7,6 +7,7 @@ import ir.soroushtabesh.hearthstone.models.Message;
 import ir.soroushtabesh.hearthstone.models.Player;
 import ir.soroushtabesh.hearthstone.util.gui.FXUtil;
 import ir.soroushtabesh.hearthstone.views.gui.CollectionScene;
+import ir.soroushtabesh.hearthstone.views.gui.GameWindow;
 import ir.soroushtabesh.hearthstone.views.gui.controls.CardView;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -43,6 +44,7 @@ public class ShopSceneController extends AbstractSceneController {
         if (message instanceof Card)
             messageCard = (Card) message;
         new Thread(() -> {
+            GameWindow.addBusyWaiter();
             PlayerManager.getInstance().refreshPlayer();
             cards = CardView.buildAll(CardManager.getInstance().getAllCards());
             selectedCardView = null;
@@ -59,6 +61,7 @@ public class ShopSceneController extends AbstractSceneController {
                     if (cardView.getBriefCard().getCard().equals(messageCard))
                         selectCard(cardView);
                 });
+                GameWindow.releaseBusyWaiter();
             }, 0);
         }).start();
     }

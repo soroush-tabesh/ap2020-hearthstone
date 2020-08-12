@@ -25,7 +25,8 @@ public class GameWindow extends Application {
     private Scene scene = null;
     private ImageCursor cursorNormal;
     private ImageCursor cursorDown;
-    private int busy = 0;
+    private static int busy = 0;
+    private static Alert fetchAlert;
 
     public static void main(String[] args) {
         launch(args);
@@ -41,7 +42,7 @@ public class GameWindow extends Application {
         alertConnection.setHeaderText("Network");
         alertConnection.setContentText("Connecting...");
 
-        Alert fetchAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        fetchAlert = new Alert(Alert.AlertType.CONFIRMATION);
         fetchAlert.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
         fetchAlert.getDialogPane().lookupButton(ButtonType.CANCEL).setDisable(true);
         fetchAlert.setTitle("Hearthstone");
@@ -53,16 +54,9 @@ public class GameWindow extends Application {
         alertError.setHeaderText("Network");
         alertError.setContentText("Error");
 
-        RemoteGameServer.getInstance().setOnFetchStartListener(() -> FXUtil.runLater(() -> {
-            ++busy;
-            if (busy > 0 && !fetchAlert.isShowing())
-                fetchAlert.showAndWait();
-        }, 200));
+        RemoteGameServer.getInstance().setOnFetchStartListener(GameWindow::addBusyWaiter);
 
-        RemoteGameServer.getInstance().setOnFetchEndListener(() -> FXUtil.runLater(() -> {
-            --busy;
-            fetchAlert.close();
-        }, 0));
+        RemoteGameServer.getInstance().setOnFetchEndListener(GameWindow::releaseBusyWaiter);
 
         Runnable connectionRunnable = () -> Platform.runLater(() -> {
             FXUtil.runLater(() -> {
@@ -85,6 +79,21 @@ public class GameWindow extends Application {
 //            AudioManager.getInstance().startBackgroundMusic();
         }, 500);
 
+    }
+
+    public static void addBusyWaiter() {
+        FXUtil.runLater(() -> {
+            ++busy;
+            if (busy > 0 && !fetchAlert.isShowing())
+                fetchAlert.showAndWait();
+        }, 200);
+    }
+
+    public static void releaseBusyWaiter() {
+        FXUtil.runLater(() -> {
+            --busy;
+            fetchAlert.close();
+        }, 0);
     }
 
     @Override
