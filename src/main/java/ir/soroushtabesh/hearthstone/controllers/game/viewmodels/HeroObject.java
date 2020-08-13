@@ -12,10 +12,10 @@ public class HeroObject extends GameObject {
 
     private final Hero heroModel;
     private final HeroPowerObject heroPower;
-    private final IntegerProperty hp = new SimpleIntegerProperty();
-    private final IntegerProperty shield = new SimpleIntegerProperty();
-    private final IntegerProperty immune = new SimpleIntegerProperty();
-    private final ObjectProperty<WeaponObject> currentWeapon = new SimpleObjectProperty<>();
+    private final SimpleIntegerProperty hp = new SimpleIntegerProperty();
+    private final SimpleIntegerProperty shield = new SimpleIntegerProperty();
+    private final SimpleIntegerProperty immune = new SimpleIntegerProperty();
+    private final SimpleObjectProperty<WeaponObject> currentWeapon = new SimpleObjectProperty<>();
     private final GenericScript specialPowerScript;
 
     public HeroObject(int playerId, GameController gameController, Hero heroModel) {

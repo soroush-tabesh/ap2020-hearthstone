@@ -1,9 +1,9 @@
 package ir.soroushtabesh.hearthstone.models;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import ir.soroushtabesh.hearthstone.controllers.game.GameController;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.GenericScript;
+import ir.soroushtabesh.hearthstone.util.JSONUtil;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
@@ -17,7 +17,7 @@ public class ScriptModel implements Serializable {
     private static final long serialVersionUID = -2484337745463110831L;
 
     static {
-        GsonBuilder gsonBuilder = new GsonBuilder();
+//        GsonBuilder gsonBuilder = new GsonBuilder();
 //        Reflections reflections = new Reflections("scripts");
 //        Set<Class<? extends GenericScript>> allClasses =
 //                reflections.getSubTypesOf(GenericScript.class);
@@ -27,7 +27,7 @@ public class ScriptModel implements Serializable {
 //        gsonBuilder.registerTypeAdapter(BattleCry.class, new InterfaceAdapter<BattleCry>());
 //        gsonBuilder.registerTypeAdapter(RestoreHealthTarget.class, new InterfaceAdapter<RestoreHealthTarget>());
 //        gsonBuilder.registerTypeAdapter(Object.class,new InterfaceAdapter<Object>());
-        gson = gsonBuilder.create();
+        gson = JSONUtil.getGson();
     }
 //
 //    public static <T> void reg(GsonBuilder gsonBuilder, Class<T> tClass) {

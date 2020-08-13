@@ -11,8 +11,8 @@ import javafx.beans.property.SimpleIntegerProperty;
 
 public class CardObject extends GameObject {
     private final Card cardModel;
-    private final IntegerProperty manaCost = new SimpleIntegerProperty();
-    private GenericScript script;
+    private final SimpleIntegerProperty manaCost = new SimpleIntegerProperty();
+    private transient GenericScript script;
 
     protected CardObject(int playerId, GameController gameController, Card cardModel) {
         super(playerId, gameController);

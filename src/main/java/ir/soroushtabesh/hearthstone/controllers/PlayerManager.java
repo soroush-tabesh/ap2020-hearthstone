@@ -227,7 +227,7 @@ public class PlayerManager {
 
         @Override
         public Player getPlayerByID(int id) {
-            return (Player) sendPOST(new GetPlayer(id)).getParcel();
+            return null;
         }
 
         @Override

@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
 import java.io.Serializable;
 
 @Entity
-public class InfoPassive implements Serializable {
+public class InfoPassive implements Serializable, Permanent {
     private static final long serialVersionUID = -2586946767926388312L;
     @Id
     @GeneratedValue
@@ -30,6 +30,11 @@ public class InfoPassive implements Serializable {
     public InfoPassive(String name, String description) {
         this.name = name;
         this.description = description;
+    }
+
+    @Override
+    public Integer getId() {
+        return id;
     }
 
     public String getName() {

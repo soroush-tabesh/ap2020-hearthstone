@@ -6,8 +6,8 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
 public class WeaponObject extends CardObject {
-    private final IntegerProperty attackPower = new SimpleIntegerProperty();
-    private final IntegerProperty durability = new SimpleIntegerProperty();
+    private final SimpleIntegerProperty attackPower = new SimpleIntegerProperty();
+    private final SimpleIntegerProperty durability = new SimpleIntegerProperty();
 
     public WeaponObject(int playerId, GameController gameController, Weapon cardModel) {
         super(playerId, gameController, cardModel);

@@ -9,20 +9,20 @@ import javafx.beans.property.SimpleIntegerProperty;
 
 public class MinionObject extends CardObject {
 
-    private final IntegerProperty hp = new SimpleIntegerProperty();
-    private final IntegerProperty attackPower = new SimpleIntegerProperty();
+    private final SimpleIntegerProperty hp = new SimpleIntegerProperty();
+    private final SimpleIntegerProperty attackPower = new SimpleIntegerProperty();
 
-    private final BooleanProperty sleep = new SimpleBooleanProperty(false);
-    private final BooleanProperty dead = new SimpleBooleanProperty(false);
+    private final SimpleBooleanProperty sleep = new SimpleBooleanProperty(false);
+    private final SimpleBooleanProperty dead = new SimpleBooleanProperty(false);
 
-    private final BooleanProperty superHP = new SimpleBooleanProperty(false);
-    private final BooleanProperty superAttackPower = new SimpleBooleanProperty(false);
-    private final BooleanProperty taunt = new SimpleBooleanProperty(false);
-    private final BooleanProperty immune = new SimpleBooleanProperty(false);
-    private final BooleanProperty stealth = new SimpleBooleanProperty(false);
-    private final BooleanProperty buffed = new SimpleBooleanProperty(false);
-    private final BooleanProperty halo4 = new SimpleBooleanProperty(false);
-    private final BooleanProperty canAttackHero = new SimpleBooleanProperty(true);
+    private final SimpleBooleanProperty superHP = new SimpleBooleanProperty(false);
+    private final SimpleBooleanProperty superAttackPower = new SimpleBooleanProperty(false);
+    private final SimpleBooleanProperty taunt = new SimpleBooleanProperty(false);
+    private final SimpleBooleanProperty immune = new SimpleBooleanProperty(false);
+    private final SimpleBooleanProperty stealth = new SimpleBooleanProperty(false);
+    private final SimpleBooleanProperty buffed = new SimpleBooleanProperty(false);
+    private final SimpleBooleanProperty halo4 = new SimpleBooleanProperty(false);
+    private final SimpleBooleanProperty canAttackHero = new SimpleBooleanProperty(true);
 
     public MinionObject(int playerId, GameController gameController, Minion cardModel) {
         super(playerId, gameController, cardModel);

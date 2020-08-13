@@ -11,8 +11,8 @@ import java.util.Objects;
 public class GameObject {
     private final int id;
     private final int playerId;
-    private final GameController gameController;
-    private final List<GenericScript> componentScripts = new ArrayList<>();
+    private transient final GameController gameController;
+    private transient final List<GenericScript> componentScripts = new ArrayList<>();
 
     public GameObject(int playerId, GameController gameController) {
         this.id = gameController.getModelPool().generateID(this);

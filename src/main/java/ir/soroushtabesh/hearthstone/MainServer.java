@@ -7,6 +7,7 @@ import ir.soroushtabesh.hearthstone.util.db.Seeding;
 
 public class MainServer {
     private static ComServer comServer;
+
     public static void main(String[] args) {
         Constants.setServerMode(true);
         Seeding.initiate();

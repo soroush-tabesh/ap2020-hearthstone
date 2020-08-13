@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 @Entity
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Card implements Serializable {
+public class Card implements Serializable, Permanent {
 
     private static final long serialVersionUID = -1046084412697634862L;
 

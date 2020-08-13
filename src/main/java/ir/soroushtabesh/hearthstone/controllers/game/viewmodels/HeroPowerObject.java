@@ -6,8 +6,8 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
 public class HeroPowerObject extends CardObject {
-    private BooleanProperty used = new SimpleBooleanProperty();
-    private BooleanProperty playable = new SimpleBooleanProperty();
+    private SimpleBooleanProperty used = new SimpleBooleanProperty();
+    private SimpleBooleanProperty playable = new SimpleBooleanProperty();
 
     public HeroPowerObject(int playerId, GameController gameController, Card cardModel) {
         super(playerId, gameController, cardModel);

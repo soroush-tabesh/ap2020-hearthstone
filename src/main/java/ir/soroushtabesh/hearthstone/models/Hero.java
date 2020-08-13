@@ -11,7 +11,7 @@ import java.io.Serializable;
 
 @Entity
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Hero implements Serializable {
+public class Hero implements Serializable, Permanent {
 
     private static final long serialVersionUID = -6819421441591514297L;
     @Id

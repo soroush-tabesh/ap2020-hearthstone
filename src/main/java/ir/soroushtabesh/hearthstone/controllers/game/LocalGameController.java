@@ -25,7 +25,8 @@ public class LocalGameController extends GameController {
         PlayerController playerController = getNewPlayerController();
         if (playerController == null)
             return null;
-        seedPlayerData(playerController, hero, deck, infoPassive, shuffle);
+        // FIXME: 8/13/20
+        seedPlayerData(playerController, new Player(), hero, deck, infoPassive, shuffle);
         checkForGameStart();
         return playerController;
     }
@@ -35,7 +36,8 @@ public class LocalGameController extends GameController {
         PlayerController playerController = getNewPlayerController();
         if (playerController == null)
             return null;
-        seedPlayerData(playerController, hero, deck, infoPassive, false);
+        // FIXME: 8/13/20
+        seedPlayerData(playerController, new Player(), hero, deck, infoPassive, false);
         getModelPool().getPlayerDataById(playerController.getId()).setCardByOrder(cardOrder);
         checkForGameStart();
         return playerController;
@@ -129,9 +131,9 @@ public class LocalGameController extends GameController {
         return playerControllers;
     }
 
-    private void seedPlayerData(PlayerController playerController, Hero hero, Deck deck, InfoPassive infoPassive, boolean shuffle) {
+    private void seedPlayerData(PlayerController playerController, Player player, Hero hero, Deck deck, InfoPassive infoPassive, boolean shuffle) {
         ModelPool.PlayerData playerData = new ModelPool.PlayerData(playerController.getId(),
-                this, hero, deck, infoPassive, shuffle);
+                this, player, hero, deck, infoPassive, shuffle);
         getModelPool().addPlayerData(playerData);
     }
 
