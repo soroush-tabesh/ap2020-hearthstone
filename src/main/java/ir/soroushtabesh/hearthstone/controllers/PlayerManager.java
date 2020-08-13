@@ -129,10 +129,7 @@ public class PlayerManager {
     }
 
     public Player getPlayerByID(int id) {
-        return DBUtil.doInJPA(session -> session
-                .createQuery("from Player where id=:id", Player.class)
-                .setParameter("id", id)
-                .uniqueResult());
+        return DBUtil.doInJPA(session -> session.get(Player.class, id));
     }
 
     public Player getPlayerByUsername(String username) {

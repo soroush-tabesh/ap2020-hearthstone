@@ -104,10 +104,7 @@ public class DeckManager {
     }
 
     public Deck getDeckByID(int id) {
-        return DBUtil.doInJPA(session ->
-                session.createQuery("from Deck where id=:id", Deck.class)
-                        .setParameter("id", id)
-                        .uniqueResult());
+        return DBUtil.doInJPA(session -> session.get(Deck.class, id));
     }
 
     private static class DeckManagerProxy extends DeckManager {

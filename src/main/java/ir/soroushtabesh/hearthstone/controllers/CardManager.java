@@ -87,10 +87,7 @@ public class CardManager {
     }
 
     public Card getCardByID(int id) {
-        return DBUtil.doInJPA(session -> session
-                .createQuery("from Card where id=:id ", Card.class)
-                .setParameter("id", id)
-                .uniqueResult());
+        return DBUtil.doInJPA(session -> session.get(Card.class, id));
     }
 
     public List<Minion> getAllMinions() {
@@ -119,17 +116,11 @@ public class CardManager {
     }
 
     public Hero getHeroByID(int id) {
-        return DBUtil.doInJPA(session -> session
-                .createQuery("from Hero where id=:id ", Hero.class)
-                .setParameter("id", id)
-                .uniqueResult());
+        return DBUtil.doInJPA(session -> session.get(Hero.class, id));
     }
 
     public InfoPassive getPassiveByID(int id) {
-        return DBUtil.doInJPA(session -> session
-                .createQuery("from InfoPassive where id=:id ", InfoPassive.class)
-                .setParameter("id", id)
-                .uniqueResult());
+        return DBUtil.doInJPA(session -> session.get(InfoPassive.class, id));
     }
 
     private static class CardManagerProxy extends CardManager {

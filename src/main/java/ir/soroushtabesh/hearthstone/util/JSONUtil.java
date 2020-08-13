@@ -7,7 +7,6 @@ import ir.soroushtabesh.hearthstone.controllers.game.GameAction;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.GameObject;
 import ir.soroushtabesh.hearthstone.models.Card;
 import ir.soroushtabesh.hearthstone.models.Hero;
-import ir.soroushtabesh.hearthstone.models.InfoPassive;
 import ir.soroushtabesh.hearthstone.models.Permanent;
 import javafx.beans.value.WritableValue;
 
@@ -29,9 +28,9 @@ public class JSONUtil {
 
     private static final Gson gson = new GsonBuilder()
             .setExclusionStrategies(new AnnotationExclusionStrategy())
-            .registerTypeHierarchyAdapter(Card.class, new PermanentAdapter<Card>())
-            .registerTypeHierarchyAdapter(Hero.class, new PermanentAdapter<Hero>())
-            .registerTypeHierarchyAdapter(InfoPassive.class, new PermanentAdapter<InfoPassive>())
+//            .registerTypeHierarchyAdapter(Card.class, new PermanentAdapter<Card>())
+//            .registerTypeHierarchyAdapter(Hero.class, new PermanentAdapter<Hero>())
+//            .registerTypeHierarchyAdapter(InfoPassive.class, new PermanentAdapter<InfoPassive>())
             .registerTypeHierarchyAdapter(GameObject.class, new AbstractAdapter<GameObject>())
             .registerTypeHierarchyAdapter(GameAction.class, new AbstractAdapter<GameObject>())
             .registerTypeHierarchyAdapter(WritableValue.class, new PropertyAdapter<>())
@@ -40,9 +39,9 @@ public class JSONUtil {
 
     private static final Gson gson2 = new GsonBuilder()
             .setExclusionStrategies(new AnnotationExclusionStrategy())
-            .registerTypeHierarchyAdapter(Card.class, new PermanentAdapter<Card>())
-            .registerTypeHierarchyAdapter(Hero.class, new PermanentAdapter<Hero>())
-            .registerTypeHierarchyAdapter(InfoPassive.class, new PermanentAdapter<InfoPassive>())
+//            .registerTypeHierarchyAdapter(Card.class, new PermanentAdapter<Card>())
+//            .registerTypeHierarchyAdapter(Hero.class, new PermanentAdapter<Hero>())
+//            .registerTypeHierarchyAdapter(InfoPassive.class, new PermanentAdapter<InfoPassive>())
             .registerTypeHierarchyAdapter(WritableValue.class, new PropertyAdapter<>())
             .enableComplexMapKeySerialization()
             .create();
