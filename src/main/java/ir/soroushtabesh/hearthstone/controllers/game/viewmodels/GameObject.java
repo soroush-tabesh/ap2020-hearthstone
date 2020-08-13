@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class GameObject {
+public class GameObject {
     private final int id;
     private final int playerId;
     private final GameController gameController;

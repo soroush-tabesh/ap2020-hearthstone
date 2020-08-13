@@ -9,7 +9,7 @@ import ir.soroushtabesh.hearthstone.models.cards.Weapon;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
-public abstract class CardObject extends GameObject {
+public class CardObject extends GameObject {
     private final Card cardModel;
     private final IntegerProperty manaCost = new SimpleIntegerProperty();
     private GenericScript script;
