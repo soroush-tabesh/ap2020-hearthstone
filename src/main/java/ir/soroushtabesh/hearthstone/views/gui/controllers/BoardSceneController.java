@@ -208,6 +208,8 @@ public class BoardSceneController extends AbstractSceneController {
         BooleanProperty gameReady = gameController.getModelPool().getSceneData().gameReadyProperty();
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Game");
+        alert.setHeaderText("Waiting for a match...");
         alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
 
         Runnable afterReady = () -> {

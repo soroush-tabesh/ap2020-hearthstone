@@ -371,11 +371,11 @@ public class LocalGameController extends GameController {
             return Message.IMPOSSIBLE;
         target.setHp(target.getHp() - Math.max(amount - target.getShield(), 0));
         target.setShield(Math.max(target.getShield() - amount, 0));
+        System.err.println(target.getHp());
         getScriptEngine().broadcastEventOnObject(target, HeroBehavior.DAMAGE_TAKEN);
         if (target.getHp() <= 0) {
             setWinner(1 - playerId);
             setStarted(false);
-
             ModelPool.PlayerData pd1 = getModelPool().getPlayerDataById(playerId);
             PlayerStats ps1 = pd1.getPlayer().getPlayerStats();
             ps1.setCupCount(Math.max(0, ps1.getCupCount() - (playerId == 0 ? 1 : -1)));
