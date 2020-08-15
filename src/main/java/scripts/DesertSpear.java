@@ -22,9 +22,9 @@ public class DesertSpear extends SpellBehavior implements GameEventListener {
             if (targetedAttack.getSource() == getOwnerObject()
                     && targetedAttack.getSource().getPlayerId() == getOwnerObject().getPlayerId()) {
                 Card locust = CardManager.getInstance().getCardByName("Locust");
-                CardObject cardObject = CardObject.build(getPlayerController().getId(), getGameController(), locust);
+                CardObject cardObject = CardObject.build(getPlayerController().getPlayerId(), getGameController(), locust);
                 getGameController().summonMinion((MinionObject) cardObject
-                        , getPlayerController().getId(), getPlayerController().getToken());
+                        , getPlayerController().getToken());
             }
         }
     }

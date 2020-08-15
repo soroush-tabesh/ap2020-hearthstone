@@ -23,13 +23,13 @@ public class StrengthInNumbers extends QuestWatch implements GameEventListener {
         super.applyReward();
         getGameController().getScriptEngine().unregisterEventFilter(this);
         ObservableList<CardObject> deckCard = getGameController().getModelPool()
-                .getPlayerDataById(getPlayerController().getId()).getDeckCard();
+                .getPlayerDataById(getPlayerController().getPlayerId()).getDeckCard();
         MinionObject minionObject = null;
         for (CardObject cardObject : deckCard)
             if (cardObject instanceof MinionObject)
                 minionObject = (MinionObject) cardObject;
         if (minionObject != null) {
-            getGameController().summonMinion(minionObject, getPlayerController().getId()
+            getGameController().summonMinion(minionObject
                     , getPlayerController().getToken());
         }
     }

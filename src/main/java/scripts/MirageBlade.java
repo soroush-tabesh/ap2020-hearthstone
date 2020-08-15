@@ -12,7 +12,7 @@ public class MirageBlade extends HeroBehavior implements ChangeListener<WeaponOb
     @Override
     public void onCardPlay() {
         super.onCardPlay();
-        ModelPool.PlayerData playerData = getGameController().getModelPool().getPlayerDataById(getPlayerController().getId());
+        ModelPool.PlayerData playerData = getGameController().getModelPool().getPlayerDataById(getPlayerController().getPlayerId());
         HeroObject hero = playerData.getHero();
         hero.setImmune(hero.getImmune() + 1);
         hero.currentWeaponProperty().addListener(this);
@@ -20,7 +20,7 @@ public class MirageBlade extends HeroBehavior implements ChangeListener<WeaponOb
 
     @Override
     public void changed(ObservableValue<? extends WeaponObject> observable, WeaponObject oldValue, WeaponObject newValue) {
-        ModelPool.PlayerData playerData = getGameController().getModelPool().getPlayerDataById(getPlayerController().getId());
+        ModelPool.PlayerData playerData = getGameController().getModelPool().getPlayerDataById(getPlayerController().getPlayerId());
         HeroObject hero = playerData.getHero();
         hero.setImmune(hero.getImmune() - 1);
         hero.currentWeaponProperty().removeListener(this);

@@ -16,7 +16,7 @@ public class ManaPowerUp extends SpellBehavior {
     @Override
     public boolean onSpellEffect(GameObject gameObject) {
         super.onSpellEffect(gameObject);
-        ModelPool.PlayerData playerData = getGameController().getModelPool().getPlayerDataById(getPlayerController().getId());
+        ModelPool.PlayerData playerData = getGameController().getModelPool().getPlayerDataById(getPlayerController().getPlayerId());
         playerData.setManaMax(Math.max(0, Math.min(10, playerData.getManaMax() + manaMax)));
         playerData.setMana(Math.max(0, Math.min(10, playerData.getMana() + mana)));
         return true;

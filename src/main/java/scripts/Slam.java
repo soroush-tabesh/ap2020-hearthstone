@@ -13,10 +13,10 @@ public class Slam extends SpellBehavior {
             return false;
         MinionObject minionObject = (MinionObject) gameObject;
         ((LocalGameController) getGameController()).performDamageOnMinion(minionObject, 2
-                , getPlayerController().getId(), getPlayerController().getToken());
+                , getPlayerController().getToken());
         if (!minionObject.isDead()) {
             ((LocalGameController) getGameController())
-                    .drawToHand(getGameController().getModelPool().getPlayerDataById(getPlayerController().getId()));
+                    .drawToHand(getGameController().getModelPool().getPlayerDataById(getPlayerController().getPlayerId()));
         }
         return true;
     }

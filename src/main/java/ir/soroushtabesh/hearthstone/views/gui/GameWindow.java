@@ -46,9 +46,9 @@ public class GameWindow extends Application {
 
         Dialog<ButtonType> connectDialog = new ConnectDialog(stage);
 
-        RemoteGameServer.getInstance().setOnFetchStartListener(GameWindow::addBusyWaiter);
-
-        RemoteGameServer.getInstance().setOnFetchEndListener(GameWindow::releaseBusyWaiter);
+//        RemoteGameServer.getInstance().setOnFetchStartListener(GameWindow::addBusyWaiter);
+//
+//        RemoteGameServer.getInstance().setOnFetchEndListener(GameWindow::releaseBusyWaiter);
 
         Runnable connectionRunnable = () -> Platform.runLater(connectDialog::showAndWait);
         RemoteGameServer.getInstance().setOnErrorListener(connectionRunnable);

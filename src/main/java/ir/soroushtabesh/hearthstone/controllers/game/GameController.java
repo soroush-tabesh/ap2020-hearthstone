@@ -2,18 +2,16 @@ package ir.soroushtabesh.hearthstone.controllers.game;
 
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.*;
 import ir.soroushtabesh.hearthstone.models.*;
-import javafx.beans.property.*;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
 
 import java.util.List;
 
 public abstract class GameController {
 
-    private final ModelPool modelPool;
-    private final ScriptEngine scriptEngine;
-    private final BooleanProperty started = new SimpleBooleanProperty(false);
-    private final BooleanProperty gameReady = new SimpleBooleanProperty(false);
-    private final IntegerProperty turn = new SimpleIntegerProperty(-1);
-    private final IntegerProperty winner = new SimpleIntegerProperty(-1);
+    private final transient ModelPool modelPool;
+    private final transient ScriptEngine scriptEngine;
 
     public GameController() {
         scriptEngine = new ScriptEngine(this);
@@ -22,15 +20,15 @@ public abstract class GameController {
     }
 
     public boolean isGameReady() {
-        return gameReady.get();
+        return modelPool.getSceneData().gameReadyProperty().get();
     }
 
-    protected void setGameReady(boolean gameReady) {
-        this.gameReady.set(gameReady);
+    public void setGameReady(boolean gameReady) {
+        this.modelPool.getSceneData().gameReadyProperty().set(gameReady);
     }
 
     public ReadOnlyBooleanProperty gameReadyProperty() {
-        return gameReady;
+        return modelPool.getSceneData().gameReadyProperty();
     }
 
     public final ModelPool getModelPool() {
@@ -42,63 +40,65 @@ public abstract class GameController {
     }
 
     public boolean isStarted() {
-        return started.get();
+        return modelPool.getSceneData().startedProperty().get();
     }
 
     public ReadOnlyBooleanProperty startedProperty() {
-        return started;
+        return modelPool.getSceneData().startedProperty();
     }
 
-    protected void setStarted(boolean started) {
-        this.started.set(started);
+    public void setStarted(boolean started) {
+        this.modelPool.getSceneData().startedProperty().set(started);
     }
 
     public int getTurn() {
-        return turn.get();
+        return modelPool.getSceneData().turnProperty().get();
     }
 
     public void setTurn(int turn) {
-        this.turn.set(turn);
+        this.modelPool.getSceneData().turnProperty().set(turn);
     }
 
     public IntegerProperty turnProperty() {
-        return turn;
+        return modelPool.getSceneData().turnProperty();
     }
 
     public int getWinner() {
-        return winner.get();
+        return modelPool.getSceneData().winnerProperty().get();
     }
 
-    protected void setWinner(int winner) {
-        this.winner.set(winner);
+    public void setWinner(int winner) {
+        this.modelPool.getSceneData().winnerProperty().set(winner);
     }
 
     public ReadOnlyIntegerProperty winnerProperty() {
-        return winner;
+        return modelPool.getSceneData().winnerProperty();
     }
 
-    public abstract PlayerController registerPlayer(Hero hero, Deck deck, InfoPassive infoPassive, boolean shuffle);
+    public abstract PlayerController registerPlayer(Player player, Hero hero, Deck deck, InfoPassive infoPassive, boolean shuffle);
 
-    public abstract PlayerController registerPlayer(Hero hero, Deck deck, InfoPassive infoPassive, List<Card> cardOrder);
+    public abstract PlayerController registerPlayer(Player player, Hero hero, Deck deck, InfoPassive infoPassive, List<Card> cardOrder);
 
-    protected abstract PlayerController[] getAllPlayerControllers();
+    public abstract PlayerController[] getAllPlayerControllers();
 
-    protected abstract boolean endTurn(int playerId, int token);
+    public abstract boolean endTurn(long token);
 
-    protected abstract Message startGame(int playerId, int token);
+    public abstract Message startGame(long token);
 
-    protected abstract Message playCard(CardObject cardObject, int groundIndex, GameObject optionalTarget, int playerId, int token);
+    public abstract Message playCard(CardObject cardObject, int groundIndex, GameObject optionalTarget, long token);
 
-    public abstract Message summonMinion(MinionObject source, int playerId, int token);
+    public abstract Message summonMinion(MinionObject source, long token);
 
-    protected abstract Message playMinion(MinionObject source, GameObject target, int playerId, int token);
+    public abstract Message playMinion(MinionObject source, GameObject target, long token);
 
-    protected abstract Message useWeapon(HeroObject source, GameObject target, int playerId, int token);
+    public abstract Message useWeapon(HeroObject source, GameObject target, long token);
 
-    protected abstract Message useHeroPower(HeroObject source, GameObject target, int playerId, int token);
+    public abstract Message useHeroPower(HeroObject source, GameObject target, long token);
 
-    protected abstract void logEvent(GameAction gameAction);
+    public abstract void logEvent(GameAction gameAction);
 
-    protected abstract Message changeCard(int cardNumberInList, int playerId, int token);
+    public abstract Message changeCard(int cardNumberInList, long token);
+
+    public abstract int token2playerId(long token);
 
 }

@@ -13,7 +13,7 @@ public class FreePower extends HeroBehavior implements ChangeListener<Boolean> {
     public void onScriptAdded() {
         super.onScriptAdded();
         heroPower = getGameController().getModelPool()
-                .getPlayerDataById(getPlayerController().getId()).getHero().getHeroPower();
+                .getPlayerDataById(getPlayerController().getPlayerId()).getHero().getHeroPower();
         heroPower.setManaCost(Math.max(0, heroPower.getManaCost() - 1));
         heroPower.usedProperty().addListener(this);
     }

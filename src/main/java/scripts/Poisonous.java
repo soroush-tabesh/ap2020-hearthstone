@@ -13,7 +13,7 @@ public class Poisonous extends MinionBehavior {
             MinionObject minionObject = (MinionObject) gameObject;
             if (!minionObject.hasImmunity()) {
                 ((LocalGameController) getGameController()).performDamageOnMinion(minionObject, 100
-                        , getPlayerController().getId(), getPlayerController().getToken());
+                        , getPlayerController().getToken());
             }
         }
     }

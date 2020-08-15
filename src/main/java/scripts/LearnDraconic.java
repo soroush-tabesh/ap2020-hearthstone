@@ -22,9 +22,9 @@ public class LearnDraconic extends QuestWatch implements GameEventListener {
     public void applyReward() {
         getGameController().getScriptEngine().unregisterEventFilter(this);
         Card dragon = CardManager.getInstance().getCardByName("Draconic Emissary");
-        CardObject cardObject = CardObject.build(getPlayerController().getId(), getGameController(), dragon);
+        CardObject cardObject = CardObject.build(getPlayerController().getPlayerId(), getGameController(), dragon);
         getGameController().summonMinion((MinionObject) cardObject
-                , getPlayerController().getId(), getPlayerController().getToken());
+                , getPlayerController().getToken());
         super.applyReward();
     }
 

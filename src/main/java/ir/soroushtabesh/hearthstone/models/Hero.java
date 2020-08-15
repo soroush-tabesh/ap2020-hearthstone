@@ -43,6 +43,10 @@ public class Hero implements Serializable, Permanent {
     public Hero() {
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public Integer getId() {
         return id;
     }

@@ -13,7 +13,7 @@ public class ValeeraSanguinar extends HeroBehavior {
     public void onScriptAdded() {
         super.onScriptAdded();
         ModelPool.PlayerData playerData = getGameController().getModelPool()
-                .getPlayerDataById(getPlayerController().getId());
+                .getPlayerDataById(getPlayerController().getPlayerId());
         List<CardObject> cardObjects = new ArrayList<>();
         cardObjects.addAll(playerData.getHandCard());
         cardObjects.addAll(playerData.getDeckCard());

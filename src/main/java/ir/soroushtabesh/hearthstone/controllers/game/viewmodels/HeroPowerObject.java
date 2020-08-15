@@ -13,6 +13,14 @@ public class HeroPowerObject extends CardObject {
         super(playerId, gameController, cardModel);
     }
 
+    @Override
+    public void update(GameObject gameObject, GameController gameController) {
+        super.update(gameObject, gameController);
+        HeroPowerObject heroPowerObject = (HeroPowerObject) gameObject;
+        used.set(heroPowerObject.isUsed());
+        playable.set(heroPowerObject.isPlayable());
+    }
+
     public boolean isUsed() {
         return used.get();
     }

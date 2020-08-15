@@ -7,4 +7,9 @@ public class SpellObject extends CardObject {
     public SpellObject(int playerId, GameController gameController, Spell cardModel) {
         super(playerId, gameController, cardModel);
     }
+
+    @Override
+    public void update(GameObject gameObject, GameController gameController) {
+        super.update(gameObject, gameController);
+    }
 }

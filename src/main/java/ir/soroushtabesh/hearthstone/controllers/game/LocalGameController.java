@@ -1,5 +1,6 @@
 package ir.soroushtabesh.hearthstone.controllers.game;
 
+import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.GenericScript;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.HeroBehavior;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.MinionBehavior;
@@ -8,48 +9,54 @@ import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.*;
 import ir.soroushtabesh.hearthstone.models.*;
 import ir.soroushtabesh.hearthstone.util.Logger;
 
-import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
 public class LocalGameController extends GameController {
 
-    private final int[] tokens = new int[2];
-    private final SecureRandom random = new SecureRandom();
+    private final Long[] tokens = new Long[2];
     private final PlayerController[] playerControllers = new PlayerController[2];
     private int playerIdCounter = 0;
 
     @Override
-    public PlayerController registerPlayer(Hero hero, Deck deck, InfoPassive infoPassive, boolean shuffle) {
-        PlayerController playerController = getNewPlayerController();
+    public int token2playerId(long token) {
+        if (tokens[0] == token)
+            return 0;
+        else if (tokens[1] == token)
+            return 1;
+        else
+            return -1;
+    }
+
+    @Override
+    public PlayerController registerPlayer(Player player, Hero hero, Deck deck, InfoPassive infoPassive, boolean shuffle) {
+        PlayerController playerController = getNewPlayerController(player);
         if (playerController == null)
             return null;
-        // FIXME: 8/13/20
-        seedPlayerData(playerController, new Player(), hero, deck, infoPassive, shuffle);
+        seedPlayerData(playerController, player, hero, deck, infoPassive, shuffle);
         checkForGameStart();
         return playerController;
     }
 
     @Override
-    public PlayerController registerPlayer(Hero hero, Deck deck, InfoPassive infoPassive, List<Card> cardOrder) {
-        PlayerController playerController = getNewPlayerController();
+    public PlayerController registerPlayer(Player player, Hero hero, Deck deck, InfoPassive infoPassive, List<Card> cardOrder) {
+        PlayerController playerController = getNewPlayerController(player);
         if (playerController == null)
             return null;
-        // FIXME: 8/13/20
-        seedPlayerData(playerController, new Player(), hero, deck, infoPassive, false);
-        getModelPool().getPlayerDataById(playerController.getId()).setCardByOrder(cardOrder);
+        seedPlayerData(playerController, player, hero, deck, infoPassive, false);
+        getModelPool().getPlayerDataById(playerController.getPlayerId()).setCardByOrder(cardOrder);
         checkForGameStart();
         return playerController;
     }
 
-    private PlayerController getNewPlayerController() {
+    private PlayerController getNewPlayerController(Player player) {
         if (playerIdCounter >= 2)
             return null;
         int playerId = playerIdCounter++;
-        tokens[playerId] = random.nextInt();
+        System.out.println("tst " + player.getUsername() + " " + (tokens[playerId] = PlayerManager.getInstance().getTokenOf(player.getUsername())));
         playerControllers[playerId] = new PlayerController(this
-                , tokens[playerId], playerId);
+                , tokens[playerId]);
         return playerControllers[playerId];
     }
 
@@ -71,9 +78,10 @@ public class LocalGameController extends GameController {
     }
 
     @Override
-    protected Message changeCard(int cardNumberInList, int playerId, int token) {
-        if (!checkPlayerValidity(playerId, token) || !isGameReady() || isStarted())
+    public Message changeCard(int cardNumberInList, long token) {
+        if (!checkPlayerValidity(token) || !isGameReady() || isStarted())
             return Message.ERROR;
+        int playerId = token2playerId(token);
         ModelPool.PlayerData playerData = getModelPool().getPlayerDataById(playerId);
         if (playerData.isReady())
             return Message.ERROR;
@@ -127,29 +135,30 @@ public class LocalGameController extends GameController {
     }
 
     @Override
-    protected PlayerController[] getAllPlayerControllers() {
+    public PlayerController[] getAllPlayerControllers() {
         return playerControllers;
     }
 
     private void seedPlayerData(PlayerController playerController, Player player, Hero hero, Deck deck, InfoPassive infoPassive, boolean shuffle) {
-        ModelPool.PlayerData playerData = new ModelPool.PlayerData(playerController.getId(),
+        ModelPool.PlayerData playerData = new ModelPool.PlayerData(playerController.getPlayerId(),
                 this, player, hero, deck, infoPassive, shuffle);
         getModelPool().addPlayerData(playerData);
     }
 
-    private boolean checkPlayerValidityAndTurn(int playerId, int token) {
-        return tokens[playerId] == token && getTurn() == playerId;
+    private boolean checkPlayerValidityAndTurn(long token) {
+        return getTurn() == token2playerId(token);
     }
 
-    private boolean checkPlayerValidity(int playerId, int token) {
-        return tokens[playerId] == token;
+    private boolean checkPlayerValidity(long token) {
+        return token2playerId(token) != -1;
     }
 
 
     @Override
-    protected boolean endTurn(int playerId, int token) {
-        if (!checkPlayerValidityAndTurn(playerId, token) || !isStarted())
+    public boolean endTurn(long token) {
+        if (!checkPlayerValidityAndTurn(token) || !isStarted())
             return false;
+        int playerId = token2playerId(token);
         List<ModelPool.PlayerData> playerDataList = getModelPool().getPlayerDataList();
         if (!playerDataList.get(playerId).isReady())
             return false;
@@ -160,9 +169,10 @@ public class LocalGameController extends GameController {
     }
 
     @Override
-    protected Message startGame(int playerId, int token) {
-        if (!checkPlayerValidity(playerId, token))
+    public Message startGame(long token) {
+        if (!checkPlayerValidity(token))
             return Message.ERROR;
+        int playerId = token2playerId(token);
         getModelPool().getPlayerDataById(playerId).setReady(true);
         List<ModelPool.PlayerData> playerDataList = getModelPool().getPlayerDataList();
         if (playerDataList.size() == 2 && playerDataList.get(0).isReady() && playerDataList.get(1).isReady()) {
@@ -187,15 +197,18 @@ public class LocalGameController extends GameController {
     private void resetMana(ModelPool.PlayerData playerData) {
         playerData.setManaMax(playerData.getManaMax() + (playerData.getManaMax() < 10 ? 1 : 0));
         playerData.setMana(playerData.getManaMax());
+        System.out.println("mana max " + playerData.getManaMax());
+        System.out.println("mana " + playerData.getMana());
     }
 
     @Override
-    protected Message playCard(CardObject cardObject, int groundIndex, GameObject optionalTarget, int playerId, int token) {
-        if (!checkPlayerValidityAndTurn(playerId, token) || !isStarted())
+    public Message playCard(CardObject cardObject, int groundIndex, GameObject optionalTarget, long token) {
+        if (!checkPlayerValidityAndTurn(token) || !isStarted())
             return Message.ERROR;
+        int playerId = token2playerId(token);
         if (cardObject instanceof HeroPowerObject)
             return useHeroPower(getModelPool().getPlayerDataById(cardObject.getPlayerId()).getHero()
-                    , optionalTarget, playerId, token);
+                    , optionalTarget, token);
         //check validity of parameters
         if (cardObject.getPlayerId() != playerId)
             return Message.ERROR;
@@ -236,7 +249,7 @@ public class LocalGameController extends GameController {
         }
     }
 
-    private boolean playCardMinion(MinionObject minionObject, int groundIndex, GameObject optionalTarget, int playerId, int token) {
+    private boolean playCardMinion(MinionObject minionObject, int groundIndex, GameObject optionalTarget, int playerId, long token) {
         ModelPool.PlayerData playerData = getModelPool().getPlayerDataById(playerId);
         if (playerData.getGroundCard().size() >= 7)
             return false;
@@ -250,7 +263,7 @@ public class LocalGameController extends GameController {
         return optional.isEmpty() || optional.get();
     }
 
-    private boolean playCardSpell(SpellObject spellObject, int groundIndex, GameObject optionalTarget, int playerId, int token) {
+    private boolean playCardSpell(SpellObject spellObject, int groundIndex, GameObject optionalTarget, int playerId, long token) {
         ModelPool.PlayerData playerData = getModelPool().getPlayerDataById(playerId);
         Optional<Boolean> optional;
         if (spellObject.getCardModel().getActionType() == Card.ActionType.GLOBAL) {
@@ -264,16 +277,17 @@ public class LocalGameController extends GameController {
         return optional.isEmpty() || optional.get();
     }
 
-    private boolean playCardWeapon(WeaponObject weaponObject, int groundIndex, GameObject optionalTarget, int playerId, int token) {
+    private boolean playCardWeapon(WeaponObject weaponObject, int groundIndex, GameObject optionalTarget, int playerId, long token) {
         ModelPool.PlayerData playerData = getModelPool().getPlayerDataById(playerId);
         playerData.getHero().setCurrentWeapon(weaponObject);
         return true;
     }
 
     @Override
-    public Message summonMinion(MinionObject source, int playerId, int token) {
-        if (!checkPlayerValidity(playerId, token) || !isStarted())
+    public Message summonMinion(MinionObject source, long token) {
+        if (!checkPlayerValidity(token) || !isStarted())
             return Message.ERROR;
+        int playerId = token2playerId(token);
         if (source.getPlayerId() != playerId)
             return Message.ERROR;
         ModelPool.PlayerData playerData = getModelPool().getPlayerDataById(playerId);
@@ -287,9 +301,10 @@ public class LocalGameController extends GameController {
      * bidirectional operation
      */
     @Override
-    protected Message playMinion(MinionObject source, GameObject target, int playerId, int token) {
-        if (!checkPlayerValidityAndTurn(playerId, token) || !isStarted())
+    public Message playMinion(MinionObject source, GameObject target, long token) {
+        if (!checkPlayerValidityAndTurn(token) || !isStarted())
             return Message.ERROR;
+        int playerId = token2playerId(token);
         if (source.getPlayerId() != playerId)
             return Message.ERROR;
         ModelPool.PlayerData playerData = getModelPool().getPlayerDataById(playerId);
@@ -305,14 +320,14 @@ public class LocalGameController extends GameController {
         if (target instanceof MinionObject) {
             if (((MinionObject) target).hasStealth() && target.getPlayerId() != playerId)
                 return Message.IMPOSSIBLE;
-            singleDirectionMinionAttack(source, target, playerId, token);
-            singleDirectionMinionAttack((MinionObject) target, source, playerId, token);
+            singleDirectionMinionAttack(source, target, token);
+            singleDirectionMinionAttack((MinionObject) target, source, token);
             logEvent(new GameAction.MinionAttack(source, (MinionObject) target));
         } else if (target instanceof HeroObject) {
             if (!source.getCanAttackHero())
                 return Message.IMPOSSIBLE;
 //            forceUseWeapon(((HeroObject) target), source, playerId, token);
-            singleDirectionMinionAttack(source, target, playerId, token);
+            singleDirectionMinionAttack(source, target, token);
             logEvent(new GameAction.MinionAttack(source, (HeroObject) target));
         } else {
             return Message.ERROR;
@@ -324,8 +339,8 @@ public class LocalGameController extends GameController {
     /**
      * mono-directional operation
      */
-    public Message performDamageOnMinion(MinionObject target, int amount, int playerId, int token) {
-        if (!checkPlayerValidity(playerId, token) || !isStarted())
+    public Message performDamageOnMinion(MinionObject target, int amount, long token) {
+        if (!checkPlayerValidity(token) || !isStarted())
             return Message.ERROR;
         if (amount <= 0)
             return Message.ERROR;
@@ -346,9 +361,10 @@ public class LocalGameController extends GameController {
     /**
      * mono-directional operation
      */
-    public Message performDamageOnHero(HeroObject target, int amount, int playerId, int token) {
-        if (!checkPlayerValidity(playerId, token) || !isStarted())
+    public Message performDamageOnHero(HeroObject target, int amount, long token) {
+        if (!checkPlayerValidity(token) || !isStarted())
             return Message.ERROR;
+        int playerId = token2playerId(token);
         if (amount <= 0)
             return Message.ERROR;
         if (target.getImmune() > 0)
@@ -376,16 +392,17 @@ public class LocalGameController extends GameController {
      * bidirectional operation
      */
     @Override
-    protected Message useWeapon(HeroObject source, GameObject target, int playerId, int token) {
-        if (!checkPlayerValidityAndTurn(playerId, token) || !isStarted())
+    public Message useWeapon(HeroObject source, GameObject target, long token) {
+        if (!checkPlayerValidityAndTurn(token) || !isStarted())
             return Message.ERROR;
-        return forceUseWeapon(source, target, playerId, token);
+        return forceUseWeapon(source, target, token);
     }
 
     @Override
-    protected Message useHeroPower(HeroObject source, GameObject target, int playerId, int token) {
-        if (!checkPlayerValidityAndTurn(playerId, token) || !isStarted())
+    public Message useHeroPower(HeroObject source, GameObject target, long token) {
+        if (!checkPlayerValidityAndTurn(token) || !isStarted())
             return Message.ERROR;
+        int playerId = token2playerId(token);
         HeroPowerObject cardObject = source.getHeroPower();
         ModelPool.PlayerData playerData = getModelPool().getPlayerDataById(playerId);
 
@@ -424,9 +441,10 @@ public class LocalGameController extends GameController {
         playerData.setMana(playerData.getMana() + amount);
     }
 
-    private Message forceUseWeapon(HeroObject source, GameObject target, int playerId, int token) {
-        if (!checkPlayerValidity(playerId, token) || !isStarted())
+    private Message forceUseWeapon(HeroObject source, GameObject target, long token) {
+        if (!checkPlayerValidity(token) || !isStarted())
             return Message.ERROR;
+        int playerId = token2playerId(token);
         if (source == target)
             return Message.IMPOSSIBLE;
         WeaponObject weapon = source.getCurrentWeapon();
@@ -435,11 +453,11 @@ public class LocalGameController extends GameController {
         if (target instanceof MinionObject) {
             if (((MinionObject) target).hasStealth() && target.getPlayerId() != playerId)
                 return Message.IMPOSSIBLE;
-            singleDirectionWeapon(source, target, playerId, token);
-            singleDirectionMinionAttack((MinionObject) target, source, playerId, token);
+            singleDirectionWeapon(source, target, token);
+            singleDirectionMinionAttack((MinionObject) target, source, token);
         } else if (target instanceof HeroObject) {
-            singleDirectionWeapon(source, target, playerId, token);
-            singleDirectionWeapon((HeroObject) target, source, playerId, token);
+            singleDirectionWeapon(source, target, token);
+            singleDirectionWeapon((HeroObject) target, source, token);
         } else {
             return Message.IMPOSSIBLE;
         }
@@ -451,30 +469,30 @@ public class LocalGameController extends GameController {
         return Message.SUCCESS;
     }
 
-    private void singleDirectionWeapon(HeroObject source, GameObject target, int playerId, int token) {
+    private void singleDirectionWeapon(HeroObject source, GameObject target, long token) {
         if (source.getCurrentWeapon() == null)
             return;
         if (target instanceof MinionObject) {
             getScriptEngine().broadcastEventOnObject(source, HeroBehavior.ATTACK_EFFECT, target);
-            performDamageOnMinion((MinionObject) target, source.getCurrentWeapon().getAttackPower(), playerId, token);
+            performDamageOnMinion((MinionObject) target, source.getCurrentWeapon().getAttackPower(), token);
         } else if (target instanceof HeroObject) {
             getScriptEngine().broadcastEventOnObject(source, HeroBehavior.ATTACK_EFFECT, target);
-            performDamageOnHero((HeroObject) target, source.getCurrentWeapon().getAttackPower(), playerId, token);
+            performDamageOnHero((HeroObject) target, source.getCurrentWeapon().getAttackPower(), token);
         }
     }
 
-    private void singleDirectionMinionAttack(MinionObject source, GameObject target, int playerId, int token) {
+    private void singleDirectionMinionAttack(MinionObject source, GameObject target, long token) {
         if (target instanceof MinionObject) {
             getScriptEngine().broadcastEventOnObject(source, MinionBehavior.ATTACK_EFFECT, target);
-            performDamageOnMinion((MinionObject) target, source.getAttackPower(), playerId, token);
+            performDamageOnMinion((MinionObject) target, source.getAttackPower(), token);
         } else if (target instanceof HeroObject) {
             getScriptEngine().broadcastEventOnObject(source, MinionBehavior.ATTACK_EFFECT, target);
-            performDamageOnHero((HeroObject) target, source.getAttackPower(), playerId, token);
+            performDamageOnHero((HeroObject) target, source.getAttackPower(), token);
         }
     }
 
     @Override
-    protected void logEvent(GameAction gameAction) {
+    public void logEvent(GameAction gameAction) {
         Logger.log("game board", gameAction.getMessage());
         getModelPool().getSceneData().getLog().add(gameAction);
     }

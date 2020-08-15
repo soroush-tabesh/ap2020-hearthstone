@@ -67,6 +67,7 @@ public class FXUtil {
         try {
             loader.load(component.getClass().getResourceAsStream(fileName));
         } catch (IOException e) {
+            System.err.println(fileName);
             throw new RuntimeException(e);
         }
     }

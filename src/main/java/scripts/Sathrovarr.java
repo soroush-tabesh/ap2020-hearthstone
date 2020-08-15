@@ -11,10 +11,10 @@ public class Sathrovarr extends MinionBehavior {
     @Override
     public boolean battleCry(GameObject gameObject) {
         super.battleCry(gameObject);
-        ModelPool.PlayerData playerData = getGameController().getModelPool().getPlayerDataById(getPlayerController().getId());
+        ModelPool.PlayerData playerData = getGameController().getModelPool().getPlayerDataById(getPlayerController().getPlayerId());
         if (gameObject instanceof MinionObject) {
             MinionObject minionObject = (MinionObject) gameObject;
-            if (minionObject.getPlayerId() != getPlayerController().getId())
+            if (minionObject.getPlayerId() != getPlayerController().getPlayerId())
                 return false;
             CardObject build1 = CardObject.build(gameObject.getPlayerId(), getGameController(), minionObject.getCardModel());
             CardObject build2 = CardObject.build(gameObject.getPlayerId(), getGameController(), minionObject.getCardModel());

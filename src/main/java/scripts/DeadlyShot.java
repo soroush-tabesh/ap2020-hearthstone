@@ -17,7 +17,7 @@ public class DeadlyShot extends SpellBehavior {
         MinionObject minionObject = playerData.getGroundCard()
                 .get(new Random(System.currentTimeMillis()).nextInt(playerData.getGroundCard().size()));
         ((LocalGameController) getGameController()).performDamageOnMinion(minionObject, 1000
-                , getPlayerController().getId(), getPlayerController().getToken());
+                , getPlayerController().getToken());
         return true;
     }
 }

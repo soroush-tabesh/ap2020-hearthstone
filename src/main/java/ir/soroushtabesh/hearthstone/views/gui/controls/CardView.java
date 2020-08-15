@@ -1,6 +1,7 @@
 package ir.soroushtabesh.hearthstone.views.gui.controls;
 
 import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
+import ir.soroushtabesh.hearthstone.controllers.game.GameController;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.*;
 import ir.soroushtabesh.hearthstone.models.BriefCard;
 import ir.soroushtabesh.hearthstone.models.Card;
@@ -25,7 +26,7 @@ import java.util.ResourceBundle;
 
 public abstract class CardView extends StackPane implements Initializable {
     private BriefCard briefCard;
-    private CardObject cardObject;
+    private int cardObjectId = -1;
     @FXML
     private Label attackLabel;
     @FXML
@@ -41,13 +42,16 @@ public abstract class CardView extends StackPane implements Initializable {
     @FXML
     private ImageView bgImage;
 
+    private GameController gameController;
+
     public CardView(Card card) {
         this.briefCard = BriefCard.build(card);
         FXUtil.loadFXMLasRoot(this);
     }
 
-    public CardView(CardObject cardObject) {
-        this.cardObject = cardObject;
+    public CardView(CardObject cardObject, GameController gameController) {
+        this.cardObjectId = cardObject.getId();
+        this.gameController = gameController;
         briefCard = BriefCard.build(cardObject.getCardModel());
         FXUtil.loadFXMLasRoot(this);
     }
@@ -64,16 +68,18 @@ public abstract class CardView extends StackPane implements Initializable {
         return cardView;
     }
 
-    public static CardView build(CardObject cardObject) {
+    public static CardView build(CardObject cardObject, GameController gameController) {
         CardView cardView = null;
         if (cardObject instanceof MinionObject) {
-            cardView = new MinionCardView(cardObject);
+            cardView = new MinionCardView(cardObject, gameController);
         } else if (cardObject instanceof WeaponObject) {
-            cardView = new WeaponCardView(cardObject);
+            cardView = new WeaponCardView(cardObject, gameController);
         } else if (cardObject instanceof SpellObject) {
-            cardView = new SpellCardView(cardObject);
+            cardView = new SpellCardView(cardObject, gameController);
         } else if (cardObject instanceof HeroPowerObject) {
-            cardView = new HeroPowerCardView(cardObject);
+            cardView = new HeroPowerCardView(cardObject, gameController);
+        } else {
+            return new SpellCardView(cardObject, gameController);
         }
         return cardView;
     }
@@ -85,7 +91,9 @@ public abstract class CardView extends StackPane implements Initializable {
     }
 
     public final CardObject getCardObject() {
-        return cardObject;
+        if (cardObjectId == -1)
+            return null;
+        return (CardObject) gameController.getModelPool().getGameObjectById(cardObjectId);
     }
 
     @Override
@@ -98,6 +106,7 @@ public abstract class CardView extends StackPane implements Initializable {
     }
 
     protected void bindView() {
+        manaLabel.setVisible(!briefCard.getCard().getName().equals("card_back"));
         manaLabel.textProperty().bind(
                 Bindings.createStringBinding(
                         () -> getCardObject().getManaCost() + "", getCardObject().manaCostProperty()));

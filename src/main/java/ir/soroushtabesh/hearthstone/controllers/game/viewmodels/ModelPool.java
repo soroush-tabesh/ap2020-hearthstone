@@ -1,10 +1,15 @@
 package ir.soroushtabesh.hearthstone.controllers.game.viewmodels;
 
 import com.google.gson.reflect.TypeToken;
+import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
 import ir.soroushtabesh.hearthstone.controllers.game.GameAction;
 import ir.soroushtabesh.hearthstone.controllers.game.GameController;
 import ir.soroushtabesh.hearthstone.controllers.game.scripts.GenericScript;
 import ir.soroushtabesh.hearthstone.models.*;
+import ir.soroushtabesh.hearthstone.models.cards.HeroPower;
+import ir.soroushtabesh.hearthstone.models.cards.Minion;
+import ir.soroushtabesh.hearthstone.models.cards.Spell;
+import ir.soroushtabesh.hearthstone.models.cards.Weapon;
 import ir.soroushtabesh.hearthstone.util.JSONUtil;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -14,28 +19,37 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.Serializable;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ModelPool implements Serializable {
     private static final long serialVersionUID = 6513610423154357758L;
 
     private transient GameController gameController;
     private SceneData sceneData;
+    private long gid;
     private final List<PlayerData> playerDataList = new ArrayList<>();
     private List<GameObject> gameObjects = new ArrayList<>();
 
     public ModelPool(GameController gameController) {
         this.gameController = gameController;
         this.sceneData = new SceneData(gameController);
+        this.gid = new SecureRandom().nextLong();
     }
 
-    private ModelPool() {
+    private ModelPool(long gid) {
+        this.gid = gid;
     }
 
     public SceneData getSceneData() {
         return sceneData;
+    }
+
+    public long getGid() {
+        return gid;
     }
 
     public List<MinionObject> getAllMinions() {
@@ -60,6 +74,7 @@ public class ModelPool implements Serializable {
 
     public void addPlayerData(PlayerData playerData) {
         playerDataList.add(playerData.getPlayerId(), playerData);
+        System.out.println("ModelPool.addPlayerData" + playerDataList.size());
     }
 
     public int generateID(GameObject gameObject) {
@@ -73,12 +88,97 @@ public class ModelPool implements Serializable {
         return gameObjects.get(id);
     }
 
+    public void update(ModelPool shadow) {
+        gid = shadow.gid;
+        for (int i = 0; i < shadow.playerDataList.size(); i++) {
+            if (playerDataList.size() < i + 1)
+                addPlayerData(shadow.getPlayerDataById(i));
+            else
+                playerDataList.get(i).update(shadow.playerDataList.get(i), gameController);
+        }
+        for (int i = 0; i < shadow.gameObjects.size(); i++) {
+            if (gameObjects.size() < i + 1)
+                gameObjects.add(shadow.gameObjects.get(i));
+            else
+                gameObjects.get(i).update(shadow.gameObjects.get(i), gameController);
+        }
+        if (sceneData == null)
+            sceneData = shadow.sceneData;
+        else
+            sceneData.update(shadow.getSceneData(), gameController);
+    }
+
     public static class SceneData {
-        private final transient GameController gameController;
+        private transient GameController gameController;
+        private SimpleBooleanProperty started = new SimpleBooleanProperty(false);
+        private SimpleBooleanProperty gameReady = new SimpleBooleanProperty(false);
+        private SimpleIntegerProperty turn = new SimpleIntegerProperty(-1);
+        private SimpleIntegerProperty winner = new SimpleIntegerProperty(-1);
         private final ObservableList<GameAction> log = FXCollections.synchronizedObservableList(FXCollections.observableArrayList());
 
         public SceneData(GameController gameController) {
             this.gameController = gameController;
+        }
+
+        public void update(SceneData shadow, GameController gameController) {
+            started.set(shadow.started.get());
+            gameReady.set(shadow.gameReady.get());
+            turn.set(shadow.turn.get());
+            winner.set(shadow.winner.get());
+            this.gameController = gameController;
+
+            for (int i = 0; i < shadow.log.size(); i++) {
+                if (log.size() < i + 1)
+                    log.add(shadow.log.get(i));
+            }
+        }
+
+        public boolean isStarted() {
+            return started.get();
+        }
+
+        public BooleanProperty startedProperty() {
+            return started;
+        }
+
+        public void setStarted(boolean started) {
+            this.started.set(started);
+        }
+
+        public boolean isGameReady() {
+            return gameReady.get();
+        }
+
+        public BooleanProperty gameReadyProperty() {
+            return gameReady;
+        }
+
+        public void setGameReady(boolean gameReady) {
+            this.gameReady.set(gameReady);
+        }
+
+        public int getTurn() {
+            return turn.get();
+        }
+
+        public IntegerProperty turnProperty() {
+            return turn;
+        }
+
+        public void setTurn(int turn) {
+            this.turn.set(turn);
+        }
+
+        public int getWinner() {
+            return winner.get();
+        }
+
+        public IntegerProperty winnerProperty() {
+            return winner;
+        }
+
+        public void setWinner(int winner) {
+            this.winner.set(winner);
         }
 
         public ObservableList<GameAction> getLog() {
@@ -125,6 +225,68 @@ public class ModelPool implements Serializable {
             setHeroModel(heroModel);
             setDeckModel(deckModel, shuffleDeck);
             setInfoPassiveModel(infoPassiveModel);
+        }
+
+        public void update(PlayerData shadow, GameController gameController) {
+            this.gameController = gameController;
+
+            playerId = shadow.playerId;
+
+            matchLists(shadow.deckCard, deckCard);
+            matchLists(shadow.handCard, handCard);
+            matchLists(shadow.groundCard, groundCard);
+            matchLists(shadow.deadCard, deadCard);
+            matchLists(shadow.burnedCard, burnedCard);
+            changeCardFlag.clear();
+            changeCardFlag.addAll(shadow.changeCardFlag);
+
+            mana.set(shadow.mana.get());
+            manaMax.set(shadow.manaMax.get());
+            myTurn.set(shadow.myTurn.get());
+            ready.set(shadow.ready.get());
+
+            player = shadow.player;
+            heroModel = shadow.heroModel;
+            deckModel = shadow.deckModel;
+            infoPassiveModel = shadow.infoPassiveModel;
+
+            if (hero == null)
+                hero = shadow.hero;
+            else
+                hero.update(shadow.hero, gameController);
+        }
+
+        private <T extends CardObject> void matchLists(List<T> refList, List<T> tarList) {
+            refList.forEach(cardObject -> {
+                int index = tarList.indexOf(cardObject);
+                if (index == -1)
+                    tarList.add(cardObject);
+                else
+                    tarList.get(index).update(cardObject, gameController);
+            });
+            tarList.removeIf(t -> !refList.contains(t));
+            for (int i = 0; i < refList.size(); i++) {
+                if (refList.get(i) == tarList.get(i))
+                    continue;
+                swap(i, tarList.indexOf(refList.get(i)), tarList);
+            }
+        }
+
+        private <T> void swap(int i, int j, List<T> list) {
+            if (i == j || i >= list.size() || j >= list.size() || i < 0 || j < 0)
+                return;
+            int ti = i;
+            int tj = j;
+            i = Math.min(ti, tj);
+            j = Math.max(ti, tj);
+            T b = list.remove(j);
+            T a = list.remove(i);
+            list.add(i, b);
+            list.add(j, a);
+        }
+
+        public void setGameController(GameController gameController) {
+            this.gameController = gameController;
         }
 
         public int getPlayerId() {
@@ -257,28 +419,37 @@ public class ModelPool implements Serializable {
 
         private static final long serialVersionUID = -1157560470636529636L;
 
+        private final long gid;
         private SceneDataShadow sceneData;
         private List<PlayerDataShadow> playerDataList = new ArrayList<>();
         private String goData;
 
         public ModelPoolShadow(ModelPool modelPool) {
             sceneData = new SceneDataShadow(modelPool.getSceneData());
-            System.out.println("1");
-            playerDataList.add(new PlayerDataShadow(modelPool.playerDataList.get(0)));
-            System.out.println("2");
-            playerDataList.add(new PlayerDataShadow(modelPool.playerDataList.get(1)));
-            System.out.println("3");
+            playerDataList.add(new PlayerDataShadow(modelPool.playerDataList.get(0), false));
+            playerDataList.add(new PlayerDataShadow(modelPool.playerDataList.get(1), false));
             goData = JSONUtil.getGson().toJson(modelPool.gameObjects);
-            System.out.println("4");
+            gid = modelPool.gid;
         }
 
-        public ModelPool toModelPool() {
-            ModelPool modelPool = new ModelPool();
-            modelPool.sceneData = sceneData.toSceneData();
+        public ModelPoolShadow(ModelPool modelPool, long token) {
+            Player playerByToken = PlayerManager.getInstance().getPlayerByToken(token);
+            sceneData = new SceneDataShadow(modelPool.getSceneData());
+            playerDataList = modelPool.playerDataList.stream().map(playerData ->
+                    new PlayerDataShadow(playerData, playerData.player != playerByToken))
+                    .collect(Collectors.toList());
+            goData = JSONUtil.getGson().toJson(modelPool.gameObjects);
+            gid = modelPool.gid;
+        }
+
+        public ModelPool toModelPool(GameController gameController) {
+            ModelPool modelPool = new ModelPool(gid);
+            modelPool.sceneData = sceneData.toSceneData(gameController);
             modelPool.gameObjects = JSONUtil.getGson().fromJson(goData, new TypeToken<List<GameObject>>() {
             }.getType());
-            modelPool.playerDataList.add(playerDataList.get(0).toPlayerData());
-            modelPool.playerDataList.add(playerDataList.get(1).toPlayerData());
+            modelPool.gameObjects.forEach(gameObject -> gameObject.setGameController(gameController));
+            modelPool.playerDataList.add(playerDataList.get(0).toPlayerData(gameController));
+            modelPool.playerDataList.add(playerDataList.get(1).toPlayerData(gameController));
             return modelPool;
         }
     }
@@ -287,14 +458,27 @@ public class ModelPool implements Serializable {
 
         private static final long serialVersionUID = 1698549900402484133L;
         private final List<GameAction> log;
+        private final SimpleBooleanProperty started;
+        private final SimpleBooleanProperty gameReady;
+        private final SimpleIntegerProperty turn;
+        private final SimpleIntegerProperty winner;
 
         public SceneDataShadow(SceneData sceneData) {
             log = new ArrayList<>(sceneData.log);
+            started = sceneData.started;
+            gameReady = sceneData.gameReady;
+            turn = sceneData.turn;
+            winner = sceneData.winner;
         }
 
-        public SceneData toSceneData() {
+        public SceneData toSceneData(GameController gameController) {
             SceneData sceneData = new SceneData(null);
+            sceneData.gameController = gameController;
             sceneData.log.addAll(log);
+            sceneData.started = started;
+            sceneData.gameReady = gameReady;
+            sceneData.turn = turn;
+            sceneData.winner = winner;
             return sceneData;
         }
     }
@@ -322,15 +506,24 @@ public class ModelPool implements Serializable {
         //objects
         private HeroObject hero;
 
-        public PlayerDataShadow(PlayerData playerData) {
+        public PlayerDataShadow(PlayerData playerData, boolean hideSensitive) {
             playerId = playerData.playerId;
 
-            deckCard = new ArrayList<>(playerData.deckCard);
-            handCard = new ArrayList<>(playerData.handCard);
+            if (hideSensitive)
+                deckCard = new ArrayList<>(getDummyCards(playerData.deckCard));
+            else
+                deckCard = new ArrayList<>(playerData.deckCard);
+            if (hideSensitive)
+                handCard = new ArrayList<>(getDummyCards(playerData.handCard));
+            else
+                handCard = new ArrayList<>(playerData.handCard);
             groundCard = new ArrayList<>(playerData.groundCard);
             deadCard = new ArrayList<>(playerData.deadCard);
             burnedCard = new ArrayList<>(playerData.burnedCard);
-            changeCardFlag = new ArrayList<>(playerData.changeCardFlag);
+            if (hideSensitive)
+                changeCardFlag = new ArrayList<>();
+            else
+                changeCardFlag = new ArrayList<>(playerData.changeCardFlag);
 
             mana = playerData.mana;
             manaMax = playerData.manaMax;
@@ -344,15 +537,43 @@ public class ModelPool implements Serializable {
             hero = playerData.hero;
         }
 
-        public PlayerData toPlayerData() {
+        private List<CardObject> getDummyCards(List<CardObject> orig) {
+            return orig.stream().map(cardObject -> {
+                Card cardModel = cardObject.getCardModel();
+                Card res = null;
+                if (cardModel instanceof Minion) {
+                    res = new Minion();
+                    res.setId(0);
+                } else if (cardModel instanceof Spell) {
+                    res = new Spell();
+                    res.setId(0);
+                } else if (cardModel instanceof Weapon) {
+                    res = new Weapon();
+                    res.setId(0);
+                } else if (cardModel instanceof HeroPower) {
+                    res = cardModel;
+                }
+                return new CardObject(cardObject.getId(), cardObject.getPlayerId()
+                        , res);
+            }).collect(Collectors.toList());
+        }
+
+        public PlayerData toPlayerData(GameController gameController) {
             PlayerData playerData = new PlayerData();
+            playerData.setGameController(gameController);
+
             playerData.playerId = playerId;
 
             playerData.deckCard = FXCollections.observableList(deckCard);
+            playerData.deckCard.forEach(cardObject -> cardObject.setGameController(gameController));
             playerData.handCard = FXCollections.observableList(handCard);
+            playerData.handCard.forEach(cardObject -> cardObject.setGameController(gameController));
             playerData.groundCard = FXCollections.observableList(groundCard);
+            playerData.groundCard.forEach(cardObject -> cardObject.setGameController(gameController));
             playerData.deadCard = FXCollections.observableList(deadCard);
+            playerData.deadCard.forEach(cardObject -> cardObject.setGameController(gameController));
             playerData.burnedCard = FXCollections.observableList(burnedCard);
+            playerData.burnedCard.forEach(cardObject -> cardObject.setGameController(gameController));
             playerData.changeCardFlag = FXCollections.observableList(changeCardFlag);
 
             playerData.mana = mana;

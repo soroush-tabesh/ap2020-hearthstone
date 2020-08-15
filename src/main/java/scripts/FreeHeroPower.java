@@ -13,7 +13,7 @@ public class FreeHeroPower extends SpellBehavior {
     public boolean onSpellEffect(GameObject gameObject) {
         super.onSpellEffect(gameObject);
         heroPower = getGameController().getModelPool()
-                .getPlayerDataById(getPlayerController().getId()).getHero().getHeroPower();
+                .getPlayerDataById(getPlayerController().getPlayerId()).getHero().getHeroPower();
         mana = heroPower.getManaCost();
         heroPower.setManaCost(0);
         return true;

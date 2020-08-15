@@ -15,7 +15,7 @@ public class RestoreHealthMyHero extends SpellBehavior {
     @Override
     public boolean onSpellEffect(GameObject gameObject) {
         super.onSpellEffect(gameObject);
-        ModelPool.PlayerData playerData = getGameController().getModelPool().getPlayerDataById(getPlayerController().getId());
+        ModelPool.PlayerData playerData = getGameController().getModelPool().getPlayerDataById(getPlayerController().getPlayerId());
         HeroObject hero = playerData.getHero();
         if (hero.getHp() < hero.getHeroModel().getHp()) {
             hero.setHp(Math.min(hero.getHp() + amount, hero.getHeroModel().getHp()));

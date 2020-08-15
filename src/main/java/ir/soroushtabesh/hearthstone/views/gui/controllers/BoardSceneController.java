@@ -2,21 +2,23 @@ package ir.soroushtabesh.hearthstone.views.gui.controllers;
 
 import animatefx.animation.FadeOut;
 import animatefx.animation.Hinge;
-import ir.soroushtabesh.hearthstone.controllers.CardManager;
+import ir.soroushtabesh.hearthstone.controllers.PlayerManager;
 import ir.soroushtabesh.hearthstone.controllers.game.GameAction;
 import ir.soroushtabesh.hearthstone.controllers.game.GameController;
-import ir.soroushtabesh.hearthstone.controllers.game.LocalGameController;
 import ir.soroushtabesh.hearthstone.controllers.game.PlayerController;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.*;
-import ir.soroushtabesh.hearthstone.models.*;
-import ir.soroushtabesh.hearthstone.util.DeckReader;
+import ir.soroushtabesh.hearthstone.models.Card;
+import ir.soroushtabesh.hearthstone.models.Message;
+import ir.soroushtabesh.hearthstone.network.RemoteGameController;
 import ir.soroushtabesh.hearthstone.util.TimerUnit;
 import ir.soroushtabesh.hearthstone.util.gui.AnimationPool;
 import ir.soroushtabesh.hearthstone.util.gui.AnimationUtil;
 import ir.soroushtabesh.hearthstone.util.gui.DnDHelper;
 import ir.soroushtabesh.hearthstone.util.gui.FXUtil;
 import ir.soroushtabesh.hearthstone.views.gui.controls.*;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
@@ -34,9 +36,7 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.stage.FileChooser;
 
-import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -151,54 +151,101 @@ public class BoardSceneController extends AbstractSceneController {
     }
 
     private boolean initGameControllerDeckReader() {
-        FileChooser fileChooser = new FileChooser();
-        File file = fileChooser.showOpenDialog(getPane().getScene().getWindow());
-        if (file == null)
-            return false;
-        DeckReaderModel deckReaderModel = DeckReader.read(file);
-        if (deckReaderModel == null)
-            return false;
-        gameController = new LocalGameController();
-        pc0 = gameController.registerPlayer(
-                CardManager.getInstance().getHeroByClass(Hero.HeroClass.MAGE),
-                deckReaderModel.getFriendlyDeck(),
-                new InfoPassive(), deckReaderModel.getFriendlyDeckList());
-        pc1 = gameController.registerPlayer(
-                CardManager.getInstance().getHeroByClass(Hero.HeroClass.MAGE),
-                deckReaderModel.getEnemyDeck(),
-                new InfoPassive(), deckReaderModel.getEnemyDeckList());
-        playerData0 = gameController.getModelPool().getPlayerDataById(pc0.getId());
-        playerData1 = gameController.getModelPool().getPlayerDataById(pc1.getId());
-        return true;
+//        FileChooser fileChooser = new FileChooser();
+//        File file = fileChooser.showOpenDialog(getPane().getScene().getWindow());
+//        if (file == null)
+//            return false;
+//        DeckReaderModel deckReaderModel = DeckReader.read(file);
+//        if (deckReaderModel == null)
+//            return false;
+//        gameController = new LocalGameController();
+//        pc0 = gameController.registerPlayer(
+//                CardManager.getInstance().getHeroByClass(Hero.HeroClass.MAGE),
+//                deckReaderModel.getFriendlyDeck(),
+//                new InfoPassive(), deckReaderModel.getFriendlyDeckList());
+//        pc1 = gameController.registerPlayer(
+//                CardManager.getInstance().getHeroByClass(Hero.HeroClass.MAGE),
+//                deckReaderModel.getEnemyDeck(),
+//                new InfoPassive(), deckReaderModel.getEnemyDeckList());
+//        playerData0 = gameController.getModelPool().getPlayerDataById(pc0.getId());
+//        playerData1 = gameController.getModelPool().getPlayerDataById(pc1.getId());
+        return false;
     }
 
     private boolean initGameControllerDuel() {
-        gameController = new LocalGameController();
-        PlayerInfoGetter p0 = getPlayerInfo(0);
-        if (p0 == null) {
-            super.backPressed(null);
+//        gameController = new LocalGameController();
+//        PlayerInfoGetter p0 = getPlayerInfo(0);
+//        if (p0 == null) {
+//            super.backPressed(null);
+//            return false;
+//        }
+//        PlayerInfoGetter p1 = getPlayerInfo(1);
+//        if (p1 == null) {
+//            super.backPressed(null);
+//            return false;
+//        }
+//        pc0 = gameController.registerPlayer(
+//                p0.getSelectedHero(),
+//                p0.getSelectedDeck(),
+//                p0.getSelectedInfoPassive(), true);
+//        pc1 = gameController.registerPlayer(
+//                p1.getSelectedHero(),
+//                p1.getSelectedDeck(),
+//                p1.getSelectedInfoPassive(), true);
+//        playerData0 = gameController.getModelPool().getPlayerDataById(pc0.getId());
+//        playerData1 = gameController.getModelPool().getPlayerDataById(pc1.getId());
+        gameController = new RemoteGameController();
+
+        PlayerInfoGetter info = getPlayerInfo();
+        if (info == null)
             return false;
+
+        PlayerController pcTemp = gameController.registerPlayer(
+                PlayerManager.getInstance().getPlayer(),
+                info.getSelectedHero(),
+                info.getSelectedDeck(), info.getSelectedInfoPassive(), true);
+
+        BooleanProperty gameReady = gameController.getModelPool().getSceneData().gameReadyProperty();
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+
+        Runnable afterReady = () -> {
+            if (pcTemp.getPlayerId() == 0) {
+                pc0 = pcTemp;
+                pc1 = new PlayerController.DummyPlayerController(1);
+            } else {
+                pc0 = new PlayerController.DummyPlayerController(0);
+                pc1 = pcTemp;
+            }
+            playerData0 = gameController.getModelPool().getPlayerDataById(pc0.getPlayerId());
+            System.out.println("pd0: " + playerData0 + " " + pc0.getPlayerId());
+            playerData1 = gameController.getModelPool().getPlayerDataById(pc1.getPlayerId());
+            System.out.println("pd1: " + playerData1 + " " + pc1.getPlayerId());
+            Platform.runLater(() -> {
+                alert.setResult(ButtonType.OK);
+                alert.close();
+            });
+        };
+
+        if (gameReady.get()) {
+            afterReady.run();
+            return true;
+        } else {
+            gameReady.addListener(observable -> afterReady.run());
+            Optional<ButtonType> msg = alert.showAndWait();
+            return msg.isPresent() && msg.get() != ButtonType.CANCEL;
         }
-        PlayerInfoGetter p1 = getPlayerInfo(1);
-        if (p1 == null) {
-            super.backPressed(null);
-            return false;
-        }
-        pc0 = gameController.registerPlayer(
-                p0.getSelectedHero(),
-                p0.getSelectedDeck(),
-                p0.getSelectedInfoPassive(), true);
-        pc1 = gameController.registerPlayer(
-                p1.getSelectedHero(),
-                p1.getSelectedDeck(),
-                p1.getSelectedInfoPassive(), true);
-        playerData0 = gameController.getModelPool().getPlayerDataById(pc0.getId());
-        playerData1 = gameController.getModelPool().getPlayerDataById(pc1.getId());
-//        DeckReaderModel deckReaderModel = new DeckReaderModel();
-//        deckReaderModel.setFriendlyDeck(playerData0.getDeckModel());
-//        deckReaderModel.setEnemyDeck(playerData1.getDeckModel());
-//        System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(deckReaderModel));
-        return true;
+    }
+
+    private PlayerInfoGetter getPlayerInfo() {
+        SelectHeroDeckDialog dialog = new SelectHeroDeckDialog(getPane());
+        Optional<ButtonType> msg = dialog.showAndWait();
+        if (msg.isEmpty() || msg.get() == ButtonType.CANCEL)
+            return null;
+        else if (msg.get() == ButtonType.APPLY)
+            return null;
+        return dialog;
     }
 
     private PlayerInfoGetter getPlayerInfo(int playerId) {
@@ -336,6 +383,8 @@ public class BoardSceneController extends AbstractSceneController {
         });
         readyButton0.disableProperty().bind(playerData0.readyProperty());
         readyButton1.disableProperty().bind(playerData1.readyProperty());
+        readyButton0.setVisible(!(pc0 instanceof PlayerController.DummyPlayerController));
+        readyButton1.setVisible(!(pc1 instanceof PlayerController.DummyPlayerController));
     }
 
     private void bindBurnedCard() {
@@ -353,12 +402,12 @@ public class BoardSceneController extends AbstractSceneController {
     }
 
     private void bindMana() {
-        playerData0.manaProperty().addListener((observable) -> {
+        playerData0.manaMaxProperty().addListener((observable) -> {
             manaLabel0.setText(String.format("%d/%d", playerData0.getMana(), playerData0.getManaMax()));
             AnimationUtil.getPulse(manaLabel0).play();
             AnimationUtil.getTada(manaLabel0).play();
         });
-        playerData1.manaProperty().addListener((observable) -> {
+        playerData1.manaMaxProperty().addListener((observable) -> {
             manaLabel1.setText(String.format("%d/%d", playerData1.getMana(), playerData1.getManaMax()));
             AnimationUtil.getPulse(manaLabel1).play();
             AnimationUtil.getTada(manaLabel1).play();
@@ -473,7 +522,7 @@ public class BoardSceneController extends AbstractSceneController {
             return null;
         HeroView heroView = heroCache.get(heroObject);
         if (heroView == null) {
-            heroView = HeroView.build(heroObject);
+            heroView = HeroView.build(heroObject, gameController);
             heroCache.put(heroObject, heroView);
         }
         return heroView;
@@ -484,7 +533,7 @@ public class BoardSceneController extends AbstractSceneController {
             return null;
         CardView cardView = cardCache.get(cardObject);
         if (cardView == null) {
-            cardView = CardView.build(cardObject);
+            cardView = CardView.build(cardObject, gameController);
             addCardDragDetection(cardView);
             cardCache.put(cardObject, cardView);
         }
@@ -559,6 +608,7 @@ public class BoardSceneController extends AbstractSceneController {
 
     private void addDragDetectionWeapon(WeaponCardView cardView) {
         dnDHelper.addCardDragDetector(cardView, cardView.getCardObject().getId(), () -> {
+            System.err.println("BoardSceneController.addDragDetectionWeapon");
             if (askTargetMode)
                 return null;
             CardObject.CardState cardState = cardView.getCardObject().getCardState();
@@ -578,6 +628,7 @@ public class BoardSceneController extends AbstractSceneController {
         dnDHelper.addDropDetector(groundBox1, getGroundBoxDnDHandler(groundBox1), TransferMode.COPY_OR_MOVE);
 
         dnDHelper.addDropDetector(globalDragReceiver, event -> {
+            System.err.println("BoardSceneController.initBoardDragDetection1");
             CardObject cardObject = (CardObject) gameController.getModelPool()
                     .getGameObjectById(Integer.parseInt(event.getDragboard().getString()));
             if (cardObject.getCardModel().getActionType() == Card.ActionType.GLOBAL) {
@@ -591,6 +642,7 @@ public class BoardSceneController extends AbstractSceneController {
         }, TransferMode.MOVE);
 
         dnDHelper.addDropDetector(changeStand, (event) -> {
+            System.err.println("BoardSceneController.initBoardDragDetection2");
             CardObject cardObject = (CardObject) gameController.getModelPool()
                     .getGameObjectById(Integer.parseInt(event.getDragboard().getString()));
             Message message = (cardObject.getPlayerId() == 0 ? pc0 : pc1)
@@ -603,6 +655,7 @@ public class BoardSceneController extends AbstractSceneController {
 
     private Function<DragEvent, Boolean> getGroundBoxDnDHandler(HBox groundBox) {
         return event -> {
+            System.err.println("BoardSceneController.getGroundBoxDnDHandler");
             CardObject cardObject = (CardObject) gameController.getModelPool()
                     .getGameObjectById(Integer.parseInt(event.getDragboard().getString()));
             int index = FXUtil.getNearestGap(groundBox, new Point2D(event.getSceneX(), event.getSceneY()));

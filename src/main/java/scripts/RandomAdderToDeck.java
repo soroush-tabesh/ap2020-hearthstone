@@ -28,7 +28,7 @@ public class RandomAdderToDeck extends SpellBehavior {
     public boolean onSpellEffect(GameObject gameObject) {
         super.onSpellEffect(gameObject);
         try {
-            ModelPool.PlayerData playerData = getGameController().getModelPool().getPlayerDataById(getPlayerController().getId());
+            ModelPool.PlayerData playerData = getGameController().getModelPool().getPlayerDataById(getPlayerController().getPlayerId());
             if (((LocalGameController) getGameController())
                     .drawToHand(playerData, 0
                             , (Class<? extends CardObject>) getClass().getClassLoader().loadClass(targetClass))

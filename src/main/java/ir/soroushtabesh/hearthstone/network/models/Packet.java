@@ -15,6 +15,8 @@ public class Packet implements Serializable {
     private String commandClass;
     private String commandData;
     private String parcelData;
+    private String jsonParcelClass;
+    private String jsonParcelData;
 
     public Packet(Message message, Command command) {
         this(command);
@@ -26,6 +28,10 @@ public class Packet implements Serializable {
     }
 
     public Packet(Command command) {
+        setCommand(command);
+    }
+
+    public void setCommand(Command command) {
         this.commandClass = command.getClass().getName();
         this.commandData = JSONUtil.getGson().toJson(command);
     }
@@ -34,6 +40,11 @@ public class Packet implements Serializable {
         if (parcel == null)
             return;
         parcelData = encode(serialize(parcel));
+    }
+
+    public void setJSONParcel(Object parcel) {
+        this.jsonParcelClass = parcel.getClass().getName();
+        this.jsonParcelData = JSONUtil.getGson().toJson(parcel);
     }
 
     public void setPid(long pid) {
@@ -48,18 +59,28 @@ public class Packet implements Serializable {
         return message;
     }
 
-    @SuppressWarnings("unchecked")
     public Command getCommand() {
-        if (commandClass == null)
-            return null;
-        Class<? extends Command> clz;
         try {
-            clz = (Class<? extends Command>) Class.forName(commandClass);
-        } catch (ClassNotFoundException | ClassCastException e) {
+            return (Command) parseJSON(commandClass, commandData);
+        } catch (ClassCastException e) {
+            return null;
+        }
+    }
+
+    public Object getJSONParcel() {
+        return parseJSON(jsonParcelClass, jsonParcelData);
+    }
+
+    private static Object parseJSON(String jsonParcelClass, String jsonParcelData) {
+        if (jsonParcelClass == null)
+            return null;
+        try {
+            Class<?> clz = Class.forName(jsonParcelClass);
+            return JSONUtil.getGson().fromJson(jsonParcelData, clz);
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
             return null;
         }
-        return JSONUtil.getGson().fromJson(commandData, clz);
     }
 
     public Object getParcel() {

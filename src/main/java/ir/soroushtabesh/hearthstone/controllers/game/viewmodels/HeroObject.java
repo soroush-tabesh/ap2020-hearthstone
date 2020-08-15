@@ -10,13 +10,13 @@ import javafx.beans.property.SimpleObjectProperty;
 
 public class HeroObject extends GameObject {
 
-    private final Hero heroModel;
+    private Hero heroModel;
     private final HeroPowerObject heroPower;
     private final SimpleIntegerProperty hp = new SimpleIntegerProperty();
     private final SimpleIntegerProperty shield = new SimpleIntegerProperty();
     private final SimpleIntegerProperty immune = new SimpleIntegerProperty();
     private final SimpleObjectProperty<WeaponObject> currentWeapon = new SimpleObjectProperty<>();
-    private final GenericScript specialPowerScript;
+    private final transient GenericScript specialPowerScript;
 
     public HeroObject(int playerId, GameController gameController, Hero heroModel) {
         super(playerId, gameController);
@@ -25,6 +25,18 @@ public class HeroObject extends GameObject {
         hp.set(heroModel.getHp());
         specialPowerScript = heroModel.getSpecialPower().getScript(gameController);
         addMiscScript(specialPowerScript);
+    }
+
+    @Override
+    public void update(GameObject gameObject, GameController gameController) {
+        super.update(gameObject, gameController);
+        HeroObject heroObject = (HeroObject) gameObject;
+        heroModel = heroObject.heroModel;
+        heroPower.update(heroObject.heroPower, gameController);
+        hp.set(heroObject.getHp());
+        shield.set(heroObject.getShield());
+        immune.set(heroObject.getImmune());
+        currentWeapon.set(heroObject.getCurrentWeapon());
     }
 
     public Hero getHeroModel() {

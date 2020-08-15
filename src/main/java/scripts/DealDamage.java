@@ -18,10 +18,10 @@ public class DealDamage extends SpellBehavior {
         super.onSpellEffect(gameObject);
         if (gameObject instanceof MinionObject) {
             ((LocalGameController) getGameController()).performDamageOnMinion((MinionObject) gameObject, amount
-                    , getPlayerController().getId(), getPlayerController().getToken());
+                    , getPlayerController().getToken());
         } else {
             ((LocalGameController) getGameController()).performDamageOnHero((HeroObject) gameObject, amount
-                    , getPlayerController().getId(), getPlayerController().getToken());
+                    , getPlayerController().getToken());
         }
         return true;
     }

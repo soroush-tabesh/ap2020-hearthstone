@@ -23,7 +23,7 @@ public class HeroBehavior extends GenericScript {
     @Override
     public void onTurnEnd() {
         super.onTurnEnd();
-        getGameController().getModelPool().getPlayerDataById(getPlayerController().getId()).getHero()
+        getGameController().getModelPool().getPlayerDataById(getPlayerController().getPlayerId()).getHero()
                 .getHeroPower().setUsed(false);
     }
 }

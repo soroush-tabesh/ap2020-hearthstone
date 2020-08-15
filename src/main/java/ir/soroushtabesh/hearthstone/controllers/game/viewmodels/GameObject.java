@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Objects;
 
 public class GameObject {
-    private final int id;
-    private final int playerId;
-    private transient final GameController gameController;
+    private int id;
+    private int playerId;
+    private transient GameController gameController;
     private transient final List<GenericScript> componentScripts = new ArrayList<>();
 
     public GameObject(int playerId, GameController gameController) {
@@ -20,8 +20,23 @@ public class GameObject {
         this.gameController = gameController;
     }
 
+    public GameObject(int id, int playerId) {
+        this.id = id;
+        this.playerId = playerId;
+    }
+
+    public void update(GameObject gameObject, GameController gameController) {
+        id = gameObject.id;
+        playerId = gameObject.playerId;
+        this.gameController = gameController;
+    }
+
     public int getId() {
         return id;
+    }
+
+    public void setGameController(GameController gameController) {
+        this.gameController = gameController;
     }
 
     public GameController getGameController() {

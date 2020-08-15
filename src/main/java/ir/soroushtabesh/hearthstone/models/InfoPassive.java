@@ -32,6 +32,10 @@ public class InfoPassive implements Serializable, Permanent {
         this.description = description;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     @Override
     public Integer getId() {
         return id;

@@ -45,11 +45,10 @@ public class SelectHeroDeckDialog extends Dialog<ButtonType> implements Initiali
     private ObjectProperty<Predicate<Deck>> categoryFilter;
 
 
-    public SelectHeroDeckDialog(Node owner, int playerId) {
+    public SelectHeroDeckDialog(Node owner) {
         Logger.log("Dialog", getClass().getSimpleName());
         initOwner(owner.getScene().getWindow());
         setTitle("Play");
-        setHeaderText("Select Hero and Deck for Player #" + (playerId + 1));
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setControllerFactory(theClass -> this);
         fxmlLoader.setLocation(getClass().getResource(getClass().getSimpleName() + ".fxml"));
@@ -61,6 +60,11 @@ public class SelectHeroDeckDialog extends Dialog<ButtonType> implements Initiali
             return;
         }
         setupButtons();
+    }
+
+    public SelectHeroDeckDialog(Node owner, int playerId) {
+        this(owner);
+        setHeaderText("Select Hero and Deck for Player" + (playerId + 1));
     }
 
     private void setupButtons() {

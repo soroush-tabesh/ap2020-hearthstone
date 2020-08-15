@@ -20,6 +20,7 @@ import java.util.Map;
 import static ir.soroushtabesh.hearthstone.network.RemoteGameServer.sendPOST;
 
 public class PlayerManager {
+    // TODO: 8/14/20 expire token after inactivity
     private static PlayerManager instanceMain;
     private static PlayerManager instanceProxy;
     private final Map<String, Long> username2token = Collections.synchronizedMap(new HashMap<>());
@@ -39,6 +40,10 @@ public class PlayerManager {
                 instanceProxy = new PlayerManagerProxy();
             return instanceProxy;
         }
+    }
+
+    public boolean checkToken(long token) {
+        return token2username.containsKey(token);
     }
 
     public Message logout(long token) {
@@ -126,6 +131,10 @@ public class PlayerManager {
 
     public Long getToken() {
         return null;
+    }
+
+    public Long getTokenOf(String username) {
+        return username2token.get(username);
     }
 
     public Player getPlayerByID(int id) {

@@ -17,7 +17,7 @@ public class MyHeroPowerUp extends SpellBehavior {
     @Override
     public boolean onSpellEffect(GameObject gameObject) {
         super.onSpellEffect(gameObject);
-        ModelPool.PlayerData playerData = getGameController().getModelPool().getPlayerDataById(getPlayerController().getId());
+        ModelPool.PlayerData playerData = getGameController().getModelPool().getPlayerDataById(getPlayerController().getPlayerId());
         HeroObject hero = playerData.getHero();
         hero.setHp(hero.getHp() + hp);
         hero.setShield(hero.getShield() + shield);

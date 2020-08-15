@@ -7,6 +7,7 @@ import ir.soroushtabesh.hearthstone.controllers.game.GameAction;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.GameObject;
 import ir.soroushtabesh.hearthstone.models.Card;
 import ir.soroushtabesh.hearthstone.models.Hero;
+import ir.soroushtabesh.hearthstone.models.InfoPassive;
 import ir.soroushtabesh.hearthstone.models.Permanent;
 import javafx.beans.value.WritableValue;
 
@@ -26,22 +27,37 @@ public class JSONUtil {
         }
     }
 
+    private static final Gson gson_noModel = new GsonBuilder()
+            .setExclusionStrategies(new AnnotationExclusionStrategy())
+//            .registerTypeHierarchyAdapter(Card.class, new PermanentAdapter<Card>())
+//            .registerTypeHierarchyAdapter(Hero.class, new PermanentAdapter<Hero>())
+//            .registerTypeHierarchyAdapter(InfoPassive.class, new PermanentAdapter<InfoPassive>())
+            .registerTypeHierarchyAdapter(WritableValue.class, new PropertyAdapter<>())
+            .enableComplexMapKeySerialization()
+            .create();
+
+    private static final Gson gson_noObject = new GsonBuilder()
+            .setExclusionStrategies(new AnnotationExclusionStrategy())
+//            .registerTypeHierarchyAdapter(Card.class, new PermanentAdapter<Card>())
+//            .registerTypeHierarchyAdapter(Hero.class, new PermanentAdapter<Hero>())
+//            .registerTypeHierarchyAdapter(InfoPassive.class, new PermanentAdapter<InfoPassive>())
+            .registerTypeHierarchyAdapter(Card.class, new AbstractAdapter<Card>(gson_noModel))
+            .registerTypeHierarchyAdapter(Hero.class, new AbstractAdapter<Hero>(gson_noModel))
+            .registerTypeHierarchyAdapter(InfoPassive.class, new AbstractAdapter<InfoPassive>(gson_noModel))
+            .registerTypeHierarchyAdapter(WritableValue.class, new PropertyAdapter<>())
+            .enableComplexMapKeySerialization()
+            .create();
+
     private static final Gson gson = new GsonBuilder()
             .setExclusionStrategies(new AnnotationExclusionStrategy())
 //            .registerTypeHierarchyAdapter(Card.class, new PermanentAdapter<Card>())
 //            .registerTypeHierarchyAdapter(Hero.class, new PermanentAdapter<Hero>())
 //            .registerTypeHierarchyAdapter(InfoPassive.class, new PermanentAdapter<InfoPassive>())
-            .registerTypeHierarchyAdapter(GameObject.class, new AbstractAdapter<GameObject>())
-            .registerTypeHierarchyAdapter(GameAction.class, new AbstractAdapter<GameObject>())
-            .registerTypeHierarchyAdapter(WritableValue.class, new PropertyAdapter<>())
-            .enableComplexMapKeySerialization()
-            .create();
-
-    private static final Gson gson2 = new GsonBuilder()
-            .setExclusionStrategies(new AnnotationExclusionStrategy())
-//            .registerTypeHierarchyAdapter(Card.class, new PermanentAdapter<Card>())
-//            .registerTypeHierarchyAdapter(Hero.class, new PermanentAdapter<Hero>())
-//            .registerTypeHierarchyAdapter(InfoPassive.class, new PermanentAdapter<InfoPassive>())
+            .registerTypeHierarchyAdapter(Card.class, new AbstractAdapter<Card>(gson_noModel))
+            .registerTypeHierarchyAdapter(Hero.class, new AbstractAdapter<Hero>(gson_noModel))
+            .registerTypeHierarchyAdapter(InfoPassive.class, new AbstractAdapter<InfoPassive>(gson_noModel))
+            .registerTypeHierarchyAdapter(GameObject.class, new AbstractAdapter<GameObject>(gson_noObject))
+            .registerTypeHierarchyAdapter(GameAction.class, new AbstractAdapter<GameObject>(gson_noObject))
             .registerTypeHierarchyAdapter(WritableValue.class, new PropertyAdapter<>())
             .enableComplexMapKeySerialization()
             .create();
@@ -97,6 +113,11 @@ public class JSONUtil {
     }
 
     static class AbstractAdapter<T> implements JsonSerializer<T>, JsonDeserializer<T> {
+        private final Gson gson2;
+
+        public AbstractAdapter(Gson gson2) {
+            this.gson2 = gson2;
+        }
 
         @Override
         public final JsonElement serialize(final T object, final Type interfaceType, final JsonSerializationContext context) {
@@ -160,7 +181,7 @@ public class JSONUtil {
                 final JsonObject member = (JsonObject) elem;
                 final JsonElement typeString = get(member, "type");
 
-                WritableValue w = (WritableValue) TypeToken.of(interfaceType).getRawType().newInstance();
+                WritableValue w = (WritableValue) TypeToken.of(interfaceType).getRawType().getConstructor().newInstance();
                 if (typeString.getAsString().equals("")) {
                     return (T) w;
                 }

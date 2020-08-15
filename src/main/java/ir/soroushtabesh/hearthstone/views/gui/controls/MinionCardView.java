@@ -3,6 +3,7 @@ package ir.soroushtabesh.hearthstone.views.gui.controls;
 import animatefx.animation.AnimationFX;
 import animatefx.animation.FadeOut;
 import animatefx.animation.Pulse;
+import ir.soroushtabesh.hearthstone.controllers.game.GameController;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.CardObject;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.MinionObject;
 import ir.soroushtabesh.hearthstone.models.Card;
@@ -28,8 +29,8 @@ public class MinionCardView extends CardView {
         super(card);
     }
 
-    public MinionCardView(CardObject cardObject) {
-        super(cardObject);
+    public MinionCardView(CardObject cardObject, GameController gameController) {
+        super(cardObject, gameController);
     }
 
     @Override

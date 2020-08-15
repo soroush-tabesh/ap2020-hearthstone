@@ -1,5 +1,6 @@
 package ir.soroushtabesh.hearthstone.views.gui.controls;
 
+import ir.soroushtabesh.hearthstone.controllers.game.GameController;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.CardObject;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.WeaponObject;
 import ir.soroushtabesh.hearthstone.models.Card;
@@ -11,8 +12,8 @@ public class WeaponCardView extends CardView {
         super(card);
     }
 
-    public WeaponCardView(CardObject cardObject) {
-        super(cardObject);
+    public WeaponCardView(CardObject cardObject, GameController gameController) {
+        super(cardObject, gameController);
     }
 
     @Override

@@ -17,7 +17,7 @@ public class Card implements Serializable, Permanent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String name = "";
+    private String name = "card_back";
 
     private String description = "";
 

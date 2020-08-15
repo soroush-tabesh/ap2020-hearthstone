@@ -30,6 +30,26 @@ public class MinionObject extends CardObject {
         hp.set(cardModel.getHp());
     }
 
+    @Override
+    public void update(GameObject gameObject, GameController gameController) {
+        super.update(gameObject, gameController);
+        MinionObject minionObject = (MinionObject) gameObject;
+        hp.set(minionObject.hp.get());
+        attackPower.set(minionObject.attackPower.get());
+
+        sleep.set(minionObject.sleep.get());
+        dead.set(minionObject.dead.get());
+
+        superHP.set(minionObject.superHP.get());
+        superAttackPower.set(minionObject.superAttackPower.get());
+        taunt.set(minionObject.taunt.get());
+        immune.set(minionObject.immune.get());
+        stealth.set(minionObject.stealth.get());
+        buffed.set(minionObject.buffed.get());
+        halo4.set(minionObject.halo4.get());
+        canAttackHero.set(minionObject.canAttackHero.get());
+    }
+
     public int getHp() {
         return hp.get();
     }
@@ -172,5 +192,23 @@ public class MinionObject extends CardObject {
 
     public BooleanProperty canAttackHeroProperty() {
         return canAttackHero;
+    }
+
+    @Override
+    public String toString() {
+        return "MinionObject{" +
+                "hp=" + hp +
+                ", attackPower=" + attackPower +
+                ", sleep=" + sleep +
+                ", dead=" + dead +
+                ", superHP=" + superHP +
+                ", superAttackPower=" + superAttackPower +
+                ", taunt=" + taunt +
+                ", immune=" + immune +
+                ", stealth=" + stealth +
+                ", buffed=" + buffed +
+                ", halo4=" + halo4 +
+                ", canAttackHero=" + canAttackHero +
+                '}';
     }
 }

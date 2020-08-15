@@ -21,7 +21,7 @@ public class RandomDrawer extends SpellBehavior {
     @Override
     public boolean onSpellEffect(GameObject gameObject) {
         super.onSpellEffect(gameObject);
-        ModelPool.PlayerData playerData = getGameController().getModelPool().getPlayerDataById(getPlayerController().getId());
+        ModelPool.PlayerData playerData = getGameController().getModelPool().getPlayerDataById(getPlayerController().getPlayerId());
         if (((LocalGameController) getGameController())
                 .drawToHand(playerData, 0) == Message.SUCCESS) {
             CardObject cardObject = playerData.getHandCard().get(0);

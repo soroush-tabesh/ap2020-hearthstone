@@ -8,16 +8,18 @@ import ir.soroushtabesh.hearthstone.models.Message;
 public class PlayerController {
 
     private final GameController gameController;
-    private final int token;
-    private final int id;
+    private final long token;
 
-    public PlayerController(GameController gameController, int token, int id) {
+    public PlayerController(GameController gameController, long token) {
         this.gameController = gameController;
         this.token = token;
-        this.id = id;
     }
 
-    public int getToken() {
+    public int getPlayerId() {
+        return gameController.token2playerId(token);
+    }
+
+    public long getToken() {
         return token;
     }
 
@@ -25,37 +27,93 @@ public class PlayerController {
         return gameController;
     }
 
-    public int getId() {
-        return id;
-    }
 
     public boolean endTurn() {
-        return gameController.endTurn(id, token);
+        return gameController.endTurn(token);
     }
 
     public Message startGame() {
-        return gameController.startGame(id, token);
+        return gameController.startGame(token);
     }
 
     public Message playCard(CardObject cardObject, int groundIndex, GameObject target) {
-        return gameController.playCard(cardObject, groundIndex, target, id, token);
+        return gameController.playCard(cardObject, groundIndex, target, token);
     }
 
     public Message playMinion(MinionObject source, GameObject target) {
-        return gameController.playMinion(source, target, id, token);
+        return gameController.playMinion(source, target, token);
     }
 
     public Message useWeapon(GameObject target) {
         return gameController.useWeapon(
-                getGameController().getModelPool().getPlayerDataById(id).getHero(), target, id, token);
+                getGameController().getModelPool().getPlayerDataById(getPlayerId()).getHero(), target, token);
     }
 
     public Message useHeroPower(GameObject optionalTarget) {
         return gameController.useHeroPower(
-                getGameController().getModelPool().getPlayerDataById(id).getHero(), optionalTarget, id, token);
+                getGameController().getModelPool().getPlayerDataById(getPlayerId()).getHero(), optionalTarget, token);
     }
 
     public Message changeCard(int cardNumberInList) {
-        return gameController.changeCard(cardNumberInList, id, token);
+        return gameController.changeCard(cardNumberInList, token);
+    }
+
+    public static class DummyPlayerController extends PlayerController {
+        private final int playerId;
+
+        public DummyPlayerController(int playerId) {
+            super(null, 0);
+            this.playerId = playerId;
+        }
+
+        @Override
+        public int getPlayerId() {
+            return playerId;
+        }
+
+        @Override
+        public long getToken() {
+            return 0;
+        }
+
+        @Override
+        public GameController getGameController() {
+            return null;
+        }
+
+        @Override
+        public boolean endTurn() {
+            return false;
+        }
+
+        @Override
+        public Message startGame() {
+            return Message.ERROR;
+        }
+
+        @Override
+        public Message playCard(CardObject cardObject, int groundIndex, GameObject target) {
+            return Message.ERROR;
+        }
+
+        @Override
+        public Message playMinion(MinionObject source, GameObject target) {
+            return Message.ERROR;
+        }
+
+        @Override
+        public Message useWeapon(GameObject target) {
+            return Message.ERROR;
+        }
+
+        @Override
+        public Message useHeroPower(GameObject optionalTarget) {
+            return Message.ERROR;
+        }
+
+        @Override
+        public Message changeCard(int cardNumberInList) {
+            return Message.ERROR;
+        }
     }
 }

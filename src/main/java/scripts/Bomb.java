@@ -31,7 +31,7 @@ public class Bomb extends SpellBehavior {
                 return;
             ((LocalGameController) getGameController())
                     .performDamageOnMinion(minionObject, damage
-                            , getPlayerController().getId(), getPlayerController().getToken());
+                            , getPlayerController().getToken());
         });
         return true;
     }

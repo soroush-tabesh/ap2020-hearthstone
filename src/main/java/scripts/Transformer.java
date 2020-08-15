@@ -22,13 +22,13 @@ public class Transformer extends SpellBehavior {
             return false;
         MinionObject minionObject = (MinionObject) gameObject;
         getGameController().getScriptEngine().unregisterScriptAll(minionObject);
-        ModelPool.PlayerData playerData = getGameController().getModelPool().getPlayerDataById(getPlayerController().getId());
+        ModelPool.PlayerData playerData = getGameController().getModelPool().getPlayerDataById(getPlayerController().getPlayerId());
         playerData.getGroundCard().remove(minionObject);
 
         Card card = CardManager.getInstance().getCardByName(transformTo);
-        CardObject cardObject = CardObject.build(getPlayerController().getId(), getGameController(), card);
+        CardObject cardObject = CardObject.build(getPlayerController().getPlayerId(), getGameController(), card);
         getGameController().summonMinion((MinionObject) cardObject
-                , getPlayerController().getId(), getPlayerController().getToken());
+                , getPlayerController().getToken());
         return true;
     }
 }

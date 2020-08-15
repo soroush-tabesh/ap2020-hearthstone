@@ -10,7 +10,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
 public class CardObject extends GameObject {
-    private final Card cardModel;
+    private Card cardModel;
     private final SimpleIntegerProperty manaCost = new SimpleIntegerProperty();
     private transient GenericScript script;
 
@@ -20,6 +20,19 @@ public class CardObject extends GameObject {
         manaCost.set(cardModel.getMana());
         script = cardModel.getScriptModel().getScript(gameController);
         addMiscScript(script);
+    }
+
+    public CardObject(int id, int playerID, Card cardModel) {
+        super(id, playerID);
+        this.cardModel = cardModel;
+    }
+
+    @Override
+    public void update(GameObject gameObject, GameController gameController) {
+        super.update(gameObject, gameController);
+        CardObject cardObject = (CardObject) gameObject;
+        cardModel = cardObject.cardModel;
+        manaCost.set(cardObject.getManaCost());
     }
 
     public int getManaCost() {
@@ -59,7 +72,9 @@ public class CardObject extends GameObject {
     }
 
     public CardState getCardState() {
-        ModelPool.PlayerData playerData = getGameController().getModelPool().getPlayerDataById(getPlayerId());
+        ModelPool.PlayerData playerData = getGameController()
+                .getModelPool()
+                .getPlayerDataById(getPlayerId());
         if (playerData.getDeckCard().contains(this))
             return CardState.DECK;
         else if (playerData.getHandCard().contains(this))

@@ -15,6 +15,14 @@ public class WeaponObject extends CardObject {
         durability.set(cardModel.getDurability());
     }
 
+    @Override
+    public void update(GameObject gameObject, GameController gameController) {
+        super.update(gameObject, gameController);
+        WeaponObject weaponObject = (WeaponObject) gameObject;
+        attackPower.set(weaponObject.attackPower.get());
+        durability.set(weaponObject.durability.get());
+    }
+
     public int getAttackPower() {
         return attackPower.get();
     }

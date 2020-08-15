@@ -1,5 +1,6 @@
 package ir.soroushtabesh.hearthstone.views.gui.controls;
 
+import ir.soroushtabesh.hearthstone.controllers.game.GameController;
 import ir.soroushtabesh.hearthstone.controllers.game.viewmodels.HeroObject;
 import ir.soroushtabesh.hearthstone.models.BriefHero;
 import ir.soroushtabesh.hearthstone.models.Hero;
@@ -29,16 +30,18 @@ public class HeroView extends StackPane implements Initializable {
     private Label shieldLabel;
 
     private BriefHero briefHero;
-    private HeroObject heroObject;
+    private int heroObjectId;
+    private GameController gameController;
 
     public HeroView(Hero hero) {
         briefHero = BriefHero.build(hero);
         FXUtil.loadFXMLasRoot(this);
     }
 
-    public HeroView(HeroObject heroObject) {
-        this.heroObject = heroObject;
-        heroObject.getGameController().turnProperty()
+    public HeroView(HeroObject heroObject, GameController gameController) {
+        this.heroObjectId = heroObject.getId();
+        this.gameController = gameController;
+        gameController.turnProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (newValue.intValue() == heroObject.getPlayerId())
                         setEffect(AnimationUtil.getGlowAnimated(Color.LIMEGREEN, 20, 70));
@@ -49,12 +52,8 @@ public class HeroView extends StackPane implements Initializable {
         FXUtil.loadFXMLasRoot(this);
     }
 
-    public static HeroView build(Hero hero) {
-        return new HeroView(hero);
-    }
-
-    public static HeroView build(HeroObject heroObject) {
-        return new HeroView(heroObject);
+    public static HeroView build(HeroObject heroObject, GameController gameController) {
+        return new HeroView(heroObject, gameController);
     }
 
     @Override
@@ -62,7 +61,7 @@ public class HeroView extends StackPane implements Initializable {
         loadImages();
         bindDimensions();
         initViews();
-        if (heroObject != null)
+        if (getHeroObject() != null)
             bindViews();
     }
 
@@ -71,14 +70,14 @@ public class HeroView extends StackPane implements Initializable {
     }
 
     public HeroObject getHeroObject() {
-        return heroObject;
+        return (HeroObject) gameController.getModelPool().getGameObjectById(heroObjectId);
     }
 
     private void bindViews() {
-        heroObject.shieldProperty().addListener(AnimationUtil.numberChangeListener(shieldLabel));
-        heroObject.hpProperty().addListener(AnimationUtil.numberChangeListener(hpLabel));
-        shieldLabel.visibleProperty().bind(heroObject.shieldProperty().greaterThan(0));
-        heroShield.visibleProperty().bind(heroObject.shieldProperty().greaterThan(0));
+        getHeroObject().shieldProperty().addListener(AnimationUtil.numberChangeListener(shieldLabel));
+        getHeroObject().hpProperty().addListener(AnimationUtil.numberChangeListener(hpLabel));
+        shieldLabel.visibleProperty().bind(getHeroObject().shieldProperty().greaterThan(0));
+        heroShield.visibleProperty().bind(getHeroObject().shieldProperty().greaterThan(0));
     }
 
     private void initViews() {

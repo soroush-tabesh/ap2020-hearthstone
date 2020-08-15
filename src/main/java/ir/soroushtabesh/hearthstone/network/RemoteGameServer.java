@@ -1,6 +1,13 @@
 package ir.soroushtabesh.hearthstone.network;
 
+import ir.soroushtabesh.hearthstone.controllers.game.GameController;
+import ir.soroushtabesh.hearthstone.models.Deck;
+import ir.soroushtabesh.hearthstone.models.Hero;
+import ir.soroushtabesh.hearthstone.models.InfoPassive;
 import ir.soroushtabesh.hearthstone.network.command.Command;
+import ir.soroushtabesh.hearthstone.network.command.GetGames;
+import ir.soroushtabesh.hearthstone.network.command.RequestAudience;
+import ir.soroushtabesh.hearthstone.network.command.RequestGame;
 import ir.soroushtabesh.hearthstone.network.models.Config;
 import ir.soroushtabesh.hearthstone.network.models.Packet;
 
@@ -89,11 +96,32 @@ public class RemoteGameServer implements IGameServer {
     }
 
     public static Packet sendPOST(Command command) {
-        getInstance().onFetchStartListener.run();
+        if (getInstance().onFetchStartListener != null)
+            getInstance().onFetchStartListener.run();
         Packet packet = getInstance().getWorker()
                 .sendAndWaitReceivePacket(new Packet(command));
-        getInstance().onFetchEndListener.run();
+        if (getInstance().onFetchEndListener != null)
+            getInstance().onFetchEndListener.run();
         return packet;
     }
 
+    @Override
+    public Packet requestGame(long token, Hero hero, Deck deck, InfoPassive passive) {
+        return sendPOST(new RequestGame(token, hero, deck, passive));
+    }
+
+    @Override
+    public Packet getGames() {
+        return sendPOST(new GetGames());
+    }
+
+    @Override
+    public Packet requestAudience(long token, long gid) {
+        return sendPOST(new RequestAudience(token, gid));
+    }
+
+    @Override
+    public GameController getGameControllerByToken(long token) {
+        return null;
+    }
 }

@@ -9,7 +9,7 @@ public class Lifesteal extends MinionBehavior {
     @Override
     public void onAttackEffect(GameObject gameObject) {
         super.onAttackEffect(gameObject);
-        HeroObject hero = getGameController().getModelPool().getPlayerDataById(getPlayerController().getId()).getHero();
+        HeroObject hero = getGameController().getModelPool().getPlayerDataById(getPlayerController().getPlayerId()).getHero();
         hero.setHp(Math.min(hero.getHp() + ((MinionObject) getOwnerObject()).getAttackPower(), hero.getHeroModel().getHp()));
     }
 }

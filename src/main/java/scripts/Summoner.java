@@ -19,9 +19,9 @@ public class Summoner extends SpellBehavior {
         super.onSpellEffect(gameObject);
         for (String s : summonList) {
             Card locust = CardManager.getInstance().getCardByName(s);
-            CardObject cardObject = CardObject.build(getPlayerController().getId(), getGameController(), locust);
+            CardObject cardObject = CardObject.build(getPlayerController().getPlayerId(), getGameController(), locust);
             getGameController().summonMinion((MinionObject) cardObject
-                    , getPlayerController().getId(), getPlayerController().getToken());
+                    , getPlayerController().getToken());
         }
         return true;
     }

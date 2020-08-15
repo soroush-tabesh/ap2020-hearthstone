@@ -17,7 +17,7 @@ public class PlayCard extends SpellBehavior {
     public boolean onSpellEffect(GameObject gameObject) {
         super.onSpellEffect(gameObject);
         Card locust = CardManager.getInstance().getCardByName(cardName);
-        CardObject cardObject = CardObject.build(getPlayerController().getId(), getGameController(), locust);
+        CardObject cardObject = CardObject.build(getPlayerController().getPlayerId(), getGameController(), locust);
         getPlayerController().playCard(cardObject, 0, null);
         return true;
     }

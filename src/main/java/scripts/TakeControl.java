@@ -16,9 +16,9 @@ public class TakeControl extends SpellBehavior {
         ModelPool.PlayerData playerData = getGameController().getModelPool().getPlayerDataById(minionObject.getPlayerId());
         playerData.getGroundCard().remove(minionObject);
 
-        CardObject cardObject = CardObject.build(getPlayerController().getId(), getGameController(), minionObject.getCardModel());
+        CardObject cardObject = CardObject.build(getPlayerController().getPlayerId(), getGameController(), minionObject.getCardModel());
         getGameController().summonMinion((MinionObject) cardObject
-                , getPlayerController().getId(), getPlayerController().getToken());
+                , getPlayerController().getToken());
         return true;
     }
 }

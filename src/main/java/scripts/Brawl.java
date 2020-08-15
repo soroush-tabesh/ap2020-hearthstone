@@ -17,7 +17,7 @@ public class Brawl extends SpellBehavior {
         allCards.remove(0);
         allCards.forEach(minionObject -> ((LocalGameController) getGameController())
                 .performDamageOnMinion(minionObject, 100
-                        , getPlayerController().getId(), getPlayerController().getToken()));
+                        , getPlayerController().getToken()));
         return true;
     }
 }
