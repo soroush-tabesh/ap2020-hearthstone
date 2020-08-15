@@ -2,8 +2,49 @@
 _Under development._ 
 
 ## How to Run
-In the source package(ir.soroushtabesh.hearthstone) run Main class.
- Database system will initialize itself and no extra work is needed.
+Before running, setup a postgres database and insert database info in Constants.java.
+Then in the source package(ir.soroushtabesh.hearthstone) create an instance of server
+ by running MainServer class. After that you may run as many instances of MainClient as
+ you want. 
+
+## Phase 4 Documentation
+This phase implements network multiplayer game mode.
+
+### Libraries and Dependencies
+Java 13 is used for build.
+Project is built using Gradle
+and obviously is maintained under git.
+
+- [Hibernate](http://hibernate.org/orm/) - Robust and widely used ORM, with an active community.
+- [PostgreSQL](https://www.postgresql.org/) - An advanced open-source relational database.
+- [Apache Log4j 2](https://logging.apache.org/log4j/) - Taking control of Hibernate logging.
+- [Guava](https://github.com/google/guava) - Collections, caching, primitives support, concurrency libraries, common
+ annotations, string processing, I/O, and more.
+- [Apache Commons Codec](http://commons.apache.org/proper/commons-codec/) - General encoding/decoding algorithms, e.g. 
+phonetic, base64 or URL. 
+- [OpenJFX](https://openjfx.io/) - Alternate JavaFX library as it's no longer contained in JDK.
+- [Apache Lang](http://commons.apache.org/proper/commons-lang/) - Provides extra functionality for classes in java.lang.
+e.g. CompareToBuilder.
+- [AnimateFX](https://github.com/Typhon0/AnimateFX) - A library of ready-to-use animations for JavaFX.
+
+### Resources
+
+- [Game Pedia](https://hearthstone.gamepedia.com/) - A complete resource of game cards and heroes.
+- [Hearthstone's assets](https://github.com/GitHtub/Hearthstone/tree/master/Assets) - UI elements and font.
+- [Vlad Mihalcea' Blog](https://vladmihalcea.com/) - Contains perfect articles on Hibernate.
+- [Baeldung](https://www.baeldung.com/) - Tutorials of hibernate.
+- [SVG PathBuilder](https://codepen.io/anthonydugois/full/mewdyZ) - Online tool for making SVG paths.
+- [SoundBible](http://soundbible.com/) - A free online library of soundfx
+
+### A brief description of architecture
+In network package, ComServer class listens for client socket connections an instantiates a worker
+for each client. Client-Server communication follows a custom request-response system; It sends packets which
+may contain commands, parcels, and messages. Each packet has its own unique id which comes handy when there 
+are linked packets. A socket worker uses TCP for communication.   
+There are a set of classes implementing Command interface; They are mapper classes which
+map commands to real jobs in the target jvm. Packet commands are actually class names of Command classes.
+
+
 
 ## Phase 3 Documentation
 This phase implements a logic unit to manage gameplay.
