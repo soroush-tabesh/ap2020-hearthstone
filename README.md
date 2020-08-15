@@ -13,7 +13,7 @@ This phase implements network multiplayer game mode.
 ### Libraries and Dependencies
 Java 13 is used for build.
 Project is built using Gradle
-and obviously is maintained under git.
+and obviously is maintained under git. 
 
 - [Hibernate](http://hibernate.org/orm/) - Robust and widely used ORM, with an active community.
 - [PostgreSQL](https://www.postgresql.org/) - An advanced open-source relational database.
