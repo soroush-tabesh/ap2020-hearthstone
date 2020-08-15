@@ -375,6 +375,13 @@ public class LocalGameController extends GameController {
         if (target.getHp() <= 0) {
             setWinner(1 - playerId);
             setStarted(false);
+
+            ModelPool.PlayerData pd1 = getModelPool().getPlayerDataById(playerId);
+            PlayerStats ps1 = pd1.getPlayer().getPlayerStats();
+            ps1.setCupCount(Math.max(0, ps1.getCupCount() - (playerId == 0 ? 1 : -1)));
+            ModelPool.PlayerData pd2 = getModelPool().getPlayerDataById(playerId);
+            PlayerStats ps2 = pd2.getPlayer().getPlayerStats();
+            ps1.setCupCount(Math.max(0, ps2.getCupCount() + (playerId == 0 ? 1 : -1)));
         }
         return Message.SUCCESS;
     }

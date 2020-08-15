@@ -285,6 +285,10 @@ public class ModelPool implements Serializable {
             list.add(j, a);
         }
 
+        public Player getPlayer() {
+            return player;
+        }
+
         public void setGameController(GameController gameController) {
             this.gameController = gameController;
         }
